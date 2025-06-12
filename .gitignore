@@ -1,0 +1,248 @@
+# ====================================================================
+# 📏 STANDARD RULES v1.2 2025-06-11
+# ====================================================================
+
+##### Environment variables ##########################################
+.env
+!.env.example
+.env.local
+.env.*.local
+.env*.local
+cert/
+*.pem
+secrets/
+/secrets/
+
+
+##### Node.js/NPM #####################################################
+node_modules/
+.npm
+.pnp
+.pnp.js
+
+##### Test / Backup / Local content ##################################
+*.bak
+*.tmp
+.cache/
+.temp/
+dist/
+.backups/
+
+##### Logs ############################################################
+*.log*
+logs/
+
+##### Archive #########################################################
+.archive/
+
+# ====================================================================
+# ONLY IN PUBLIC PROJECTS v1.1 2025-06-11
+# Uncomment the rules when pushing to a public repository
+# ====================================================================
+
+##### IDE Rules #######################################################
+# .cursor/
+# .cursorrules
+# .cursorignore
+# CLAUDE.md
+
+##### Network ##########################################################
+# Caddyfile
+
+##### Docs #############################################################
+# /docs/decision-records/
+# /docs/architecture/
+# /docs/changelog.md
+# /docs/roadmap.md
+# /docs/glossary.md
+# /docs/PLANNING.md
+# /docs/TASK.md
+
+
+
+# ====================================================================
+# SPECIFIC FOR THE LANGUAGES AND TOOLS IN THE PROJECT v1.1 2025-06-11
+# ====================================================================
+
+##### Hugo ############################################################
+public/
+resources/
+resources/_gen/
+assets/jsconfig.json
+hugo_stats.json
+.hugo_build.lock
+hugo_log.txt
+
+##### Netlify #########################################################
+.netlify/
+.netlify/functions/
+
+##### Vercel ##########################################################
+.vercel/
+
+##### Python ##########################################################
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.dylib
+.venv/
+pip-wheel-metadata/
+pip-log.txt
+coverage/
+htmlcov/
+eggs/
+.eggs/
+*.egg
+*.egg-info/
+MANIFEST
+.installed.cfg
+.Python
+wheels/
+
+##### Testing ##########################################################
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage/
+
+##### Next.js #########################################################
+.next/
+.next/cache/
+.next/trace/
+*.next.config.js.backup
+
+##### React (CRA, Remix, Expo) #######################################
+build/
+coverage/
+.storybook/
+.expo/
+web-build/
+*.expo-shared/
+*.expo/
+# React Native
+android/app/build/
+ios/Pods/
+*.xcworkspace
+*.xcodeproj
+*.xcuserdata/
+
+##### Vue #############################################################
+dist/
+coverage/
+.storybook/
+*.local.vue
+vite.svg
+
+##### TypeScript ######################################################
+*.tsbuildinfo
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+##### Docker ##########################################################
+# Local-only overrides
+docker-compose.override.yml
+docker-compose.*.yml
+# Image layers & caches
+**/tmp-docker-build/
+.docker/*-cache/
+.docker-local/
+
+##### CSS / SCSS / PostCSS ###########################################
+.sass-cache/
+*.css.map
+*.scssc
+*.sassc
+.stylelintcache
+postcss.config.js.backup
+
+##### PostgreSQL ######################################################
+*.psql
+*.pgsql
+*.sql.gz
+*.dump
+*.backup
+
+##### GitHub Actions & Workflows #####################################
+# Keep workflow YAMLs; ignore local test logs
+.github/actions-cache/
+.github/workflows/*.log
+
+##### Terraform #######################################################
+*.tfstate
+*.tfstate.backup
+.terraform/
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+##### Swift / SwiftUI / Xcode #########################################
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.xcarchive
+
+##### Misc ############################################################
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# macOS codesigning
+*.entitlements
+
+
+
+# ====================================================================
+# 🔒 LOCK FILES v1.0 2025-06-11
+# Uncomment the lockfiles you are *not* using to avoid confusion
+# in builds, CI, or when switching between npm / yarn / pnpm / bun.
+# Keep only ONE lockfile in version control.
+# ====================================================================
+
+##### npm (default) ##################################################
+# Keep this if you're using npm
+# DO NOT ignore it unless using yarn or pnpm instead
+# package-lock.json
+
+##### Yarn (classic) ##################################################
+# Uncomment if you use npm and want to ignore yarn lockfile
+yarn.lock
+
+##### Yarn v2+ (Berry) ###############################################
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/plugins/
+.yarn/releases/
+.yarn/sdks/
+.yarn/versions/
+
+##### pnpm ############################################################
+# Uncomment if you're not using pnpm
+pnpm-lock.yaml
+.pnpm-store/
+
+##### Bun ############################################################
+# Uncomment if you're not using Bun
+.bun/
+
+##### Corepack (Node 16+ package manager shim) #######################
+# Optional — ignore if not using corepack
+.corepack/
+
+
+
+# ====================================================================
+# SPECIFIC RULES v1.0 2025-06-11
+# ====================================================================
+
+##### Specific files ##################################################
+# Add here any specific files which you don't want to be versioned
