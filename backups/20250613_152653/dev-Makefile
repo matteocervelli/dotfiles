@@ -1,0 +1,121 @@
+# Makefile per la gestione dell'ambiente di sviluppo
+
+.PHONY: check-env generate-env setup-dev start-dev start-mcp stop-mcp create-networks verify-env setup-env start-all stop-all status scale backup health-check update new-project
+
+# Verifica permessi di esecuzione degli script
+check-env:
+	@echo "🔍 Verifica configurazione ambiente..."
+	@./scripts/verify-env.sh
+
+# Genera i file .env per ogni servizio
+generate-env:
+	@echo "🔧 Generazione file .env..."
+	@./scripts/generate-env.sh
+
+# Setup ambiente di sviluppo
+setup-dev: check-env generate-env
+	@echo "🚀 Setup ambiente di sviluppo..."
+	@./scripts/setup.sh
+	@echo "✅ Ambiente configurato correttamente!"
+
+# Avvia i servizi di sviluppo
+start-dev: setup-dev
+	@echo "🚀 Avvio servizi di sviluppo..."
+	@docker-compose -f compose/infrastructure.yml up -d postgres
+	@echo "⏳ Attesa avvio PostgreSQL..."
+	@sleep 10
+	@docker-compose -f compose/infrastructure.yml up -d redis qdrant minio
+	@echo "⏳ Attesa avvio servizi di base..."
+	@sleep 10
+	@docker-compose -f compose/infrastructure.yml up -d n8n
+	@echo "⏳ Attesa avvio N8N..."
+	@sleep 10
+	@docker-compose -f compose/infrastructure.yml up -d nginx
+	@echo "✅ Servizi di sviluppo avviati correttamente!"
+
+# Avvia i servizi MCP
+start-mcp: setup-dev
+	@echo "🚀 Avvio servizi MCP..."
+	@docker-compose -f compose/mcp.yml up -d
+	@echo "✅ Servizi MCP avviati correttamente!"
+
+# Ferma i servizi MCP
+stop-mcp:
+	@echo "🛑 Arresto servizi MCP..."
+	@docker-compose -f compose/mcp.yml down
+	@echo "✅ Servizi MCP arrestati correttamente!"
+
+# Crea le reti Docker necessarie
+create-networks:
+	@echo "🌐 Creazione reti Docker..."
+	@./scripts/setup-networks.sh
+
+# Verifica ambiente
+verify-env:
+	@echo "🔍 Verifica configurazione ambiente..."
+	@./scripts/verify-env.sh
+
+# Setup ambiente
+setup-env: verify-env generate-env
+	@echo "🚀 Setup ambiente di sviluppo..."
+	@./scripts/setup.sh
+	@echo "✅ Ambiente configurato correttamente!"
+
+# Avvia tutti i servizi
+start-all: setup-env create-networks
+	@echo "🚀 Avvio tutti i servizi..."
+	@docker-compose -f compose/monitoring.yml up -d
+	@docker-compose -f compose/infrastructure.yml up -d
+	@docker-compose -f compose/mcp.yml up -d
+	@echo "✅ Tutti i servizi avviati correttamente!"
+
+# Ferma tutti i servizi
+stop-all:
+	@echo "🛑 Arresto servizi..."
+	@docker-compose -f compose/monitoring.yml down
+	@docker-compose -f compose/mcp.yml down
+	@docker-compose -f compose/infrastructure.yml down
+	@echo "✅ Servizi arrestati correttamente!"
+
+# Mostra lo stato dei servizi
+status:
+	@echo "📊 Stato dei servizi:"
+	@docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+# Scala un servizio
+scale:
+	@echo "🔄 Scaling del servizio..."
+	@./scripts/scale.sh $(service) $(replicas)
+
+# Backup dei dati
+backup:
+	@echo "💾 Backup dei dati..."
+	@./scripts/backup.sh
+
+# Verifica salute dei servizi
+health-check:
+	@echo "🏥 Verifica salute dei servizi..."
+	@./scripts/health-check.sh
+
+# Aggiorna i servizi
+update:
+	@echo "⬆️ Aggiornamento dei servizi..."
+	@./scripts/update.sh
+
+# Crea un nuovo progetto basato sulla struttura _base
+new-project:
+	@echo "🚀 Creazione nuovo progetto..."
+	@if [ -z "$(name)" ] || [ -z "$(desc)" ]; then \
+		echo "❌ Errore: Specificare name e desc"; \
+		echo "📋 Usage: make new-project name=\"APP-MyProject\" desc=\"Descrizione del progetto\""; \
+		echo "📋 Esempi:"; \
+		echo "   make new-project name=\"APP-TaskManager\" desc=\"Applicazione per gestire task e progetti\""; \
+		echo "   make new-project name=\"WEB-Portfolio\" desc=\"Sito web portfolio personale\""; \
+		echo "   make new-project name=\"FE-Dashboard\" desc=\"Dashboard frontend per analytics\""; \
+		exit 1; \
+	fi
+	@./scripts/launch-projects.sh "$(name)" "$(desc)"
+	@echo "✅ Progetto $(name) creato con successo!"
+	@echo "📁 Prossimi passi:"
+	@echo "   1. cd projects/$(name)"
+	@echo "   2. Apri cursor-project-setup.md per le istruzioni" 

@@ -1,0 +1,69 @@
+# Powerful, enterprise-ready, open source web server with automatic HTTPS
+brew "caddy"
+# Manage multiple AI agents like Claude Code, Aider and Codex in your terminal
+brew "claude-squad"
+# Cross-platform make
+brew "cmake"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
+# GitHub command-line tool
+brew "gh"
+# Distributed revision control system
+brew "git"
+# Configurable static site generator
+brew "hugo"
+# Get events and tasks from the macOS calendar database
+brew "ical-buddy"
+# Implementation of the file(1) command
+brew "libmagic"
+# Postgres C API library
+brew "libpq", link: true
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# Next-gen compiler infrastructure
+brew "llvm"
+# LLVM Project Linker
+brew "lld"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Create, run, and share large language models (LLMs)
+brew "ollama"
+# Swiss-army knife of markup format conversion
+brew "pandoc"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
+# Cross-platform library for audio I/O
+brew "portaudio"
+# Python version management
+brew "pyenv"
+# Rsync for cloud storage
+brew "rclone"
+# Free software distribution for the TeX typesetting system
+brew "texlive"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Command-line interface for 1Password
+cask "1password-cli"
+# Cross-platform Git credential storage for multiple hosting providers
+cask "git-credential-manager"
+# Native GUI tool for relational databases
+cask "tableplus"
+# Mesh VPN based on WireGuard
+cask "tailscale"
+# Open-source code editor
+cask "visual-studio-code"
+# Multimedia player
+cask "vlc"
+# Voice to text app
+cask "voiceink"
+vscode "dbaeumer.vscode-eslint"
+vscode "figma.figma-vscode-extension"
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "matteocervelli.adlimen-theme"
+vscode "ms-azuretools.vscode-containers"
+vscode "ms-vscode-remote.remote-containers"

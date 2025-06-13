@@ -1,0 +1,51 @@
+# Aliases to change directories
+alias _home='cd ~'
+alias cdnmedia='cd ~/media/cdn'
+alias aldocs='cd /Users/matteocervelli/dev/projects/DOC-AlStartUp'
+alias mccom='cd /Users/matteocervelli/dev/projects/WEB-mccom'
+alias adlimen='cd /Users/matteocervelli/dev/projects/WEB-adlimen'
+alias projects="cd /Users/matteocervelli/dev/projects"
+alias dockers="cd /Users/matteocervelli/dev/dockers"
+alias mcps="cd /Users/matteocervelli/dev/services/mcps"
+alias servers="cd /Users/matteocervelli/dev/dockers/servers"
+alias obsidian="cd /Users/matteocervelli/Brain4Change"
+
+# Aliases to open files
+alias zshconfig='cursor /Users/matteocervelli/.zshrc'
+alias zshalias='cursor /Users/matteocervelli/.zsh_aliases'
+alias claudeconfig="cursor '/Users/matteocervelli/Library/Application Support/Claude/claude_desktop_config.json'"
+alias zshsource='source /Users/matteocervelli/.zshrc'
+
+# Aliases to scripts
+alias cdnsync='~/dev/scripts/rclone-cdn-sync.sh'
+alias newshort='~/dev/scripts/add-new-short-link.sh'
+alias initproject='~/dev/scripts/launch-projects.sh'
+
+# Aliases git
+alias gs="git status"
+alias ga="git add ."
+alias gc="git commit -m"
+alias gco="git checkout"
+alias glabel='gh label delete --yes duplicate && gh label delete --yes "good first issue" && gh label delete --yes "help wanted" && gh label delete --yes invalid && gh label delete --yes question && gh label delete --yes wontfix && gh label clone matteocervelli/adlimen-website'
+
+# Aliases functions
+alias python=python3
+alias pip=pip3
+
+# Aliases Docker
+alias dps="docker ps"
+alias dpsa="docker ps -a"
+alias db="docker build"
+alias dbt="docker build -t"
+alias dcu="docker compose up"
+alias dcud="docker compose up -d"
+alias dcd="docker compose down"
+
+# Aliases Hugo
+alias hs="hugo server -D --cleanDestinationDir --bind 0.0.0.0"
+alias hn="hugo new content"
+alias hc="rm -rf public && hugo"
+
+# Tailscale ssh
+alias macbook="ssh matteocervelli@macbook4change"
+alias macstudio="ssh matteocervelli@studio4change"

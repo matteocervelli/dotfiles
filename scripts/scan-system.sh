@@ -230,6 +230,19 @@ EOF
     fi
     echo '```' >> "$OUTPUT_FILE"
     
+    # Setapp applications
+    cat >> "$OUTPUT_FILE" << EOF
+
+### Setapp Applications
+\`\`\`
+EOF
+    if [[ -d "/Applications/Setapp" ]]; then
+        ls -1 "/Applications/Setapp" | grep "\.app$" | sed 's/\.app$//' >> "$OUTPUT_FILE" 2>/dev/null
+    else
+        echo "Setapp not installed or no apps found" >> "$OUTPUT_FILE"
+    fi
+    echo '```' >> "$OUTPUT_FILE"
+    
     # Node.js packages
     cat >> "$OUTPUT_FILE" << EOF
 
@@ -399,6 +412,37 @@ EOF
     fi
     echo '```' >> "$OUTPUT_FILE"
     
+    # AI/LLM Models
+    cat >> "$OUTPUT_FILE" << EOF
+
+### AI/LLM Models Configuration
+
+#### Ollama Models
+\`\`\`
+EOF
+    if command -v ollama &> /dev/null; then
+        ollama list >> "$OUTPUT_FILE" 2>/dev/null || echo "Cannot list Ollama models" >> "$OUTPUT_FILE"
+    else
+        echo "Ollama not installed" >> "$OUTPUT_FILE"
+    fi
+    echo '```' >> "$OUTPUT_FILE"
+    
+    cat >> "$OUTPUT_FILE" << EOF
+
+#### LM Studio Installation
+\`\`\`
+EOF
+    if [[ -d "/Applications/LM Studio.app" ]]; then
+        echo "LM Studio installed: /Applications/LM Studio.app" >> "$OUTPUT_FILE"
+        # Check for LM Studio models directory
+        if [[ -d "$HOME/.cache/lm-studio" ]]; then
+            echo "LM Studio cache directory found: ~/.cache/lm-studio" >> "$OUTPUT_FILE"
+        fi
+    else
+        echo "LM Studio not installed" >> "$OUTPUT_FILE"
+    fi
+    echo '```' >> "$OUTPUT_FILE"
+    
     # Docker configuration
     if command -v docker &> /dev/null; then
         cat >> "$OUTPUT_FILE" << EOF
@@ -544,7 +588,10 @@ backup_existing_configs() {
     local dotfiles=(
         ".zshrc"
         ".zsh_aliases" 
+        ".zsh_exports"
+        ".zsh_plugins"
         ".zsh_functions"
+        ".zprofile"
         ".gitconfig"
         ".gitignore_global"
         ".ssh/config"
@@ -571,6 +618,11 @@ backup_existing_configs() {
     local cursor_settings="$HOME/Library/Application Support/Cursor/User/settings.json"
     if [[ -f "$cursor_settings" ]]; then
         cp "$cursor_settings" "$backup_dir/cursor-settings.json" 2>/dev/null && log_info "Backed up: Cursor settings"
+    fi
+    
+    # Backup main development Makefile
+    if [[ -f "$HOME/dev/Makefile" ]]; then
+        cp "$HOME/dev/Makefile" "$backup_dir/dev-Makefile" 2>/dev/null && log_info "Backed up: Dev Makefile"
     fi
     
     log_success "Backup completed in: $backup_dir"

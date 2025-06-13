@@ -1,0 +1,30 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Matteo Cervelli
+	email = 187242585+matteocervelli@users.noreply.github.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINss27NvNUj+RdfnD1v6MZZZc+Seapjlkp5t53pAPNry
+# Please adapt and uncomment the following lines:
+#	name = Matteo Cervelli
+#	email = matteocervelli@studio4change.tail0f1ece.ts.net
+[credential]
+	helper = osxkeychain
+	helper = 
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main
+[core]
+	excludesFile = /Users/matteocervelli/.gitignore_global
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	allowedSignersFile = /Users/matteocervelli/.ssh/allowed_signers
+[commit]
+	gpgsign = true
