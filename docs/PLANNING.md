@@ -1,183 +1,176 @@
-# Dotfiles - Project Planning Document
+# Dotfiles Project - Piano Completo
 
-## 🎯 Goals & Objectives
+## Obiettivo del Progetto
 
-### Primary Goal
+Creare un sistema completo di dotfiles per macOS che permetta di:
+- Automatizzare completamente il setup di un nuovo Mac
+- Utilizzare GNU Stow per gestione symlink elegante
+- Integrare con l'infrastruttura esistente (Tailscale, Mac Studio, MCP servers)
+- Servire come guida definitiva per l'uso del sistema di Matteo Cervelli
 
-[Describe the main goal of the project - what problem it solves and what value it delivers]
+## Architettura del Sistema
 
-### Secondary Goals
+### Stack Tecnologico
+- **Shell**: ZSH + Oh My Zsh
+- **Package Manager**: Homebrew + Mac App Store
+- **Symlink Manager**: GNU Stow
+- **Version Control**: Git con GPG (1Password)
+- **Development**: HTML/SCSS, JS/TS, React.js/Next.js, Python, SwiftUI, PostgreSQL
+- **Editor**: Cursor (VS Code based) + Xcode
+- **Infrastructure**: Docker, Tailscale, MCP servers
 
-- [Secondary goal 1]
-- [Secondary goal 2]
-- [Secondary goal 3]
+### Struttura Directory Finale
+```
+dotfiles/
+├── packages/               # GNU Stow packages
+│   ├── zsh/               # Shell configuration
+│   ├── git/               # Git settings + templates
+│   ├── ssh/               # SSH config per Tailscale
+│   ├── cursor/            # Cursor/VS Code settings
+│   ├── claude/            # Claude Code configuration
+│   ├── python/            # Python/pyenv setup
+│   ├── node/              # Node.js/nvm setup
+│   └── homebrew/          # Brewfile
+├── scripts/               # Automation scripts
+│   ├── install.sh         # Master installer
+│   ├── scan-system.sh     # Pre-format system scan
+│   ├── setup-homebrew.sh  # Homebrew automation
+│   ├── setup-stow.sh      # GNU Stow management
+│   ├── setup-macos.sh     # macOS system preferences
+│   └── restore-dev.sh     # ~/dev structure recreation
+├── macos/                 # macOS-specific configs
+│   ├── defaults.sh        # System defaults via CLI
+│   ├── dock.sh           # Dock configuration
+│   ├── finder.sh         # Finder preferences
+│   └── security.sh       # Privacy/security settings
+├── templates/             # Project boilerplates
+│   ├── react-project/     # React/Next.js template
+│   ├── python-project/    # Python project template
+│   └── swift-project/     # SwiftUI project template
+├── fonts/                 # Custom fonts
+├── screenshots/           # System configuration screenshots
+├── backups/              # Backup configurations
+└── docs/                 # Documentation
+    ├── PLANNING.md       # This file
+    ├── TASK.md          # Task tracking
+    ├── system-guide.md   # Complete system guide
+    └── troubleshooting.md # Common issues
+```
 
-### Success Indicators
+## Fasi di Implementazione
 
-- **[Metric 1]**: [Specific measurable outcome with target]
-- **[Metric 2]**: [Specific measurable outcome with target]
-- **[Metric 3]**: [Specific measurable outcome with target]
-- **[Metric 4]**: [Specific measurable outcome with target]
+### FASE 1: Setup Documentazione e Struttura ✅
+**Obiettivo**: Creare base documentale e struttura directory
+- [x] Creare docs/PLANNING.md
+- [ ] Creare docs/TASK.md  
+- [ ] Creare struttura directory completa
+- [ ] Aggiornare CLAUDE.md
 
-## 📊 Background & Context
+### FASE 2: Scansione Sistema Attuale (PRE-FORMAT)
+**Obiettivo**: Documentare configurazione esistente prima della formattazione
+- [ ] Script scan Homebrew (`brew list`, `brew list --cask`, `mas list`)
+- [ ] Script scan NPM globals e Python packages
+- [ ] Backup configurazioni shell esistenti (.zshrc, .zsh_aliases, zsh_plugins)
+- [ ] Screenshot configurazioni macOS (Dock, Finder, System Preferences)
+- [ ] Documentare struttura ~/dev per replica
+- [ ] Backup chiavi SSH e configurazioni Tailscale
 
-### Current State
+**DECISIONE RICHIESTA**: Quando facciamo la scansione? Prima di formattare o usando sistema attuale?
 
-- [Description of current situation/problems]
-- [Existing infrastructure/systems]
-- [Current workflows/processes]
-- [Pain points and limitations]
+### FASE 3: Configurazioni Core con GNU Stow
+**Obiettivo**: Implementare configurazioni principali
+- [ ] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
+- [ ] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
+- [ ] packages/cursor/ - Configurazioni Cursor/VS Code
+- [ ] packages/claude/ - Configurazioni Claude Code e MCP
+- [ ] packages/python/ - pyenv + pip configurations
+- [ ] packages/node/ - nvm + npm configurations
+- [ ] packages/ssh/ - SSH config per rete Tailscale
 
-### Target State
+**DECISIONE RICHIESTA**: Quali altre app necessitano configurazioni specifiche?
 
-[Description of desired end state including:]
+### FASE 4: Automazione Homebrew e macOS
+**Obiettivo**: Automatizzare installazione software e configurazioni sistema
+- [ ] Brewfile completo basato su scan sistema
+- [ ] Script macOS defaults (Dock, Finder, Trackpad, etc.)
+- [ ] Integrazione Tailscale automatica
+- [ ] Font management per font personalizzati
+- [ ] Mac App Store automation
+- [ ] Configurazioni Bitdefender/security
 
-- **[Key Feature 1]**: [Description of capability]
-- **[Key Feature 2]**: [Description of capability]
-- **[Key Feature 3]**: [Description of capability]
-- **[Key Feature 4]**: [Description of capability]
+**DECISIONE RICHIESTA**: Preferisci screenshots manuali o script automatico per configurazioni macOS?
 
-### Business Context
+### FASE 5: Infrastruttura e Development Environment  
+**Obiettivo**: Integrare con infrastruttura esistente
+- [ ] Template progetti con boilerplate esistenti
+- [ ] Configurazioni MCP servers
+- [ ] Environment variables template per progetti
+- [ ] Script ricreazione struttura ~/dev
+- [ ] Integrazione con Mac Studio via Tailscale
+- [ ] Setup Docker environment
 
-- Primary users: [Target user personas]
-- Domain: [Business domain/industry]
-- Future integration: [Potential expansions or integrations]
+**DECISIONE RICHIESTA**: Come gestire sync/clone della struttura ~/dev?
 
-## 🔧 Core Use Cases
+### FASE 6: Testing e Documentazione
+**Obiettivo**: Verificare funzionamento e documentare
+- [ ] Guida completa sistema in docs/
+- [ ] Testing install.sh su sistema pulito
+- [ ] Troubleshooting guide comuni
+- [ ] Backup/restore procedures
+- [ ] Workflow per setup nuovo Mac
 
-### UC1: [Use Case Name]
+## Decisioni Tecniche Chiave
 
-**Scenario**: [Brief scenario description]
-**Input**: [What the user provides]
-**Output**: [Expected system response/deliverables]
+### GNU Stow vs Script Tradizionali
+**Decisione**: Utilizzare GNU Stow per gestione symlink elegante
+**Motivo**: Permette gestione modulare e sicura dei dotfiles
 
-- [Specific output 1]
-- [Specific output 2]
-- [Specific output 3]
-- [Specific output 4]
+### Struttura Package
+**Decisione**: Un package per ogni tool/applicazione
+**Benefici**: Modularità, possibilità di enable/disable selettivo
 
-### UC2: [Use Case Name]
+### Brewfile vs Script Separati
+**Decisione**: Brewfile unico con categorie commentate
+**Benefici**: Gestione centralizzata, backup semplice
 
-**Scenario**: [Brief scenario description]
-**Input**: [What the user provides]
-**Output**: [Expected system response/deliverables]
+### Screenshots vs Automation
+**Da decidere**: Approccio per configurazioni macOS GUI
 
-- [Specific output 1]
-- [Specific output 2]
-- [Specific output 3]
-- [Specific output 4]
+## Integration Points
 
-### UC3: [Use Case Name]
+### Con Infrastruttura Esistente
+- **Mac Studio**: Accesso via Tailscale, sync cartelle development
+- **MCP Servers**: Configurazioni per 15+ server esistenti  
+- **Docker Environment**: Integrazione con stack container esistente
+- **Backup Strategy**: 3-tier backup (Time Machine, iCloud, NAS)
 
-**Scenario**: [Brief scenario description]
-**Input**: [What the user provides]
-**Output**: [Expected system response/deliverables]
+### Con Workflow Sviluppo
+- **Project Templates**: Integrazione boilerplate esistenti
+- **Git Workflow**: Templates PR/commit/issues
+- **Environment Management**: .env template per progetti
+- **IDE Integration**: Cursor + Xcode configurations
 
-- [Specific output 1]
-- [Specific output 2]
-- [Specific output 3]
-- [Specific output 4]
+## Maintenance Strategy
 
-### UC4: [Use Case Name]
+### Aggiornamenti Regolari
+- Sync configurazioni tra macchine via git
+- Update Brewfile con nuovi package
+- Backup periodico configurazioni
 
-**Scenario**: [Brief scenario description]
-**Input**: [What the user provides]
-**Output**: [Expected system response/deliverables]
+### Monitoring
+- Health check script per verificare configurazioni
+- Alert per configurazioni drift
+- Automated testing install.sh
 
-- [Specific output 1]
-- [Specific output 2]
-- [Specific output 3]
-- [Specific output 4]
+## Next Steps Immediati
 
-## 🏗️ Technical Assumptions
-
-### Infrastructure
-
-- **Hosting**: [Hosting strategy and platform]
-- **Networking**: [Network architecture and security]
-- **Storage**: [Database and file storage solutions]
-- **[Key Technology 1]**: [Technology choice and rationale]
-- **[Key Technology 2]**: [Technology choice and rationale]
-
-### Data Volume Projections
-
-- **Initial Phase**: [Expected data volume at launch]
-- **Growth Target**: [Target data volume at maturity]
-- **Monthly Growth**: [Expected growth rate]
-- **Retention**: [Data retention and archival strategy]
-
-### Integration Points
-
-- **[System 1]**: [Integration purpose and method]
-- **[System 2]**: [Integration purpose and method]
-- **[System 3]**: [Integration purpose and method]
-- **[System 4]**: [Integration purpose and method]
-- **[System 5]**: [Integration purpose and method]
-
-## 🔄 Data Acquisition Strategy
-
-### Phase 1: [Phase Name] (Timeline)
-
-- [Data source 1 and acquisition method]
-- [Data source 2 and acquisition method]
-- [Data source 3 and acquisition method]
-- [Data source 4 and acquisition method]
-
-### Phase 2: [Phase Name] (Timeline)
-
-- [Data source 1 and acquisition method]
-- [Data source 2 and acquisition method]
-- [Data source 3 and acquisition method]
-- [Data source 4 and acquisition method]
-
-### Phase 3: [Phase Name] (Timeline)
-
-- [Data source 1 and acquisition method]
-- [Data source 2 and acquisition method]
-- [Data source 3 and acquisition method]
-- [Data source 4 and acquisition method]
-
-### Data Quality Controls
-
-- **[Quality Aspect 1]**: [Control mechanism and criteria]
-- **[Quality Aspect 2]**: [Control mechanism and criteria]
-- **[Quality Aspect 3]**: [Control mechanism and criteria]
-- **[Quality Aspect 4]**: [Control mechanism and criteria]
-
+1. **Completare setup documentazione** 
+2. **Decidere timing scansione sistema attuale**
+3. **Creare struttura directory base**
+4. **Iniziare implementazione packages/zsh/**
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: [Date]  
-**Owner**: [Project Owner]  
-**Review Cycle**: [Review frequency and schedule]
-
-## 📝 Template Usage Instructions
-
-### How to Use This Template
-
-1. **Replace all bracketed placeholders** with project-specific information
-2. **Customize sections** based on project type and complexity
-3. **Add or remove use cases** as needed for your specific project
-4. **Adjust timeline estimates** based on team size and complexity
-5. **Modify technical assumptions** to match your technology stack
-6. **Update security considerations** based on your compliance requirements
-
-### Template Sections Explanation
-
-- **Goals & Objectives**: Define what success looks like
-- **Background & Context**: Establish current state and desired future state
-- **Core Use Cases**: Document primary user interactions and expected outcomes
-- **Technical Assumptions**: Document technology choices and constraints
-- **Data Strategy**: Plan for data acquisition and quality management
-- **Implementation Roadmap**: Break down development into manageable phases
-- **Security & Privacy**: Address compliance and protection requirements
-- **Success Criteria**: Define measurable acceptance criteria
-- **Future Evolution**: Plan for long-term growth and enhancement
-
-### Customization Tips
-
-- **For smaller projects**: Remove or simplify the Scale Phase
-- **For data-light projects**: Simplify the Data Acquisition Strategy section
-- **For internal tools**: Focus more on user experience and less on compliance
-- **For customer-facing products**: Emphasize security and scalability sections 
+*Ultimo aggiornamento: 2024-12-06*  
+*Progetto: TMP-dotfiles*  
+*Owner: Matteo Cervelli*

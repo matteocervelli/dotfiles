@@ -1,0 +1,48 @@
+# Stow Local Ignore File
+# Files and directories to ignore when stowing packages
+
+# macOS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Temporary files
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+
+# Backup files
+*.bak
+*.backup
+*.old

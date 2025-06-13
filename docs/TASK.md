@@ -1,371 +1,192 @@
-# [PROJECT NAME] - Granular Task List for Development
-
-## 🔧 1. [Core Component 1] Setup
-
-### 1.1 [Subcomponent 1A]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-### 1.2 [Subcomponent 1B]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-### 1.3 [Subcomponent 1C]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-### 1.4 [Subcomponent 1D]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-## 🐳 2. [Core Component 2] Development
-
-### 2.1 [Subcomponent 2A]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-### 2.2 [Subcomponent 2B]
-
-- [ ] **[Feature/Service 1]**: [Description and purpose]
-- [ ] **[Feature/Service 2]**: [Description and purpose]
-- [ ] **[Feature/Service 3]**: [Description and purpose]
-- [ ] **[Feature/Service 4]**: [Description and purpose]
-- [ ] **[Feature/Service 5]**: [Description and purpose]
-
-### 2.3 [Subcomponent 2C]
-
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-- [ ] [Task description with specific deliverable]
-
-## 📧 3. [Core Component 3] Integration
-
-### 3.1 [Integration Component A]
-
-- [ ] [Integration task with specific system/service]
-- [ ] [Authentication/authorization setup]
-- [ ] [Rate limiting and error handling]
-- [ ] [Data synchronization mechanism]
-- [ ] [Monitoring and logging setup]
-
-### 3.2 [Integration Component B]
-
-- [ ] [Data processing task]
-- [ ] [Content extraction and parsing]
-- [ ] [Data transformation and validation]
-- [ ] [Storage and indexing]
-- [ ] [Quality control and filtering]
-
-### 3.3 [Integration Component C]
-
-- [ ] [Feature extraction task]
-- [ ] [Data enrichment process]
-- [ ] [Deduplication and matching]
-- [ ] [Confidence scoring system]
-- [ ] [Manual review interface]
-
-## 👥 4. [Core Component 4] Data Management
-
-### 4.1 [Data Component A]
-
-- [ ] [Database schema design]
-- [ ] [Core entity fields and relationships]
-- [ ] [Data relationships and constraints]
-- [ ] [Timeline and history tracking]
-- [ ] [Automated scoring/classification]
-
-### 4.2 [Data Component B]
-
-- [ ] [Secondary entity management]
-- [ ] [External data enrichment]
-- [ ] [Hierarchical data structure]
-- [ ] [Automated categorization]
-- [ ] [Monitoring and alerting]
-
-### 4.3 [Data Component C]
-
-- [ ] [Data synchronization features]
-- [ ] [Import/export functionality]
-- [ ] [Backup and recovery system]
-- [ ] [Conflict resolution mechanism]
-- [ ] [External API access]
-
-## 🎙️ 5. [Core Component 5] Processing Engine
-
-### 5.1 [Processing Component A]
-
-- [ ] [Input handling and validation]
-- [ ] [Format conversion and standardization]
-- [ ] [Pre-processing and optimization]
-- [ ] [Segmentation and analysis]
-- [ ] [Timestamp and metadata tracking]
-
-### 5.2 [Processing Component B]
-
-- [ ] [Core processing engine setup]
-- [ ] [Batch processing capabilities]
-- [ ] [Multi-language support]
-- [ ] [Quality scoring and validation]
-- [ ] [Post-processing and correction]
-
-### 5.3 [Processing Component C]
-
-- [ ] [Advanced analysis features]
-- [ ] [Pattern recognition and classification]
-- [ ] [Automated labeling system]
-- [ ] [Timeline and sequence tracking]
-- [ ] [Export and formatting options]
-
-### 5.4 [Processing Component D]
-
-- [ ] [Intelligence extraction features]
-- [ ] [Key information identification]
-- [ ] [Suggestion generation system]
-- [ ] [Summary and reporting]
-- [ ] [Integration with external systems]
-
-## 📊 6. [Core Component 6] Reporting & Analytics
-
-### 6.1 [Reporting Component A]
-
-- [ ] [Template system development]
-- [ ] [Customizable report sections]
-- [ ] [Dynamic variable system]
-- [ ] [Multi-format support]
-- [ ] [Export functionality]
-
-### 6.2 [Reporting Component B]
-
-- [ ] [Content generation engine]
-- [ ] [Automated summarization]
-- [ ] [Analysis and insights extraction]
-- [ ] [Risk and opportunity identification]
-- [ ] [Recommendation system]
-
-### 6.3 [Reporting Component C]
-
-- [ ] [Distribution system]
-- [ ] [Storage and archival]
-- [ ] [Search and filtering interface]
-- [ ] [Analytics and tracking]
-- [ ] [Performance monitoring]
-
-## 📰 7. [Core Component 7] Content Management
-
-### 7.1 [Content Component A]
-
-- [ ] [Content creation interface]
-- [ ] [Template library system]
-- [ ] [Preview and validation]
-- [ ] [Version control system]
-- [ ] [Scheduling and automation]
-
-### 7.2 [Content Component B]
-
-- [ ] [Content conversion engine]
-- [ ] [Styling and design system]
-- [ ] [Media optimization]
-- [ ] [Link management and tracking]
-- [ ] [Responsive design implementation]
-
-### 7.3 [Content Component C]
-
-- [ ] [Distribution system]
-- [ ] [Audience segmentation]
-- [ ] [A/B testing framework]
-- [ ] [Analytics and tracking]
-- [ ] [Subscription management]
-
-## 🔔 8. [Core Component 8] Notification System
-
-### 8.1 [Notification Component A]
-
-- [ ] [Intelligent suggestion algorithm]
-- [ ] [Scoring and prioritization system]
-- [ ] [Contextual recommendation engine]
-- [ ] [Template and messaging system]
-- [ ] [Effectiveness tracking]
-
-### 8.2 [Notification Component B]
-
-- [ ] [Scheduling and delivery system]
-- [ ] [Multi-channel support]
-- [ ] [Personalization engine]
-- [ ] [User preference management]
-- [ ] [Response analytics]
-
-### 8.3 [Notification Component C]
-
-- [ ] [Intelligence monitoring system]
-- [ ] [External data source integration]
-- [ ] [Event detection and alerting]
-- [ ] [Automated notification triggers]
-- [ ] [Change tracking and updates]
-
-## 🔗 9. [Core Component 9] External Integration
-
-### 9.1 [External Integration A]
-
-- [ ] [External service setup and configuration]
-- [ ] [Authentication and security]
-- [ ] [API integration and webhooks]
-- [ ] [Permission and access management]
-- [ ] [Error handling and recovery]
-
-### 9.2 [External Integration B]
-
-- [ ] [Command interface development]
-- [ ] [Interactive features]
-- [ ] [User experience optimization]
-- [ ] [Auto-completion and help system]
-- [ ] [Response formatting]
-
-### 9.3 [External Integration C]
-
-- [ ] [Proactive notification system]
-- [ ] [Automated briefing and updates]
-- [ ] [Reminder and follow-up system]
-- [ ] [Alert and notification management]
-- [ ] [Task and deadline tracking]
-
-## 🏗️ 10. [Core Component 10] Infrastructure & Operations
-
-### 10.1 [Infrastructure Component A]
-
-- [ ] [Database optimization and tuning]
-- [ ] [Performance indexing]
-- [ ] [Backup and recovery system]
-- [ ] [Connection management]
-- [ ] [Query optimization]
-
-### 10.2 [Infrastructure Component B]
-
-- [ ] [Monitoring and metrics system]
-- [ ] [Dashboard and visualization]
-- [ ] [Alert and notification system]
-- [ ] [Log aggregation and analysis]
-- [ ] [Resource usage tracking]
-
-### 10.3 [Infrastructure Component C]
-
-- [ ] [Security implementation]
-- [ ] [API protection and rate limiting]
-- [ ] [Audit logging system]
-- [ ] [Compliance tools and processes]
-- [ ] [Data retention policies]
-
-## 📈 11. [Core Component 11] Analytics & Business Intelligence
-
-### 11.1 [Analytics Component A]
-
-- [ ] [Usage tracking and metrics]
-- [ ] [Performance monitoring]
-- [ ] [User behavior analysis]
-- [ ] [Success rate monitoring]
-- [ ] [Cost tracking and optimization]
-
-### 11.2 [Analytics Component B]
-
-- [ ] [Business intelligence dashboard]
-- [ ] [Pattern analysis and insights]
-- [ ] [Engagement metrics]
-- [ ] [ROI calculation and reporting]
-- [ ] [Predictive analytics]
+# Dotfiles Project - Task List
+
+## Status Overview
+- 🟡 **In Progress**: FASE 1 - Setup Documentazione e Struttura
+- ⚪ **Pending**: FASE 2-6 - Implementazione e Testing
+
+## FASE 1: Setup Documentazione e Struttura
+**Obiettivo**: Creare base documentale e struttura directory
+
+- [x] **1.1** Creare docs/PLANNING.md con piano dettagliato
+- [x] **1.2** Creare docs/TASK.md con lista task (questo file)  
+- [ ] **1.3** Creare struttura directory completa
+- [ ] **1.4** Aggiornare CLAUDE.md con istruzioni specifiche progetto
+
+## FASE 2: Scansione Sistema Attuale (PRE-FORMAT)
+**Obiettivo**: Documentare configurazione esistente prima della formattazione
+
+### 2.1 Backup Configurazioni Shell
+- [ ] **2.1.1** Backup .zshrc esistente
+- [ ] **2.1.2** Backup .zsh_aliases esistenti  
+- [ ] **2.1.3** Backup zsh_plugins/functions esistenti
+- [ ] **2.1.4** Documentare Oh My Zsh themes/plugins in uso
+
+### 2.2 Scan Software Installato
+- [ ] **2.2.1** Script scan Homebrew (`brew list --formula`)
+- [ ] **2.2.2** Script scan Homebrew Casks (`brew list --cask`)
+- [ ] **2.2.3** Script scan Mac App Store (`mas list`)
+- [ ] **2.2.4** Script scan NPM globals (`npm list -g --depth=0`)
+- [ ] **2.2.5** Script scan Python packages (`pip list`)
+- [ ] **2.2.6** Documentare versioni pyenv/nvm in uso
+
+### 2.3 Configurazioni Sistema
+- [ ] **2.3.1** Screenshot Dock (posizione, dimensione, apps)
+- [ ] **2.3.2** Screenshot Finder (sidebar, preferences)
+- [ ] **2.3.3** Screenshot System Preferences principali
+- [ ] **2.3.4** Backup configurazioni Tailscale
+- [ ] **2.3.5** Backup chiavi SSH
+- [ ] **2.3.6** Documentare font installati
+
+### 2.4 Development Environment  
+- [ ] **2.4.1** Documentare struttura ~/dev
+- [ ] **2.4.2** Lista progetti attivi da preservare
+- [ ] **2.4.3** Backup configurazioni Cursor/VS Code
+- [ ] **2.4.4** Backup configurazioni Claude Code
+- [ ] **2.4.5** Documentare MCP servers configurati
+
+**🔴 DECISIONE RICHIESTA**: Quando facciamo la scansione? Prima di formattare o usando sistema attuale?
+
+## FASE 3: Configurazioni Core con GNU Stow
+**Obiettivo**: Implementare configurazioni principali
+
+### 3.1 Shell Configuration (ZSH)
+- [ ] **3.1.1** Creare packages/zsh/.zshrc con Oh My Zsh
+- [ ] **3.1.2** Migrare .zsh_aliases esistenti  
+- [ ] **3.1.3** Convertire zsh_plugins in .zsh_functions
+- [ ] **3.1.4** Configurare tema e plugin Oh My Zsh preferiti
+- [ ] **3.1.5** Testing configurazione ZSH
+
+### 3.2 Git Configuration
+- [ ] **3.2.1** Creare packages/git/.gitconfig (user, GPG 1Password)
+- [ ] **3.2.2** Creare packages/git/.gitignore_global estensivo
+- [ ] **3.2.3** Aggiungere templates commit/PR/issues
+- [ ] **3.2.4** Configurare Git aliases utili
+- [ ] **3.2.5** Testing configurazione Git
+
+### 3.3 Development Tools
+- [ ] **3.3.1** Creare packages/python/ con pyenv configs
+- [ ] **3.3.2** Creare packages/node/ con nvm configs
+- [ ] **3.3.3** Creare packages/cursor/ con settings Cursor
+- [ ] **3.3.4** Creare packages/claude/ con Claude Code configs
+- [ ] **3.3.5** Testing configurazioni development
+
+### 3.4 SSH & Network
+- [ ] **3.4.1** Creare packages/ssh/.ssh/config per Tailscale
+- [ ] **3.4.2** Configurare connessioni automatiche
+- [ ] **3.4.3** Testing connessioni SSH
+
+**🔴 DECISIONE RICHIESTA**: Quali altre app necessitano configurazioni specifiche?
+
+## FASE 4: Automazione Homebrew e macOS
+**Obiettivo**: Automatizzare installazione software e configurazioni sistema
+
+### 4.1 Homebrew Management
+- [ ] **4.1.1** Creare Brewfile completo da scan sistema
+- [ ] **4.1.2** Organizzare Brewfile per categorie (dev, apps, fonts)
+- [ ] **4.1.3** Creare script brewup personalizzato
+- [ ] **4.1.4** Testing installazione Brewfile
+
+### 4.2 macOS System Configuration
+- [ ] **4.2.1** Creare macos/dock.sh (posizione, dimensione, apps)
+- [ ] **4.2.2** Creare macos/finder.sh (hidden files, extensions, sidebar)
+- [ ] **4.2.3** Creare macos/trackpad.sh (velocità, gesture)
+- [ ] **4.2.4** Creare macos/security.sh (firewall, privacy)
+- [ ] **4.2.5** Creare macos/energy.sh (sleep, screensaver)
+- [ ] **4.2.6** Testing configurazioni macOS
+
+### 4.3 Font & App Management
+- [ ] **4.3.1** Setup fonts/ directory per font personalizzati
+- [ ] **4.3.2** Script installazione Mac App Store apps
+- [ ] **4.3.3** Configurazioni Bitdefender (se automatizzabile)
+- [ ] **4.3.4** Testing installazione completa
+
+**🔴 DECISIONE RICHIESTA**: Preferisci screenshots manuali o script automatico per configurazioni macOS?
+
+## FASE 5: Infrastruttura e Development Environment
+**Obiettivo**: Integrare con infrastruttura esistente
+
+### 5.1 Project Templates
+- [ ] **5.1.1** Migrare boilerplate React/Next.js esistenti
+- [ ] **5.1.2** Creare template Python project
+- [ ] **5.1.3** Creare template SwiftUI project  
+- [ ] **5.1.4** Script generazione progetti da template
+
+### 5.2 Infrastructure Integration
+- [ ] **5.2.1** Configurazioni MCP servers (15+ server)
+- [ ] **5.2.2** Template environment variables per progetti
+- [ ] **5.2.3** Script connessione Mac Studio via Tailscale
+- [ ] **5.2.4** Setup Docker environment integrato
+
+### 5.3 Development Environment Recreation
+- [ ] **5.3.1** Script ricreazione struttura ~/dev
+- [ ] **5.3.2** Automazione clone/sync cartelle principali
+- [ ] **5.3.3** Setup workspace Cursor per progetti
+- [ ] **5.3.4** Testing environment completo
+
+**🔴 DECISIONE RICHIESTA**: Come gestire sync/clone della struttura ~/dev?
+
+## FASE 6: Testing e Documentazione
+**Obiettivo**: Verificare funzionamento e documentare
+
+### 6.1 Master Installation Script
+- [ ] **6.1.1** Creare scripts/install.sh master installer
+- [ ] **6.1.2** Integrare tutti gli script in workflow unico
+- [ ] **6.1.3** Aggiungere logging e error handling
+- [ ] **6.1.4** Testing install.sh su sistema pulito
+
+### 6.2 Documentation
+- [ ] **6.2.1** Creare docs/system-guide.md (guida completa sistema)
+- [ ] **6.2.2** Creare docs/troubleshooting.md (problemi comuni)
+- [ ] **6.2.3** Documentare workflow setup nuovo Mac
+- [ ] **6.2.4** Creare README.md finale del progetto
+
+### 6.3 Maintenance & Backup
+- [ ] **6.3.1** Script backup periodico configurazioni
+- [ ] **6.3.2** Health check script per verifiche
+- [ ] **6.3.3** Automated testing per install.sh
+- [ ] **6.3.4** Procedure sync tra macchine
+
+## Milestone Tracking
+
+### 🎯 Milestone 1: Documentation Complete
+**Target**: Fine Fase 1
+**Criteri**: Tutta la documentazione base creata, struttura directory pronta
+
+### 🎯 Milestone 2: System Scanned  
+**Target**: Fine Fase 2
+**Criteri**: Sistema attuale completamente documentato e backed up
+
+### 🎯 Milestone 3: Core Configs Ready
+**Target**: Fine Fase 3  
+**Criteri**: Configurazioni principali (ZSH, Git, Dev tools) funzionanti
+
+### 🎯 Milestone 4: Automation Complete
+**Target**: Fine Fase 4
+**Criteri**: Installazione software e configurazioni macOS automatizzate
+
+### 🎯 Milestone 5: Infrastructure Integrated
+**Target**: Fine Fase 5
+**Criteri**: Integrazione completa con infrastruttura esistente
+
+### 🎯 Milestone 6: Production Ready
+**Target**: Fine Fase 6
+**Criteri**: Sistema testato e documentato, pronto per uso su nuovo Mac
+
+## Notes & Decisions Log
+
+### Decisioni Confermate
+- ✅ **GNU Stow**: Confermato per gestione symlink
+- ✅ **Oh My Zsh**: Framework shell preferito
+- ✅ **Structure**: packages/ per GNU Stow confirmed
+
+### Decisioni Pending
+- 🔴 **Timing scan sistema**: Prima o dopo formattazione?
+- 🔴 **macOS configs**: Screenshots vs script automatici?
+- 🔴 **~/dev sync**: Strategia sync/clone cartelle development?
+- 🔴 **Additional apps**: Altre app che necessitano configurazioni?
 
 ---
 
-## 🚀 Implementation Prioritization
-
-**Week 1-2**: [Phase 1 Components]
-**Week 3-4**: [Phase 2 Components]
-**Week 5-6**: [Phase 3 Components]
-**Week 7-8**: [Phase 4 Components]
-**Week 9-10**: [Phase 5 Components]
-**Week 11-12**: [Phase 6 Components]
-
-## 📝 Template Usage Instructions
-
-### How to Use This Template
-
-1. **Replace bracketed placeholders** with your specific project components and tasks
-2. **Customize component names** to match your project architecture
-3. **Adjust task granularity** based on team size and project complexity
-4. **Modify timeline estimates** according to your development capacity
-5. **Add or remove sections** based on project requirements
-6. **Update prioritization** to match your project's critical path
-
-### Task Writing Guidelines
-
-- **Be Specific**: Each task should have a clear, measurable deliverable
-- **Include Acceptance Criteria**: What defines "done" for each task
-- **Consider Dependencies**: Order tasks based on technical dependencies
-- **Estimate Effort**: Include time estimates for planning purposes
-- **Assign Ownership**: Identify who is responsible for each task
-
-### Customization by Project Type
-
-#### For Web Applications
-- Emphasize frontend/backend separation
-- Include UI/UX design tasks
-- Add deployment and DevOps tasks
-- Include testing and QA processes
-
-#### For Data Projects
-- Focus on data pipeline tasks
-- Include data quality and validation
-- Add model training and evaluation
-- Include data governance tasks
-
-#### For API Projects
-- Emphasize endpoint design and documentation
-- Include authentication and authorization
-- Add rate limiting and monitoring
-- Include SDK and client library development
-
-#### For Mobile Applications
-- Include platform-specific tasks (iOS/Android)
-- Add app store submission processes
-- Include device testing and compatibility
-- Add push notification systems
-
-### Task Status Tracking
-
-- **Not Started**: [ ] Task description
-- **In Progress**: [🔄] Task description
-- **Completed**: [✅] Task description
-- **Blocked**: [🚫] Task description
-- **Deferred**: [⏸️] Task description
-
-### Dependencies and Relationships
-
-Use these markers to indicate task relationships:
-- **Prerequisite**: ⬅️ Must complete before starting
-- **Parallel**: ↔️ Can work on simultaneously
-- **Follow-up**: ➡️ Should start after completion
-- **Optional**: ❓ Nice to have but not critical
-
----
-
-**Template Version**: 1.0  
-**Last Updated**: [Date]  
-**Project Owner**: [Owner Name]  
-**Review Schedule**: [Review frequency] 
+*Creato*: 2024-12-06  
+*Ultima modifica*: 2024-12-06  
+*Status*: In Progress - Fase 1
