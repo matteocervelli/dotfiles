@@ -1,0 +1,299 @@
+# =============================================================================
+# Python Startup Configuration - Matteo Cervelli's dotfiles
+# =============================================================================
+# This file is loaded automatically in interactive Python sessions
+# when PYTHONSTARTUP environment variable points to it
+
+import sys
+import os
+import atexit
+import readline
+import rlcompleter
+
+# =============================================================================
+# Enhanced Python REPL
+# =============================================================================
+
+# Enable tab completion
+readline.parse_and_bind("tab: complete")
+
+# History file location
+history_path = os.path.expanduser("~/.python_history")
+
+# Load history if it exists
+def load_history():
+    try:
+        readline.read_history_file(history_path)
+    except (IOError, OSError):
+        pass
+
+# Save history on exit
+def save_history():
+    try:
+        readline.write_history_file(history_path)
+    except (IOError, OSError):
+        pass
+
+# Register history functions
+load_history()
+atexit.register(save_history)
+
+# Limit history size
+readline.set_history_length(1000)
+
+# =============================================================================
+# Useful imports for interactive sessions
+# =============================================================================
+
+# Standard library
+import json
+import re
+import datetime
+from pathlib import Path
+from collections import defaultdict, Counter
+from itertools import islice
+
+# Try to import commonly used third-party libraries
+try:
+    import requests
+except ImportError:
+    pass
+
+try:
+    import numpy as np
+except ImportError:
+    pass
+
+try:
+    import pandas as pd
+except ImportError:
+    pass
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
+
+# =============================================================================
+# Utility functions
+# =============================================================================
+
+def pp(obj):
+    """Pretty print an object"""
+    import pprint
+    pprint.pprint(obj)
+
+def ls(path="."):
+    """List directory contents"""
+    path = Path(path)
+    if path.is_dir():
+        for item in sorted(path.iterdir()):
+            print(f"{'/' if item.is_dir() else ' '} {item.name}")
+    else:
+        print(f"{path} is not a directory")
+
+def cat(file_path):
+    """Display file contents"""
+    try:
+        with open(file_path, 'r') as f:
+            print(f.read())
+    except Exception as e:
+        print(f"Error reading {file_path}: {e}")
+
+def sizeof(obj):
+    """Get size of object in bytes"""
+    return sys.getsizeof(obj)
+
+def env(var=None):
+    """Get environment variable or all environment variables"""
+    if var:
+        return os.environ.get(var)
+    else:
+        return dict(os.environ)
+
+def cls():
+    """Clear the screen"""
+    os.system('clear' if os.name == 'posix' else 'cls')
+
+def pwd():
+    """Print working directory"""
+    return os.getcwd()
+
+def cd(path=None):
+    """Change directory"""
+    if path is None:
+        path = os.path.expanduser("~")
+    try:
+        os.chdir(path)
+        print(f"Changed to: {os.getcwd()}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+# =============================================================================
+# JSON utilities
+# =============================================================================
+
+def json_load(file_path):
+    """Load JSON from file"""
+    with open(file_path, 'r') as f:
+        return json.load(f)
+
+def json_save(obj, file_path, indent=2):
+    """Save object as JSON to file"""
+    with open(file_path, 'w') as f:
+        json.dump(obj, f, indent=indent)
+
+def json_pretty(obj):
+    """Pretty print JSON"""
+    print(json.dumps(obj, indent=2))
+
+# =============================================================================
+# Time utilities
+# =============================================================================
+
+def now():
+    """Get current datetime"""
+    return datetime.datetime.now()
+
+def today():
+    """Get today's date"""
+    return datetime.date.today()
+
+def timestamp():
+    """Get current timestamp"""
+    return datetime.datetime.now().timestamp()
+
+# =============================================================================
+# Development helpers
+# =============================================================================
+
+def reload_module(module):
+    """Reload a module"""
+    import importlib
+    return importlib.reload(module)
+
+def source(file_path):
+    """Execute Python file in current namespace"""
+    with open(file_path, 'r') as f:
+        exec(f.read(), globals())
+
+def timeit(stmt, setup='pass', number=1000000):
+    """Time execution of a statement"""
+    import timeit as _timeit
+    return _timeit.timeit(stmt, setup, number=number)
+
+def profile(func):
+    """Simple profiling decorator"""
+    import time
+    import functools
+    
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+# =============================================================================
+# System information
+# =============================================================================
+
+def python_info():
+    """Display Python system information"""
+    print(f"Python {sys.version}")
+    print(f"Platform: {sys.platform}")
+    print(f"Executable: {sys.executable}")
+    print(f"Path: {sys.path}")
+
+def memory_usage():
+    """Display memory usage (if psutil is available)"""
+    try:
+        import psutil
+        process = psutil.Process(os.getpid())
+        memory_info = process.memory_info()
+        print(f"RSS: {memory_info.rss / 1024 / 1024:.2f} MB")
+        print(f"VMS: {memory_info.vms / 1024 / 1024:.2f} MB")
+    except ImportError:
+        print("psutil not available for memory usage")
+
+# =============================================================================
+# Math utilities
+# =============================================================================
+
+def factorial(n):
+    """Calculate factorial"""
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+def fibonacci(n):
+    """Generate Fibonacci sequence up to n terms"""
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    fib = [0, 1]
+    for i in range(2, n):
+        fib.append(fib[i-1] + fib[i-2])
+    return fib
+
+# =============================================================================
+# String utilities
+# =============================================================================
+
+def lorem(words=50):
+    """Generate lorem ipsum text"""
+    lorem_words = [
+        "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing",
+        "elit", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore",
+        "et", "dolore", "magna", "aliqua", "enim", "ad", "minim", "veniam",
+        "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "aliquip",
+        "ex", "ea", "commodo", "consequat", "duis", "aute", "irure", "in",
+        "reprehenderit", "voluptate", "velit", "esse", "cillum", "fugiat", "nulla",
+        "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident"
+    ]
+    
+    import random
+    selected_words = [random.choice(lorem_words) for _ in range(words)]
+    return " ".join(selected_words).capitalize() + "."
+
+# =============================================================================
+# Welcome message
+# =============================================================================
+
+def show_welcome():
+    """Display welcome message with available utilities"""
+    print("=" * 60)
+    print("Python Enhanced REPL - Matteo Cervelli's dotfiles")
+    print("=" * 60)
+    print("Available utilities:")
+    print("  File ops: ls(), cat(), pwd(), cd()")
+    print("  JSON:     json_load(), json_save(), json_pretty()")
+    print("  Time:     now(), today(), timestamp()")
+    print("  Dev:      reload_module(), source(), timeit(), profile()")
+    print("  System:   python_info(), memory_usage(), env()")
+    print("  Math:     factorial(), fibonacci()")
+    print("  String:   lorem()")
+    print("  General:  pp(), sizeof(), cls()")
+    print("=" * 60)
+
+# Only show welcome in interactive mode
+if hasattr(sys, 'ps1'):
+    show_welcome()
+
+# =============================================================================
+# Cleanup
+# =============================================================================
+
+# Clean up namespace to avoid polluting the REPL
+del sys, os, atexit, readline, rlcompleter, history_path
+del load_history, save_history, show_welcome
+
+# =============================================================================
+# End of Python startup configuration
+# =============================================================================

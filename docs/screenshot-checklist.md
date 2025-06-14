@@ -6,7 +6,7 @@
 
 ### 1. General (Generale)
 - [ ] **Appearance**: Light/Dark mode, accent color, highlight color
-- [ ] **Sidebar**: Icon size, automatically hide/show menu bar
+- [ ] **Menu bar**: Automatically hide and show menu bar
 - [ ] **Show scroll bars**: Always/When scrolling/Automatically
 - [ ] **Click in scroll bar**: Jump to next page/Jump to spot clicked
 - [ ] **Default web browser**: Selection
@@ -192,7 +192,7 @@
 
 ### 21. Finder
 - [ ] **General**: New Finder windows show, spring-loaded folders
-- [ ] **Sidebar**: All enabled/disabled items
+- [ ] **Sidebar**: All enabled/disabled items, sidebar icon size
 - [ ] **Advanced**: Show all filename extensions, show warning before changing extension, show warning before removing from iCloud Drive, when performing a search
 - [ ] **View Options**: Icon size, grid spacing, text size, label position, show item info, show icon preview, arrange by, sort by
 - [ ] **Toolbar**: Customized toolbar items
@@ -307,7 +307,7 @@
 ## 📸 SCREENSHOT ORGANIZATION
 
 ### Folder Structure:
-```
+```bash
 screenshots/
 ├── system-preferences/
 │   ├── general/

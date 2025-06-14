@@ -1,0 +1,7 @@
+# Default Node.js version for nvm
+# This file specifies the default Node.js version to use
+# Usage: nvm use (will use this version when in this directory)
+
+# Node.js LTS version (Long Term Support)
+# Update this periodically to the latest LTS version
+v20.10.0

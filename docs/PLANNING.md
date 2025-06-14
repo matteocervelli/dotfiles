@@ -3,6 +3,7 @@
 ## Obiettivo del Progetto
 
 Creare un sistema completo di dotfiles per macOS che permetta di:
+
 - Automatizzare completamente il setup di un nuovo Mac
 - Utilizzare GNU Stow per gestione symlink elegante
 - Integrare con l'infrastruttura esistente (Tailscale, Mac Studio, MCP servers)
@@ -11,6 +12,7 @@ Creare un sistema completo di dotfiles per macOS che permetta di:
 ## Architettura del Sistema
 
 ### Stack Tecnologico
+
 - **Shell**: ZSH + Oh My Zsh
 - **Package Manager**: Homebrew + Mac App Store
 - **Symlink Manager**: GNU Stow
@@ -20,7 +22,8 @@ Creare un sistema completo di dotfiles per macOS che permetta di:
 - **Infrastructure**: Docker, Tailscale, MCP servers
 
 ### Struttura Directory Finale
-```
+
+```bash
 dotfiles/
 ├── packages/               # GNU Stow packages
 │   ├── zsh/               # Shell configuration
@@ -60,25 +63,31 @@ dotfiles/
 ## Fasi di Implementazione
 
 ### FASE 1: Setup Documentazione e Struttura ✅
+
 **Obiettivo**: Creare base documentale e struttura directory
+
 - [x] Creare docs/PLANNING.md
-- [ ] Creare docs/TASK.md  
-- [ ] Creare struttura directory completa
-- [ ] Aggiornare CLAUDE.md
+- [x] Creare docs/TASK.md  
+- [x] Creare struttura directory completa
+- [x] Aggiornare CLAUDE.md
 
-### FASE 2: Scansione Sistema Attuale (PRE-FORMAT)
+### FASE 2: Scansione Sistema Attuale ✅
+
 **Obiettivo**: Documentare configurazione esistente prima della formattazione
-- [ ] Script scan Homebrew (`brew list`, `brew list --cask`, `mas list`)
-- [ ] Script scan NPM globals e Python packages
-- [ ] Backup configurazioni shell esistenti (.zshrc, .zsh_aliases, zsh_plugins)
-- [ ] Screenshot configurazioni macOS (Dock, Finder, System Preferences)
-- [ ] Documentare struttura ~/dev per replica
-- [ ] Backup chiavi SSH e configurazioni Tailscale
 
-**DECISIONE RICHIESTA**: Quando facciamo la scansione? Prima di formattare o usando sistema attuale?
+- [x] Script scan Homebrew (`brew list`, `brew list --cask`, `mas list`)
+- [x] Script scan NPM globals e Python packages
+- [x] Backup configurazioni shell esistenti (.zshrc, .zsh_aliases, zsh_plugins)
+- [x] Screenshot configurazioni macOS (Dock, Finder, System Preferences) - Completato e documentato in docs/screenshot-list-exact.md
+- [x] Documentare struttura ~/dev per replica
+- [x] Backup chiavi SSH e configurazioni Tailscale
+- [x] Creato documento preferences-analysis.md con analisi dettagliata screenshot
+- [x] Identificate priorità per implementazione configurazioni
 
-### FASE 3: Configurazioni Core con GNU Stow
+### FASE 3: Configurazioni Core con GNU Stow 🟡 IN PROGRESS
+
 **Obiettivo**: Implementare configurazioni principali
+
 - [ ] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
 - [ ] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
 - [ ] packages/cursor/ - Configurazioni Cursor/VS Code
@@ -90,7 +99,9 @@ dotfiles/
 **DECISIONE RICHIESTA**: Quali altre app necessitano configurazioni specifiche?
 
 ### FASE 4: Automazione Homebrew e macOS
+
 **Obiettivo**: Automatizzare installazione software e configurazioni sistema
+
 - [ ] Brewfile completo basato su scan sistema
 - [ ] Script macOS defaults (Dock, Finder, Trackpad, etc.)
 - [ ] Integrazione Tailscale automatica
@@ -101,7 +112,9 @@ dotfiles/
 **DECISIONE RICHIESTA**: Preferisci screenshots manuali o script automatico per configurazioni macOS?
 
 ### FASE 5: Infrastruttura e Development Environment  
+
 **Obiettivo**: Integrare con infrastruttura esistente
+
 - [ ] Template progetti con boilerplate esistenti
 - [ ] Configurazioni MCP servers
 - [ ] Environment variables template per progetti
@@ -112,7 +125,9 @@ dotfiles/
 **DECISIONE RICHIESTA**: Come gestire sync/clone della struttura ~/dev?
 
 ### FASE 6: Testing e Documentazione
+
 **Obiettivo**: Verificare funzionamento e documentare
+
 - [ ] Guida completa sistema in docs/
 - [ ] Testing install.sh su sistema pulito
 - [ ] Troubleshooting guide comuni
@@ -122,29 +137,35 @@ dotfiles/
 ## Decisioni Tecniche Chiave
 
 ### GNU Stow vs Script Tradizionali
+
 **Decisione**: Utilizzare GNU Stow per gestione symlink elegante
 **Motivo**: Permette gestione modulare e sicura dei dotfiles
 
 ### Struttura Package
+
 **Decisione**: Un package per ogni tool/applicazione
 **Benefici**: Modularità, possibilità di enable/disable selettivo
 
 ### Brewfile vs Script Separati
+
 **Decisione**: Brewfile unico con categorie commentate
 **Benefici**: Gestione centralizzata, backup semplice
 
 ### Screenshots vs Automation
+
 **Da decidere**: Approccio per configurazioni macOS GUI
 
 ## Integration Points
 
 ### Con Infrastruttura Esistente
+
 - **Mac Studio**: Accesso via Tailscale, sync cartelle development
 - **MCP Servers**: Configurazioni per 15+ server esistenti  
 - **Docker Environment**: Integrazione con stack container esistente
 - **Backup Strategy**: 3-tier backup (Time Machine, iCloud, NAS)
 
 ### Con Workflow Sviluppo
+
 - **Project Templates**: Integrazione boilerplate esistenti
 - **Git Workflow**: Templates PR/commit/issues
 - **Environment Management**: .env template per progetti
@@ -153,24 +174,27 @@ dotfiles/
 ## Maintenance Strategy
 
 ### Aggiornamenti Regolari
+
 - Sync configurazioni tra macchine via git
 - Update Brewfile con nuovi package
 - Backup periodico configurazioni
 
 ### Monitoring
+
 - Health check script per verificare configurazioni
 - Alert per configurazioni drift
 - Automated testing install.sh
 
 ## Next Steps Immediati
 
-1. **Completare setup documentazione** 
+1. **Completare setup documentazione**
 2. **Decidere timing scansione sistema attuale**
 3. **Creare struttura directory base**
 4. **Iniziare implementazione packages/zsh/**
 
 ---
 
-*Ultimo aggiornamento: 2024-12-06*  
+*Ultimo aggiornamento: 2024-12-14*  
 *Progetto: TMP-dotfiles*  
-*Owner: Matteo Cervelli*
+*Owner: Matteo Cervelli*  
+*Status: FASE 2 ✅ completata - FASE 3 🟡 avviata*

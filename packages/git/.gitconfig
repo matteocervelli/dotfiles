@@ -1,0 +1,234 @@
+# =============================================================================
+# Git Configuration - Matteo Cervelli's dotfiles
+# =============================================================================
+
+[user]
+    name = Matteo Cervelli
+    email = matteo@cervelli.dev
+    # Use 1Password for GPG signing
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIImBJf5ynSGcXcGtXp2XAO9Lh/4JO5LZgp2cUb7Wx5bM
+
+[core]
+    editor = cursor --wait
+    autocrlf = input
+    excludesfile = ~/.gitignore_global
+    pager = less -F -X
+    precomposeunicode = true
+    quotepath = false
+
+[init]
+    defaultBranch = main
+
+[push]
+    default = simple
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+
+[fetch]
+    prune = true
+
+[merge]
+    tool = vscode
+    conflictstyle = diff3
+
+[mergetool "vscode"]
+    cmd = cursor --wait $MERGED
+
+[diff]
+    tool = vscode
+    colorMoved = default
+
+[difftool "vscode"]
+    cmd = cursor --wait --diff $LOCAL $REMOTE
+
+[commit]
+    # Sign commits with SSH key via 1Password
+    gpgsign = true
+
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    program = /Applications/1Password\ 7\ -\ Password\ Manager.app/Contents/MacOS/op-ssh-sign
+
+[tag]
+    sort = version:refname
+    gpgSign = true
+
+# =============================================================================
+# Aliases
+# =============================================================================
+
+[alias]
+    # Basic shortcuts
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    ca = commit -a
+    cm = commit -m
+    cam = commit -am
+    
+    # Advanced shortcuts
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    visual = !gitk
+    
+    # Logging
+    lg = log --oneline --graph --decorate --all
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    ld = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
+    ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+    
+    # Show changes
+    dlc = diff --cached HEAD^
+    dr = "!f() { git diff -w \"$1\"^..\"$1\"; }; f"
+    diffr = "!f() { git diff \"$1\"^..\"$1\"; }; f"
+    
+    # Stash operations
+    sl = stash list
+    sa = stash apply
+    ss = stash save
+    sp = stash pop
+    
+    # Branch operations
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+    
+    # Remote operations
+    rv = remote -v
+    
+    # Undo operations
+    undo = reset --soft HEAD^
+    amend = commit --amend
+    
+    # Search
+    grep = grep -Ii
+    find = "!git ls-files | grep -i"
+    
+    # Assume unchanged
+    assume = update-index --assume-unchanged
+    unassume = update-index --no-assume-unchanged
+    assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+    
+    # Clean operations
+    cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
+    
+    # Workflow aliases
+    sync = "!git fetch origin && git rebase origin/main"
+    save = "!git add -A && git commit -m 'SAVEPOINT'"
+    wip = "!git add -u && git commit -m 'WIP'"
+    
+    # GitHub/GitLab integration
+    issues = "!hub browse -- issues"
+    
+    # Statistics
+    contributors = shortlog --summary --numbered
+    count = "!git shortlog -sn"
+
+# =============================================================================
+# URL shortcuts
+# =============================================================================
+
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+
+[url "git@gitlab.com:"]
+    insteadOf = https://gitlab.com/
+
+# =============================================================================
+# Colors
+# =============================================================================
+
+[color]
+    ui = auto
+    branch = auto
+    diff = auto
+    status = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+# =============================================================================
+# Rerere (reuse recorded resolution)
+# =============================================================================
+
+[rerere]
+    enabled = true
+
+# =============================================================================
+# Help
+# =============================================================================
+
+[help]
+    autocorrect = 1
+
+# =============================================================================
+# Delta (better diff viewer) - if installed
+# =============================================================================
+
+[include]
+    path = ~/.gitconfig.delta
+
+# =============================================================================
+# Platform specific
+# =============================================================================
+
+[credential]
+    helper = osxkeychain
+
+# =============================================================================
+# GitHub CLI
+# =============================================================================
+
+[gh]
+    protocol = ssh
+
+# =============================================================================
+# Advanced settings
+# =============================================================================
+
+[branch]
+    autosetupmerge = always
+    autosetuprebase = always
+
+[status]
+    showUntrackedFiles = all
+
+[transfer]
+    fsckobjects = true
+
+[receive]
+    fsckObjects = true
+
+[fetch]
+    fsckobjects = true
+
+# =============================================================================
+# Maintenance
+# =============================================================================
+
+[maintenance]
+    repo = /Users/matteocervelli/dev
+    strategy = incremental
+
+# =============================================================================
+# End of configuration
+# =============================================================================

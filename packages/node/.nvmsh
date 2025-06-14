@@ -1,0 +1,319 @@
+# =============================================================================
+# NVM Configuration and Helpers - Matteo Cervelli's dotfiles
+# =============================================================================
+
+# Load this file from .zshrc or .bashrc
+
+# =============================================================================
+# NVM Installation and Setup
+# =============================================================================
+
+# NVM directory
+export NVM_DIR="$HOME/.nvm"
+
+# Load nvm if installed via Homebrew
+if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+    source "/opt/homebrew/opt/nvm/nvm.sh"
+fi
+
+# Load nvm bash completion if available
+if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
+    source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+fi
+
+# Load nvm if installed manually
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    source "$NVM_DIR/nvm.sh"
+fi
+
+# Load nvm bash completion if available
+if [ -s "$NVM_DIR/bash_completion" ]; then
+    source "$NVM_DIR/bash_completion"
+fi
+
+# =============================================================================
+# Auto-switching Node versions
+# =============================================================================
+
+# Automatically switch to Node.js version specified in .nvmrc
+autoload -U add-zsh-hook
+load-nvmrc() {
+    local node_version="$(nvm version)"
+    local nvmrc_path="$(nvm_find_nvmrc)"
+
+    if [ -n "$nvmrc_path" ]; then
+        local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+        if [ "$nvmrc_node_version" = "N/A" ]; then
+            nvm install
+        elif [ "$nvmrc_node_version" != "$node_version" ]; then
+            nvm use
+        fi
+    elif [ "$node_version" != "$(nvm version default)" ]; then
+        echo "Reverting to nvm default version"
+        nvm use default
+    fi
+}
+
+# Hook the function to directory changes
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+# =============================================================================
+# NVM Helper Functions
+# =============================================================================
+
+# Install latest LTS Node.js
+nvm-install-lts() {
+    nvm install --lts
+    nvm use --lts
+    nvm alias default lts/*
+    echo "Latest LTS Node.js installed and set as default"
+}
+
+# Install specific Node.js version and set as default
+nvm-install-default() {
+    if [ -z "$1" ]; then
+        echo "Usage: nvm-install-default <version>"
+        echo "Example: nvm-install-default 18.17.0"
+        return 1
+    fi
+    
+    nvm install "$1"
+    nvm use "$1"
+    nvm alias default "$1"
+    echo "Node.js $1 installed and set as default"
+}
+
+# List installed Node.js versions with additional info
+nvm-list-detailed() {
+    echo "Installed Node.js versions:"
+    nvm list
+    echo
+    echo "Current version: $(node --version)"
+    echo "Current npm version: $(npm --version)"
+    echo "Current location: $(which node)"
+}
+
+# Reinstall packages from previous version
+nvm-migrate() {
+    if [ -z "$1" ]; then
+        echo "Usage: nvm-migrate <from-version>"
+        echo "Example: nvm-migrate 16.20.0"
+        return 1
+    fi
+    
+    nvm reinstall-packages "$1"
+    echo "Packages migrated from Node.js $1"
+}
+
+# Clean up unused Node.js versions
+nvm-cleanup() {
+    echo "Cleaning up unused Node.js versions..."
+    
+    # List versions to clean
+    local versions_to_remove=($(nvm list | grep -v -E "(default|system|->)" | grep -E "^[ ]*v[0-9]" | sed 's/[ ]*//' | sed 's/v//'))
+    
+    if [ ${#versions_to_remove[@]} -eq 0 ]; then
+        echo "No versions to clean up"
+        return 0
+    fi
+    
+    echo "Versions that will be removed:"
+    printf '%s\n' "${versions_to_remove[@]}"
+    
+    read -q "REPLY?Continue? [y/N]: "
+    echo
+    
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        for version in "${versions_to_remove[@]}"; do
+            nvm uninstall "$version"
+        done
+        echo "Cleanup completed"
+    else
+        echo "Cleanup cancelled"
+    fi
+}
+
+# Update npm to latest version for current Node.js
+nvm-update-npm() {
+    npm install -g npm@latest
+    echo "npm updated to version $(npm --version)"
+}
+
+# =============================================================================
+# Project Setup Functions
+# =============================================================================
+
+# Initialize new Node.js project with common settings
+nvm-init-project() {
+    local project_name="${1:-$(basename "$PWD")}"
+    local node_version="${2:-$(nvm current)}"
+    
+    # Create .nvmrc
+    echo "$node_version" > .nvmrc
+    
+    # Initialize package.json
+    npm init -y
+    
+    # Update package.json with better defaults
+    npm pkg set name="$project_name"
+    npm pkg set version="1.0.0"
+    npm pkg set description=""
+    npm pkg set main="index.js"
+    npm pkg set scripts.start="node index.js"
+    npm pkg set scripts.dev="nodemon index.js"
+    npm pkg set scripts.test="jest"
+    npm pkg set scripts.lint="eslint ."
+    npm pkg set scripts.format="prettier --write ."
+    npm pkg set keywords[]
+    npm pkg set author="Matteo Cervelli <matteo@cervelli.dev>"
+    npm pkg set license="MIT"
+    
+    # Create basic files
+    touch index.js
+    echo "node_modules/\n.env\n.DS_Store\n*.log" > .gitignore
+    
+    echo "Project '$project_name' initialized with Node.js $node_version"
+}
+
+# Install common development dependencies
+nvm-install-dev-deps() {
+    npm install -D \
+        eslint \
+        prettier \
+        jest \
+        nodemon \
+        @types/node
+    
+    echo "Common development dependencies installed"
+}
+
+# Install global packages that are commonly needed
+nvm-install-globals() {
+    npm install -g \
+        nodemon \
+        npm-check-updates \
+        serve \
+        http-server \
+        typescript \
+        ts-node \
+        create-react-app \
+        @vue/cli \
+        @angular/cli \
+        netlify-cli \
+        vercel \
+        gh-pages
+    
+    echo "Common global packages installed"
+}
+
+# =============================================================================
+# Package Management Helpers
+# =============================================================================
+
+# Update all global packages
+nvm-update-globals() {
+    npm update -g
+    echo "Global packages updated"
+}
+
+# List outdated packages (local and global)
+nvm-check-outdated() {
+    echo "=== Local packages ===="
+    npm outdated
+    echo
+    echo "=== Global packages ===="
+    npm outdated -g
+}
+
+# Interactive package updates using npm-check-updates
+nvm-update-interactive() {
+    if command -v ncu >/dev/null 2>&1; then
+        ncu -i
+    else
+        echo "Installing npm-check-updates..."
+        npm install -g npm-check-updates
+        ncu -i
+    fi
+}
+
+# =============================================================================
+# Yarn Integration (if yarn is used)
+# =============================================================================
+
+# Install yarn if not present
+install-yarn() {
+    if ! command -v yarn >/dev/null 2>&1; then
+        npm install -g yarn
+        echo "Yarn installed globally"
+    else
+        echo "Yarn is already installed: $(yarn --version)"
+    fi
+}
+
+# =============================================================================
+# Performance and Debugging
+# =============================================================================
+
+# Node.js performance and memory analysis
+node-perf() {
+    if [ -z "$1" ]; then
+        echo "Usage: node-perf <script.js>"
+        return 1
+    fi
+    
+    echo "Running performance analysis for $1"
+    node --prof "$1"
+    echo "Profile generated. Use 'node --prof-process isolate-*.log' to analyze"
+}
+
+# Memory usage analysis
+node-memory() {
+    if [ -z "$1" ]; then
+        echo "Usage: node-memory <script.js>"
+        return 1
+    fi
+    
+    node --inspect "$1"
+}
+
+# =============================================================================
+# Aliases for convenience
+# =============================================================================
+
+alias n='node'
+alias ni='npm install'
+alias nid='npm install --save-dev'
+alias nig='npm install -g'
+alias nr='npm run'
+alias ns='npm start'
+alias nt='npm test'
+alias nb='npm run build'
+alias nd='npm run dev'
+alias nci='npm ci'
+alias nu='npm update'
+alias ncc='npm cache clean --force'
+
+# NVM aliases
+alias nls='nvm list'
+alias nuse='nvm use'
+alias ninst='nvm install'
+alias nuninst='nvm uninstall'
+alias ncur='nvm current'
+alias nver='nvm version'
+
+# Yarn aliases (if using yarn)
+alias y='yarn'
+alias ya='yarn add'
+alias yad='yarn add --dev'
+alias yr='yarn run'
+alias ys='yarn start'
+alias yt='yarn test'
+alias yb='yarn build'
+alias yd='yarn dev'
+alias yu='yarn upgrade'
+
+# =============================================================================
+# End of NVM configuration
+# =============================================================================

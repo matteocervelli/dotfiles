@@ -1,0 +1,224 @@
+# =============================================================================
+# Pyenv Configuration - Matteo Cervelli's dotfiles
+# =============================================================================
+
+# Python version management via pyenv
+
+# Default Python versions to install
+# These should be installed via: pyenv install <version>
+export PYENV_DEFAULT_VERSIONS="3.13.0 3.12.7 3.11.10"
+
+# Set the global Python version
+export PYENV_GLOBAL_VERSION="3.13.0"
+
+# Pyenv root directory
+export PYENV_ROOT="$HOME/.pyenv"
+
+# Add pyenv to PATH if not already present
+if [[ ":$PATH:" != *":$PYENV_ROOT/bin:"* ]]; then
+    export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+
+# Initialize pyenv if it exists
+if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
+# Auto-activate virtualenv
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+if command -v pyenv-virtualenv-init >/dev/null 2>&1; then
+    eval "$(pyenv virtualenv-init -)"
+fi
+
+# Performance optimization - cache shims
+export PYENV_SHELL_REHASH=1
+
+# =============================================================================
+# Python configuration
+# =============================================================================
+
+# Prevent Python from writing pyc files to disc
+export PYTHONDONTWRITEBYTECODE=1
+
+# Unbuffered Python output
+export PYTHONUNBUFFERED=1
+
+# Python history
+export PYTHONHISTORY="$HOME/.python_history"
+
+# Python startup file for interactive sessions
+export PYTHONSTARTUP="$HOME/.pythonrc"
+
+# =============================================================================
+# Pip configuration
+# =============================================================================
+
+# Pip configuration directory
+export PIP_CONFIG_FILE="$HOME/.pip/pip.conf"
+
+# Default pip timeout
+export PIP_TIMEOUT=60
+
+# =============================================================================
+# Virtual environment helpers
+# =============================================================================
+
+# Function to create virtual environment with specific Python version
+pyenv-venv() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: pyenv-venv <python-version> <env-name>"
+        echo "Example: pyenv-venv 3.13.0 myproject"
+        return 1
+    fi
+    
+    local python_version="$1"
+    local env_name="$2"
+    
+    pyenv virtualenv "$python_version" "$env_name"
+    echo "Virtual environment '$env_name' created with Python $python_version"
+}
+
+# Function to quickly create and activate a virtual environment
+pyenv-quick() {
+    if [ -z "$1" ]; then
+        echo "Usage: pyenv-quick <env-name> [python-version]"
+        echo "Example: pyenv-quick myproject 3.13.0"
+        return 1
+    fi
+    
+    local env_name="$1"
+    local python_version="${2:-$PYENV_GLOBAL_VERSION}"
+    
+    pyenv virtualenv "$python_version" "$env_name"
+    pyenv activate "$env_name"
+    echo "Virtual environment '$env_name' created and activated"
+}
+
+# Function to list all virtual environments
+pyenv-list-venvs() {
+    pyenv versions | grep -E "^\s+[0-9]+\.[0-9]+\.[0-9]+/envs/"
+}
+
+# Function to remove virtual environment
+pyenv-remove-venv() {
+    if [ -z "$1" ]; then
+        echo "Usage: pyenv-remove-venv <env-name>"
+        return 1
+    fi
+    
+    pyenv uninstall "$1"
+    echo "Virtual environment '$1' removed"
+}
+
+# =============================================================================
+# Project-specific Python version management
+# =============================================================================
+
+# Function to set Python version for current directory
+pyenv-local() {
+    if [ -z "$1" ]; then
+        echo "Current local Python version:"
+        pyenv local
+        return 0
+    fi
+    
+    pyenv local "$1"
+    echo "Python version set to $1 for current directory"
+}
+
+# Function to create .python-version file for project
+pyenv-init-project() {
+    local python_version="${1:-$PYENV_GLOBAL_VERSION}"
+    
+    echo "$python_version" > .python-version
+    echo "Created .python-version with Python $python_version"
+    
+    # Optional: create virtual environment for project
+    if [ -n "$2" ]; then
+        local project_name="$2"
+        pyenv virtualenv "$python_version" "$project_name"
+        echo "$project_name" > .python-version
+        echo "Created virtual environment '$project_name' and set as local version"
+    fi
+}
+
+# =============================================================================
+# Development tools integration
+# =============================================================================
+
+# Poetry integration
+if command -v poetry >/dev/null 2>&1; then
+    export POETRY_VENV_IN_PROJECT=1
+    export POETRY_CACHE_DIR="$HOME/.cache/poetry"
+fi
+
+# Pipenv integration
+if command -v pipenv >/dev/null 2>&1; then
+    export PIPENV_VENV_IN_PROJECT=1
+    export PIPENV_DEFAULT_PYTHON_VERSION="$PYENV_GLOBAL_VERSION"
+fi
+
+# =============================================================================
+# Python package development
+# =============================================================================
+
+# Default packages to install in new environments
+export PYENV_DEFAULT_PACKAGES="pip setuptools wheel pipx black flake8 mypy pytest ipython jupyter"
+
+# Function to install default packages in current environment
+install-python-defaults() {
+    pip install --upgrade pip setuptools wheel
+    pip install pipx black flake8 mypy pytest ipython jupyter
+    pip install requests numpy pandas matplotlib seaborn
+    echo "Default Python packages installed"
+}
+
+# Function to upgrade all packages in current environment
+upgrade-python-packages() {
+    pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
+    echo "All Python packages upgraded"
+}
+
+# =============================================================================
+# Aliases for common operations
+# =============================================================================
+
+alias py='python'
+alias py3='python3'
+alias pip='pip3'
+alias venv='python -m venv'
+alias activate='source venv/bin/activate'
+
+# Pyenv specific aliases
+alias pye='pyenv'
+alias pyev='pyenv versions'
+alias pyei='pyenv install'
+alias pyeu='pyenv uninstall'
+alias pyea='pyenv activate'
+alias pyed='pyenv deactivate'
+alias pyel='pyenv local'
+alias pyeg='pyenv global'
+
+# =============================================================================
+# Auto-activation for common patterns
+# =============================================================================
+
+# Auto-activate virtual environment if .python-version exists
+auto_activate_venv() {
+    if [ -f ".python-version" ]; then
+        local version=$(cat .python-version)
+        if [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+/envs/ ]]; then
+            pyenv activate "$version" 2>/dev/null
+        fi
+    fi
+}
+
+# Hook for directory changes (if using with cd function)
+# This would be called from .zshrc or similar
+pyenv_auto_activate() {
+    auto_activate_venv
+}
+
+# =============================================================================
+# End of pyenv configuration
+# =============================================================================

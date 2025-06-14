@@ -1,50 +1,53 @@
 # Dotfiles Project - Task List
 
 ## Status Overview
-- 🟡 **In Progress**: FASE 1 - Setup Documentazione e Struttura
-- ⚪ **Pending**: FASE 2-6 - Implementazione e Testing
+- ✅ **Completed**: FASE 1 - Setup Documentazione e Struttura
+- ✅ **Completed**: FASE 2 - Scansione Sistema Attuale
+- 🟡 **In Progress**: FASE 3 - Configurazioni Core con GNU Stow
+- ⚪ **Pending**: FASE 4-6 - Automazione, Infrastruttura e Testing
 
-## FASE 1: Setup Documentazione e Struttura
+## FASE 1: Setup Documentazione e Struttura ✅
 **Obiettivo**: Creare base documentale e struttura directory
 
 - [x] **1.1** Creare docs/PLANNING.md con piano dettagliato
 - [x] **1.2** Creare docs/TASK.md con lista task (questo file)  
-- [ ] **1.3** Creare struttura directory completa
-- [ ] **1.4** Aggiornare CLAUDE.md con istruzioni specifiche progetto
+- [x] **1.3** Creare struttura directory completa
+- [x] **1.4** Aggiornare CLAUDE.md con istruzioni specifiche progetto
 
-## FASE 2: Scansione Sistema Attuale (PRE-FORMAT)
+## FASE 2: Scansione Sistema Attuale ✅
 **Obiettivo**: Documentare configurazione esistente prima della formattazione
 
-### 2.1 Backup Configurazioni Shell
-- [ ] **2.1.1** Backup .zshrc esistente
-- [ ] **2.1.2** Backup .zsh_aliases esistenti  
-- [ ] **2.1.3** Backup zsh_plugins/functions esistenti
-- [ ] **2.1.4** Documentare Oh My Zsh themes/plugins in uso
+### 2.1 Backup Configurazioni Shell ✅
+- [x] **2.1.1** Backup .zshrc esistente
+- [x] **2.1.2** Backup .zsh_aliases esistenti  
+- [x] **2.1.3** Backup zsh_plugins/functions esistenti
+- [x] **2.1.4** Documentare Oh My Zsh themes/plugins in uso
 
-### 2.2 Scan Software Installato
-- [ ] **2.2.1** Script scan Homebrew (`brew list --formula`)
-- [ ] **2.2.2** Script scan Homebrew Casks (`brew list --cask`)
-- [ ] **2.2.3** Script scan Mac App Store (`mas list`)
-- [ ] **2.2.4** Script scan NPM globals (`npm list -g --depth=0`)
-- [ ] **2.2.5** Script scan Python packages (`pip list`)
-- [ ] **2.2.6** Documentare versioni pyenv/nvm in uso
+### 2.2 Scan Software Installato ✅
+- [x] **2.2.1** Script scan Homebrew (`brew list --formula`)
+- [x] **2.2.2** Script scan Homebrew Casks (`brew list --cask`)
+- [x] **2.2.3** Script scan Mac App Store (`mas list`)
+- [x] **2.2.4** Script scan NPM globals (`npm list -g --depth=0`)
+- [x] **2.2.5** Script scan Python packages (`pip list`)
+- [x] **2.2.6** Documentare versioni pyenv/nvm in uso
 
-### 2.3 Configurazioni Sistema
-- [ ] **2.3.1** Screenshot Dock (posizione, dimensione, apps)
-- [ ] **2.3.2** Screenshot Finder (sidebar, preferences)
-- [ ] **2.3.3** Screenshot System Preferences principali
-- [ ] **2.3.4** Backup configurazioni Tailscale
-- [ ] **2.3.5** Backup chiavi SSH
-- [ ] **2.3.6** Documentare font installati
+### 2.3 Configurazioni Sistema ✅
+- [x] **2.3.1** Screenshot Dock (posizione, dimensione, apps)
+- [x] **2.3.2** Screenshot Finder (sidebar, preferences)
+- [x] **2.3.3** Screenshot System Preferences principali
+- [x] **2.3.4** Backup configurazioni Tailscale
+- [x] **2.3.5** Backup chiavi SSH
+- [x] **2.3.6** Documentare font installati
+- [x] **2.3.7** Screenshot completi salvati in screenshots/
+- [x] **2.3.8** Analisi dettagliata in docs/preferences-analysis.md
+- [x] **2.3.9** Lista esatta screenshot in docs/screenshot-list-exact.md
 
-### 2.4 Development Environment  
-- [ ] **2.4.1** Documentare struttura ~/dev
-- [ ] **2.4.2** Lista progetti attivi da preservare
-- [ ] **2.4.3** Backup configurazioni Cursor/VS Code
-- [ ] **2.4.4** Backup configurazioni Claude Code
-- [ ] **2.4.5** Documentare MCP servers configurati
-
-**🔴 DECISIONE RICHIESTA**: Quando facciamo la scansione? Prima di formattare o usando sistema attuale?
+### 2.4 Development Environment ✅ 
+- [x] **2.4.1** Documentare struttura ~/dev
+- [x] **2.4.2** Lista progetti attivi da preservare
+- [x] **2.4.3** Backup configurazioni Cursor/VS Code
+- [x] **2.4.4** Backup configurazioni Claude Code
+- [x] **2.4.5** Documentare MCP servers configurati
 
 ## FASE 3: Configurazioni Core con GNU Stow
 **Obiettivo**: Implementare configurazioni principali
@@ -188,5 +191,5 @@
 ---
 
 *Creato*: 2024-12-06  
-*Ultima modifica*: 2024-12-06  
-*Status*: In Progress - Fase 1
+*Ultima modifica*: 2024-12-14  
+*Status*: In Progress - Fase 3 (Fasi 1-2 ✅ completate)

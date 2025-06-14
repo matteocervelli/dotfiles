@@ -1,0 +1,298 @@
+# =============================================================================
+# ZSH Aliases - Matteo Cervelli's dotfiles
+# =============================================================================
+
+# =============================================================================
+# System Aliases
+# =============================================================================
+
+# Enhanced ls commands
+alias ls='ls -G'
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias lla='ls -la'
+alias llt='ls -lat'  # Sort by time
+alias lls='ls -laS'  # Sort by size
+
+# Directory navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ~='cd ~'
+alias -- -='cd -'
+
+# Directory operations
+alias md='mkdir -p'
+alias rd='rmdir'
+
+# File operations
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias rmf='rm -rf'
+
+# Show/hide hidden files in Finder
+alias showfiles='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
+alias hidefiles='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
+
+# =============================================================================
+# Development Aliases
+# =============================================================================
+
+# Git shortcuts
+alias g='git'
+alias ga='git add'
+alias gaa='git add .'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl='git log --oneline'
+alias gll='git log --oneline --graph --decorate --all'
+alias gp='git push'
+alias gpl='git pull'
+alias gs='git status'
+alias gst='git status'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias gr='git remote'
+alias grv='git remote -v'
+alias gm='git merge'
+alias gf='git fetch'
+alias gt='git tag'
+alias gsh='git stash'
+alias gshp='git stash pop'
+
+# Docker shortcuts
+alias d='docker'
+alias dc='docker-compose'
+alias dcu='docker-compose up'
+alias dcd='docker-compose down'
+alias dcr='docker-compose restart'
+alias dcl='docker-compose logs'
+alias dcp='docker-compose ps'
+alias dce='docker-compose exec'
+alias dcb='docker-compose build'
+
+# Docker system management
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias dprune='docker system prune -f'
+alias dvprune='docker volume prune -f'
+alias diprune='docker image prune -f'
+
+# Python/pip shortcuts
+alias py='python3'
+alias python='python3'
+alias pip='pip3'
+alias pir='pip install -r requirements.txt'
+alias piu='pip install --upgrade pip'
+alias pf='pip freeze'
+alias pfr='pip freeze > requirements.txt'
+
+# Virtual environment
+alias venv='python3 -m venv'
+alias activate='source venv/bin/activate'
+alias deactivate='deactivate'
+
+# Node/npm shortcuts
+alias n='node'
+alias ni='npm install'
+alias nid='npm install --save-dev'
+alias nig='npm install -g'
+alias nr='npm run'
+alias ns='npm start'
+alias nt='npm test'
+alias nb='npm run build'
+alias nd='npm run dev'
+alias nci='npm ci'
+alias nu='npm update'
+alias ncc='npm cache clean --force'
+
+# Yarn shortcuts
+alias y='yarn'
+alias ya='yarn add'
+alias yad='yarn add --dev'
+alias yr='yarn run'
+alias ys='yarn start'
+alias yt='yarn test'
+alias yb='yarn build'
+alias yd='yarn dev'
+alias yu='yarn upgrade'
+
+# =============================================================================
+# macOS Specific Aliases
+# =============================================================================
+
+# Applications
+alias code='cursor'
+alias cursor='open -a "Cursor"'
+alias finder='open -a Finder'
+alias chrome='open -a "Google Chrome"'
+alias safari='open -a Safari'
+alias preview='open -a Preview'
+
+# System utilities
+alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+alias showdesktop='defaults write com.apple.finder CreateDesktop -bool true && killall Finder'
+alias hidedesktop='defaults write com.apple.finder CreateDesktop -bool false && killall Finder'
+
+# Network
+alias ip='curl -s https://httpbin.org/ip | jq -r .origin'
+alias localip='ifconfig | grep "inet " | grep -v 127.0.0.1 | cut -d\  -f2'
+alias ping='ping -c 5'
+alias ports='lsof -i -P -n | grep LISTEN'
+
+# Process management
+alias psa='ps aux'
+alias psg='ps aux | grep'
+alias topcpu='top -o cpu'
+alias topmem='top -o rsize'
+
+# =============================================================================
+# Homebrew Aliases
+# =============================================================================
+
+alias br='brew'
+alias bri='brew install'
+alias bru='brew update'
+alias brug='brew upgrade'
+alias bro='brew outdated'
+alias brs='brew search'
+alias brif='brew info'
+alias brl='brew list'
+alias brc='brew cleanup'
+alias brd='brew doctor'
+
+# Cask operations
+alias cask='brew install --cask'
+alias caski='brew install --cask'
+alias caskl='brew list --cask'
+alias casko='brew outdated --cask'
+alias casku='brew upgrade --cask'
+
+# =============================================================================
+# Development Environment Aliases
+# =============================================================================
+
+# Project navigation
+alias dev='cd $DEV_DIR'
+alias projects='cd $PROJECTS_DIR'
+
+# Common development tasks
+alias serve='python3 -m http.server 8000'
+alias server='python3 -m http.server'
+alias jsonformat='python3 -m json.tool'
+
+# File finding and searching
+alias ff='find . -type f -name'
+alias fd='find . -type d -name'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# =============================================================================
+# Utility Aliases
+# =============================================================================
+
+# Quick edits
+alias zshconfig='cursor ~/.zshrc'
+alias zshreload='source ~/.zshrc'
+alias aliases='cursor ~/.zsh_aliases'
+alias functions='cursor ~/.zsh_functions'
+
+# System information
+alias cpu='sysctl -n machdep.cpu.brand_string'
+alias mem='top -l 1 -s 0 | grep PhysMem'
+alias disk='df -h'
+alias battery='pmset -g batt'
+
+# Archives
+alias targz='tar -czf'
+alias untargz='tar -xzf'
+
+# Date and time
+alias now='date +"%T"'
+alias nowdate='date +"%d-%m-%Y"'
+alias nowfull='date +"%d-%m-%Y %T"'
+
+# =============================================================================
+# Custom Project Aliases
+# =============================================================================
+
+# Tailscale
+alias ts='tailscale'
+alias tsstatus='tailscale status'
+alias tsup='tailscale up'
+alias tsdown='tailscale down'
+
+# Stow management
+alias stow-zsh='stow -t ~ zsh'
+alias stow-git='stow -t ~ git'
+alias stow-ssh='stow -t ~ ssh'
+alias stow-all='stow -t ~ */'
+alias unstow-all='stow -D -t ~ */'
+
+# =============================================================================
+# Fun Aliases
+# =============================================================================
+
+alias weather='curl wttr.in'
+alias map='telnet mapscii.me'
+alias starwars='telnet towel.blinkenlights.nl'
+
+# =============================================================================
+# Suffix Aliases (auto-open files)
+# =============================================================================
+
+alias -s txt='cursor'
+alias -s md='cursor'
+alias -s js='cursor'
+alias -s ts='cursor'
+alias -s json='cursor'
+alias -s py='cursor'
+alias -s sh='cursor'
+alias -s yml='cursor'
+alias -s yaml='cursor'
+alias -s html='cursor'
+alias -s css='cursor'
+alias -s scss='cursor'
+
+# =============================================================================
+# Global Aliases
+# =============================================================================
+
+alias -g G='| grep'
+alias -g L='| less'
+alias -g H='| head'
+alias -g T='| tail'
+alias -g S='| sort'
+alias -g U='| uniq'
+alias -g R='| reverse'
+alias -g C='| wc -l'
+alias -g J='| jq'
+
+# =============================================================================
+# Conditional Aliases (only if command exists)
+# =============================================================================
+
+# Only alias if the command exists
+command -v bat >/dev/null 2>&1 && alias cat='bat'
+command -v exa >/dev/null 2>&1 && alias ls='exa' && alias ll='exa -la'
+command -v fd >/dev/null 2>&1 && alias find='fd'
+command -v rg >/dev/null 2>&1 && alias grep='rg'
+command -v htop >/dev/null 2>&1 && alias top='htop'
+command -v nvim >/dev/null 2>&1 && alias vim='nvim'
+
+# =============================================================================
+# End of aliases
+# =============================================================================

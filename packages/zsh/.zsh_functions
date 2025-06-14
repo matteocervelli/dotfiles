@@ -1,0 +1,405 @@
+# =============================================================================
+# ZSH Functions - Matteo Cervelli's dotfiles
+# =============================================================================
+
+# =============================================================================
+# Development Functions
+# =============================================================================
+
+# Create new React project with TypeScript
+function create-react-ts() {
+    if [ -z "$1" ]; then
+        echo "Usage: create-react-ts <project-name>"
+        return 1
+    fi
+    npx create-react-app "$1" --template typescript
+    cd "$1"
+    echo "React TypeScript project '$1' created successfully!"
+}
+
+# Create new Next.js project with TypeScript
+function create-next-ts() {
+    if [ -z "$1" ]; then
+        echo "Usage: create-next-ts <project-name>"
+        return 1
+    fi
+    npx create-next-app@latest "$1" --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
+    cd "$1"
+    echo "Next.js TypeScript project '$1' created successfully!"
+}
+
+# Create new Python project with virtual environment
+function create-py-project() {
+    if [ -z "$1" ]; then
+        echo "Usage: create-py-project <project-name>"
+        return 1
+    fi
+    mkdir "$1"
+    cd "$1"
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    touch requirements.txt
+    touch README.md
+    touch .gitignore
+    echo "Python project '$1' created successfully!"
+    echo "Virtual environment activated. Don't forget to 'pip freeze > requirements.txt' after installing packages."
+}
+
+# Git clone and cd into directory
+function gclone() {
+    if [ -z "$1" ]; then
+        echo "Usage: gclone <repository-url>"
+        return 1
+    fi
+    git clone "$1"
+    local repo_name=$(basename "$1" .git)
+    cd "$repo_name"
+}
+
+# Create new git repository and initial commit
+function git-init-project() {
+    if [ -z "$1" ]; then
+        echo "Usage: git-init-project <project-name>"
+        return 1
+    fi
+    mkdir "$1"
+    cd "$1"
+    git init
+    touch README.md
+    echo "# $1" > README.md
+    git add README.md
+    git commit -m "Initial commit"
+    echo "Git repository '$1' initialized successfully!"
+}
+
+# =============================================================================
+# System Functions
+# =============================================================================
+
+# Extract archives based on file extension
+function extract() {
+    if [ -z "$1" ]; then
+        echo "Usage: extract <archive-file>"
+        return 1
+    fi
+    
+    if [ -f "$1" ] ; then
+        case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.bz2)       bunzip2 "$1"     ;;
+            *.rar)       unrar x "$1"     ;;
+            *.gz)        gunzip "$1"      ;;
+            *.tar)       tar xf "$1"      ;;
+            *.tbz2)      tar xjf "$1"     ;;
+            *.tgz)       tar xzf "$1"     ;;
+            *.zip)       unzip "$1"       ;;
+            *.Z)         uncompress "$1"  ;;
+            *.7z)        7z x "$1"        ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Create directory and cd into it
+function mkcd() {
+    if [ -z "$1" ]; then
+        echo "Usage: mkcd <directory-name>"
+        return 1
+    fi
+    mkdir -p "$1" && cd "$1"
+}
+
+# Find and kill process by name
+function killp() {
+    if [ -z "$1" ]; then
+        echo "Usage: killp <process-name>"
+        return 1
+    fi
+    ps aux | grep -i "$1" | grep -v grep | awk '{print $2}' | xargs kill -9
+}
+
+# Get size of directory
+function dirsize() {
+    local dir=${1:-.}
+    du -sh "$dir"
+}
+
+# =============================================================================
+# Network Functions
+# =============================================================================
+
+# Port checker
+function port() {
+    if [ -z "$1" ]; then
+        echo "Usage: port <port-number>"
+        return 1
+    fi
+    lsof -i :"$1"
+}
+
+# Kill process on specific port
+function killport() {
+    if [ -z "$1" ]; then
+        echo "Usage: killport <port-number>"
+        return 1
+    fi
+    lsof -ti:"$1" | xargs kill -9
+}
+
+# Quick HTTP server with specific port
+function httpserver() {
+    local port=${1:-8000}
+    echo "Starting HTTP server on port $port..."
+    python3 -m http.server "$port"
+}
+
+# =============================================================================
+# Docker Functions
+# =============================================================================
+
+# Docker cleanup functions
+function docker-cleanup() {
+    echo "Cleaning up Docker containers, images, and volumes..."
+    docker container prune -f
+    docker image prune -f
+    docker volume prune -f
+    docker network prune -f
+    echo "Docker cleanup completed!"
+}
+
+# Remove all Docker containers
+function docker-stop-all() {
+    docker stop $(docker ps -q)
+}
+
+function docker-rm-all() {
+    docker rm $(docker ps -aq)
+}
+
+# =============================================================================
+# Git Functions
+# =============================================================================
+
+# Git add, commit, and push in one command
+function gacp() {
+    if [ -z "$1" ]; then
+        echo "Usage: gacp <commit-message>"
+        return 1
+    fi
+    git add .
+    git commit -m "$1"
+    git push
+}
+
+# Create and switch to new git branch
+function git-new-branch() {
+    if [ -z "$1" ]; then
+        echo "Usage: git-new-branch <branch-name>"
+        return 1
+    fi
+    git checkout -b "$1"
+    git push -u origin "$1"
+}
+
+# Git log with pretty format
+function git-log-pretty() {
+    git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+}
+
+# =============================================================================
+# File Operations Functions
+# =============================================================================
+
+# Find files by name (case insensitive)
+function findfile() {
+    if [ -z "$1" ]; then
+        echo "Usage: findfile <filename>"
+        return 1
+    fi
+    find . -iname "*$1*" 2>/dev/null
+}
+
+# Find files containing text
+function findtext() {
+    if [ -z "$1" ]; then
+        echo "Usage: findtext <search-text> [file-pattern]"
+        return 1
+    fi
+    local pattern=${2:-"*"}
+    grep -r -n --include="$pattern" "$1" .
+}
+
+# Backup file with timestamp
+function backup() {
+    if [ -z "$1" ]; then
+        echo "Usage: backup <filename>"
+        return 1
+    fi
+    local timestamp=$(date +"%Y%m%d_%H%M%S")
+    cp "$1" "$1.backup_$timestamp"
+    echo "Backup created: $1.backup_$timestamp"
+}
+
+# =============================================================================
+# Development Environment Functions
+# =============================================================================
+
+# Switch Node version and install dependencies
+function use-node() {
+    if [ -z "$1" ]; then
+        echo "Usage: use-node <node-version>"
+        return 1
+    fi
+    nvm use "$1"
+    if [ -f "package.json" ]; then
+        npm install
+    fi
+}
+
+# Python virtual environment helper
+function pyenv-setup() {
+    if [ -z "$1" ]; then
+        echo "Usage: pyenv-setup <python-version>"
+        return 1
+    fi
+    pyenv install "$1"
+    pyenv local "$1"
+    python -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+}
+
+# =============================================================================
+# macOS Specific Functions
+# =============================================================================
+
+# Open current directory in Finder
+function finder() {
+    open -a Finder "${1:-.}"
+}
+
+# Get current macOS version
+function macos-version() {
+    sw_vers -productVersion
+}
+
+# Show/hide hidden files toggle
+function toggle-hidden() {
+    local current=$(defaults read com.apple.finder AppleShowAllFiles)
+    if [ "$current" = "1" ] || [ "$current" = "true" ]; then
+        defaults write com.apple.finder AppleShowAllFiles -bool false
+        echo "Hidden files are now hidden"
+    else
+        defaults write com.apple.finder AppleShowAllFiles -bool true
+        echo "Hidden files are now visible"
+    fi
+    killall Finder
+}
+
+# =============================================================================
+# Utility Functions
+# =============================================================================
+
+# Weather function
+function weather() {
+    local city=${1:-"Poggibonsi"}
+    curl "wttr.in/$city"
+}
+
+# QR Code generator
+function qr() {
+    if [ -z "$1" ]; then
+        echo "Usage: qr <text-to-encode>"
+        return 1
+    fi
+    curl -s "qr-server.com/api/v1/create-qr-code/?data=$1"
+}
+
+# Random password generator
+function genpass() {
+    local length=${1:-16}
+    openssl rand -base64 $length | tr -d "=+/" | cut -c1-$length
+}
+
+# JSON formatter
+function json() {
+    if [ -z "$1" ]; then
+        # Read from stdin
+        python3 -m json.tool
+    else
+        # Format file
+        python3 -m json.tool "$1"
+    fi
+}
+
+# =============================================================================
+# Homebrew Functions
+# =============================================================================
+
+# Update all Homebrew packages
+function brew-update-all() {
+    echo "Updating Homebrew..."
+    brew update
+    echo "Upgrading packages..."
+    brew upgrade
+    echo "Upgrading casks..."
+    brew upgrade --cask
+    echo "Cleaning up..."
+    brew cleanup
+    echo "Running doctor..."
+    brew doctor
+}
+
+# Search and install Homebrew package
+function brew-search-install() {
+    if [ -z "$1" ]; then
+        echo "Usage: brew-search-install <package-name>"
+        return 1
+    fi
+    brew search "$1"
+    echo -n "Install '$1'? (y/n): "
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        brew install "$1"
+    fi
+}
+
+# =============================================================================
+# Project Management Functions
+# =============================================================================
+
+# Quick project setup with common tools
+function setup-js-project() {
+    if [ -z "$1" ]; then
+        echo "Usage: setup-js-project <project-name>"
+        return 1
+    fi
+    
+    mkdir "$1"
+    cd "$1"
+    
+    # Initialize npm
+    npm init -y
+    
+    # Install common dev dependencies
+    npm install -D eslint prettier husky lint-staged
+    
+    # Create basic files
+    touch .gitignore .eslintrc.js .prettierrc
+    echo "node_modules/\n.env\n.DS_Store" > .gitignore
+    
+    # Initialize git
+    git init
+    git add .
+    git commit -m "Initial commit"
+    
+    echo "JavaScript project '$1' setup completed!"
+}
+
+# =============================================================================
+# End of functions
+# =============================================================================

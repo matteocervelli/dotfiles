@@ -1,0 +1,363 @@
+[
+    // =============================================================================
+    // Cursor/VS Code Keybindings - Matteo Cervelli's dotfiles
+    // =============================================================================
+
+    // =============================================================================
+    // File Operations
+    // =============================================================================
+    {
+        "key": "cmd+shift+n",
+        "command": "workbench.action.files.newUntitledFile"
+    },
+    {
+        "key": "cmd+alt+n",
+        "command": "workbench.action.newWindow"
+    },
+    {
+        "key": "cmd+shift+t",
+        "command": "workbench.action.reopenClosedEditor"
+    },
+
+    // =============================================================================
+    // Navigation
+    // =============================================================================
+    {
+        "key": "cmd+shift+o",
+        "command": "workbench.action.gotoSymbol"
+    },
+    {
+        "key": "cmd+shift+.",
+        "command": "breadcrumbs.focusAndSelect",
+        "when": "breadcrumbsPossible && breadcrumbsVisible"
+    },
+    {
+        "key": "cmd+k cmd+q",
+        "command": "workbench.action.navigateToLastEditLocation"
+    },
+
+    // =============================================================================
+    // Editor Management
+    // =============================================================================
+    {
+        "key": "cmd+\\",
+        "command": "workbench.action.splitEditor"
+    },
+    {
+        "key": "cmd+k cmd+\\",
+        "command": "workbench.action.splitEditorOrthogonal"
+    },
+    {
+        "key": "cmd+alt+left",
+        "command": "workbench.action.focusPreviousGroup"
+    },
+    {
+        "key": "cmd+alt+right",
+        "command": "workbench.action.focusNextGroup"
+    },
+
+    // =============================================================================
+    // Terminal
+    // =============================================================================
+    {
+        "key": "cmd+shift+`",
+        "command": "workbench.action.terminal.new"
+    },
+    {
+        "key": "cmd+alt+t",
+        "command": "workbench.action.terminal.toggleTerminal"
+    },
+    {
+        "key": "cmd+shift+k",
+        "command": "workbench.action.terminal.kill"
+    },
+
+    // =============================================================================
+    // Search and Replace
+    // =============================================================================
+    {
+        "key": "cmd+shift+f",
+        "command": "workbench.action.findInFiles"
+    },
+    {
+        "key": "cmd+shift+h",
+        "command": "workbench.action.replaceInFiles"
+    },
+    {
+        "key": "cmd+alt+f",
+        "command": "workbench.action.findInFiles",
+        "args": {
+            "query": "",
+            "triggerSearch": false,
+            "focusResults": false,
+            "isCaseSensitive": false,
+            "matchWholeWord": false,
+            "isRegex": false,
+            "filesToInclude": "",
+            "filesToExclude": "",
+            "useDefaultSearchExcludes": true,
+            "useDefaultExcludes": true,
+            "onlyOpenEditors": false
+        }
+    },
+
+    // =============================================================================
+    // Code Actions
+    // =============================================================================
+    {
+        "key": "cmd+.",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+shift+r",
+        "command": "editor.action.refactor",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "f2",
+        "command": "editor.action.rename",
+        "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
+    },
+
+    // =============================================================================
+    // Code Formatting
+    // =============================================================================
+    {
+        "key": "cmd+alt+l",
+        "command": "editor.action.formatDocument",
+        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+    },
+    {
+        "key": "cmd+k cmd+f",
+        "command": "editor.action.formatSelection",
+        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
+    },
+
+    // =============================================================================
+    // Git Operations
+    // =============================================================================
+    {
+        "key": "cmd+shift+g",
+        "command": "workbench.view.scm"
+    },
+    {
+        "key": "cmd+k cmd+c",
+        "command": "git.commitStaged"
+    },
+    {
+        "key": "cmd+k cmd+p",
+        "command": "git.push"
+    },
+    {
+        "key": "cmd+k cmd+l",
+        "command": "git.pull"
+    },
+
+    // =============================================================================
+    // Sidebar and Panels
+    // =============================================================================
+    {
+        "key": "cmd+b",
+        "command": "workbench.action.toggleSidebarVisibility"
+    },
+    {
+        "key": "cmd+j",
+        "command": "workbench.action.togglePanel"
+    },
+    {
+        "key": "cmd+shift+e",
+        "command": "workbench.view.explorer"
+    },
+    {
+        "key": "cmd+shift+x",
+        "command": "workbench.view.extensions"
+    },
+
+    // =============================================================================
+    // Comment Operations
+    // =============================================================================
+    {
+        "key": "cmd+/",
+        "command": "editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+shift+/",
+        "command": "editor.action.blockComment",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+
+    // =============================================================================
+    // Line Operations
+    // =============================================================================
+    {
+        "key": "cmd+shift+k",
+        "command": "editor.action.deleteLines",
+        "when": "textInputFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+shift+enter",
+        "command": "editor.action.insertLineBefore",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+enter",
+        "command": "editor.action.insertLineAfter",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+up",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+down",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+shift+alt+up",
+        "command": "editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "cmd+shift+alt+down",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+
+    // =============================================================================
+    // Multi-cursor Operations
+    // =============================================================================
+    {
+        "key": "cmd+alt+up",
+        "command": "editor.action.insertCursorAbove",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "cmd+alt+down",
+        "command": "editor.action.insertCursorBelow",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "cmd+d",
+        "command": "editor.action.addSelectionToNextFindMatch",
+        "when": "editorFocus"
+    },
+    {
+        "key": "cmd+shift+l",
+        "command": "editor.action.selectHighlights",
+        "when": "editorFocus"
+    },
+
+    // =============================================================================
+    // Folding
+    // =============================================================================
+    {
+        "key": "cmd+alt+[",
+        "command": "editor.fold",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "cmd+alt+]",
+        "command": "editor.unfold",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "cmd+k cmd+0",
+        "command": "editor.foldAll",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "cmd+k cmd+j",
+        "command": "editor.unfoldAll",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+
+    // =============================================================================
+    // Workspace and Project Management
+    // =============================================================================
+    {
+        "key": "cmd+k cmd+o",
+        "command": "workbench.action.files.openFolder"
+    },
+    {
+        "key": "cmd+shift+p",
+        "command": "workbench.action.showCommands"
+    },
+    {
+        "key": "cmd+p",
+        "command": "workbench.action.quickOpen"
+    },
+
+    // =============================================================================
+    // Zen Mode and Focus
+    // =============================================================================
+    {
+        "key": "cmd+k z",
+        "command": "workbench.action.toggleZenMode"
+    },
+    {
+        "key": "cmd+k f",
+        "command": "workbench.action.toggleFullScreen"
+    },
+
+    // =============================================================================
+    // Custom Shortcuts for Development
+    // =============================================================================
+    {
+        "key": "cmd+shift+c",
+        "command": "workbench.action.terminal.openNativeConsole"
+    },
+    {
+        "key": "cmd+k cmd+t",
+        "command": "workbench.action.selectTheme"
+    },
+    {
+        "key": "cmd+k cmd+s",
+        "command": "workbench.action.openSettings"
+    },
+
+    // =============================================================================
+    // Markdown specific shortcuts
+    // =============================================================================
+    {
+        "key": "cmd+k v",
+        "command": "markdown.showPreview",
+        "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+    },
+    {
+        "key": "cmd+shift+v",
+        "command": "markdown.showPreviewToSide",
+        "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+    },
+
+    // =============================================================================
+    // Cursor-specific shortcuts
+    // =============================================================================
+    {
+        "key": "cmd+i",
+        "command": "cursor.aiChat",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "cmd+k cmd+i",
+        "command": "cursor.aiEdit",
+        "when": "editorTextFocus"
+    },
+
+    // =============================================================================
+    // Override default shortcuts that might conflict
+    // =============================================================================
+    {
+        "key": "cmd+r",
+        "command": "-workbench.action.reloadWindow",
+        "when": "isDevelopment"
+    },
+    {
+        "key": "cmd+shift+r",
+        "command": "workbench.action.reloadWindow",
+        "when": "isDevelopment"
+    }
+]
