@@ -125,22 +125,13 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
 # =============================================================================
-# Environment Variables
+# Custom Environment Loading
 # =============================================================================
 
-# GPG
-export GPG_TTY=$(tty)
-
-# SSH Agent (1Password)
-export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-
-# Development directories
-export DEV_DIR="$HOME/dev"
-export PROJECTS_DIR="$DEV_DIR/projects"
-
-# Docker
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
+# Load custom environment variables
+if [ -f ~/.zsh_exports ]; then
+    source ~/.zsh_exports
+fi
 
 # =============================================================================
 # Aliases

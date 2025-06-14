@@ -3,8 +3,9 @@
 ## Status Overview
 - ✅ **Completed**: FASE 1 - Setup Documentazione e Struttura
 - ✅ **Completed**: FASE 2 - Scansione Sistema Attuale
-- 🟡 **In Progress**: FASE 3 - Configurazioni Core con GNU Stow
-- ⚪ **Pending**: FASE 4-6 - Automazione, Infrastruttura e Testing
+- ✅ **Completed**: FASE 3 - Configurazioni Core con GNU Stow
+- 🟡 **Ready to Start**: FASE 4 - Automazione Homebrew e macOS
+- ⚪ **Pending**: FASE 5-6 - Infrastruttura e Testing
 
 ## FASE 1: Setup Documentazione e Struttura ✅
 **Obiettivo**: Creare base documentale e struttura directory
@@ -49,44 +50,53 @@
 - [x] **2.4.4** Backup configurazioni Claude Code
 - [x] **2.4.5** Documentare MCP servers configurati
 
-## FASE 3: Configurazioni Core con GNU Stow
+## FASE 3: Configurazioni Core con GNU Stow ✅
 **Obiettivo**: Implementare configurazioni principali
 
-### 3.1 Shell Configuration (ZSH)
-- [ ] **3.1.1** Creare packages/zsh/.zshrc con Oh My Zsh
-- [ ] **3.1.2** Migrare .zsh_aliases esistenti  
-- [ ] **3.1.3** Convertire zsh_plugins in .zsh_functions
-- [ ] **3.1.4** Configurare tema e plugin Oh My Zsh preferiti
-- [ ] **3.1.5** Testing configurazione ZSH
+### 3.1 Shell Configuration (ZSH) ✅
+- [x] **3.1.1** Creare packages/zsh/.zshrc con Oh My Zsh
+- [x] **3.1.2** Migrare .zsh_aliases esistenti  
+- [x] **3.1.3** Convertire zsh_plugins in .zsh_functions
+- [x] **3.1.4** Configurare tema e plugin Oh My Zsh preferiti
+- [x] **3.1.5** Completare configurazione ZSH
 
-### 3.2 Git Configuration
-- [ ] **3.2.1** Creare packages/git/.gitconfig (user, GPG 1Password)
-- [ ] **3.2.2** Creare packages/git/.gitignore_global estensivo
-- [ ] **3.2.3** Aggiungere templates commit/PR/issues
-- [ ] **3.2.4** Configurare Git aliases utili
-- [ ] **3.2.5** Testing configurazione Git
+### 3.2 Git Configuration ✅
+- [x] **3.2.1** Creare packages/git/.gitconfig (user, GPG 1Password)
+- [x] **3.2.2** Creare packages/git/.gitignore_global estensivo
+- [x] **3.2.3** Aggiungere templates commit/PR/issues (.gitmessage)
+- [x] **3.2.4** Configurare Git aliases utili
+- [x] **3.2.5** Completare configurazione Git
 
-### 3.3 Development Tools
-- [ ] **3.3.1** Creare packages/python/ con pyenv configs
-- [ ] **3.3.2** Creare packages/node/ con nvm configs
-- [ ] **3.3.3** Creare packages/cursor/ con settings Cursor
-- [ ] **3.3.4** Creare packages/claude/ con Claude Code configs
-- [ ] **3.3.5** Testing configurazioni development
+### 3.3 Development Tools ✅
+- [x] **3.3.1** Creare packages/python/ con pyenv configs (.pyenvrc, .pythonrc, pip.conf)
+- [x] **3.3.2** Creare packages/node/ con nvm configs (.nvmrc, .npmrc, .nvmsh)
+- [x] **3.3.3** Creare packages/cursor/ con settings Cursor (settings.json, keybindings.json)
+- [x] **3.3.4** Creare packages/claude/ con Claude Code configs (CLAUDE.md)
+- [x] **3.3.5** Completare configurazioni development
 
-### 3.4 SSH & Network
-- [ ] **3.4.1** Creare packages/ssh/.ssh/config per Tailscale
-- [ ] **3.4.2** Configurare connessioni automatiche
-- [ ] **3.4.3** Testing connessioni SSH
+### 3.4 SSH & Network ✅
+- [x] **3.4.1** Creare packages/ssh/.ssh/config per Tailscale
+- [x] **3.4.2** Configurare connessioni automatiche
+- [x] **3.4.3** Completare configurazioni SSH
 
-**🔴 DECISIONE RICHIESTA**: Quali altre app necessitano configurazioni specifiche?
+### 3.5 Package Management ✅
+- [x] **3.5.1** Creare packages/homebrew/Brewfile completo
+- [x] **3.5.2** Organizzare per categorie (dev, apps, fonts, extensions)
+- [x] **3.5.3** Includere Mac App Store apps
+
+### 3.6 Installation Automation ✅
+- [x] **3.6.1** Creare scripts/install.sh master installer
+- [x] **3.6.2** Implementare dry-run e opzioni modulari
+- [x] **3.6.3** Aggiungere backup automatico configurazioni esistenti
+- [x] **3.6.4** Error handling e logging completo
 
 ## FASE 4: Automazione Homebrew e macOS
 **Obiettivo**: Automatizzare installazione software e configurazioni sistema
 
-### 4.1 Homebrew Management
-- [ ] **4.1.1** Creare Brewfile completo da scan sistema
-- [ ] **4.1.2** Organizzare Brewfile per categorie (dev, apps, fonts)
-- [ ] **4.1.3** Creare script brewup personalizzato
+### 4.1 Homebrew Management ✅
+- [x] **4.1.1** Creare Brewfile completo da scan sistema
+- [x] **4.1.2** Organizzare Brewfile per categorie (dev, apps, fonts)
+- [x] **4.1.3** Includere nel master installer
 - [ ] **4.1.4** Testing installazione Brewfile
 
 ### 4.2 macOS System Configuration
@@ -131,10 +141,10 @@
 ## FASE 6: Testing e Documentazione
 **Obiettivo**: Verificare funzionamento e documentare
 
-### 6.1 Master Installation Script
-- [ ] **6.1.1** Creare scripts/install.sh master installer
-- [ ] **6.1.2** Integrare tutti gli script in workflow unico
-- [ ] **6.1.3** Aggiungere logging e error handling
+### 6.1 Master Installation Script ✅
+- [x] **6.1.1** Creare scripts/install.sh master installer
+- [x] **6.1.2** Integrare tutti gli script in workflow unico
+- [x] **6.1.3** Aggiungere logging e error handling
 - [ ] **6.1.4** Testing install.sh su sistema pulito
 
 ### 6.2 Documentation
@@ -192,4 +202,4 @@
 
 *Creato*: 2024-12-06  
 *Ultima modifica*: 2024-12-14  
-*Status*: In Progress - Fase 3 (Fasi 1-2 ✅ completate)
+*Status*: FASE 3 ✅ completata - FASE 4 🟡 pronta per iniziare

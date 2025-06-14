@@ -84,25 +84,25 @@ dotfiles/
 - [x] Creato documento preferences-analysis.md con analisi dettagliata screenshot
 - [x] Identificate priorità per implementazione configurazioni
 
-### FASE 3: Configurazioni Core con GNU Stow 🟡 IN PROGRESS
+### FASE 3: Configurazioni Core con GNU Stow ✅
 
 **Obiettivo**: Implementare configurazioni principali
 
-- [ ] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
-- [ ] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
-- [ ] packages/cursor/ - Configurazioni Cursor/VS Code
-- [ ] packages/claude/ - Configurazioni Claude Code e MCP
-- [ ] packages/python/ - pyenv + pip configurations
-- [ ] packages/node/ - nvm + npm configurations
-- [ ] packages/ssh/ - SSH config per rete Tailscale
+- [x] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
+- [x] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
+- [x] packages/cursor/ - Configurazioni Cursor/VS Code (settings.json, keybindings.json)
+- [x] packages/claude/ - Configurazioni Claude Code e MCP
+- [x] packages/python/ - pyenv + pip configurations (.pyenvrc, .pythonrc, pip.conf)
+- [x] packages/node/ - nvm + npm configurations (.nvmrc, .npmrc, .nvmsh)
+- [x] packages/ssh/ - SSH config per rete Tailscale
+- [x] packages/homebrew/ - Brewfile completo con tutte le categorie
+- [x] scripts/install.sh - Script di installazione master completo
 
-**DECISIONE RICHIESTA**: Quali altre app necessitano configurazioni specifiche?
-
-### FASE 4: Automazione Homebrew e macOS
+### FASE 4: Automazione Homebrew e macOS 🟡 READY TO START
 
 **Obiettivo**: Automatizzare installazione software e configurazioni sistema
 
-- [ ] Brewfile completo basato su scan sistema
+- [x] Brewfile completo basato su scan sistema
 - [ ] Script macOS defaults (Dock, Finder, Trackpad, etc.)
 - [ ] Integrazione Tailscale automatica
 - [ ] Font management per font personalizzati
@@ -197,4 +197,4 @@ dotfiles/
 *Ultimo aggiornamento: 2024-12-14*  
 *Progetto: TMP-dotfiles*  
 *Owner: Matteo Cervelli*  
-*Status: FASE 2 ✅ completata - FASE 3 🟡 avviata*
+*Status: FASE 3 ✅ completata - FASE 4 🟡 pronta per iniziare*

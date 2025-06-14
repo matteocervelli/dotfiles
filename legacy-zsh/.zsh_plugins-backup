@@ -1,0 +1,16 @@
+# PyEnv - Ottimizzato per startup veloce
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+# Lazy loading di pyenv - carica solo quando necessario
+if command -v pyenv 1>/dev/null 2>&1; then
+  # Solo path setup all'avvio (veloce)
+  eval "$(pyenv init --path)"
+  
+  # Lazy load per il resto (lento)
+  pyenv() {
+    unset -f pyenv
+    eval "$(pyenv init -)"
+    pyenv "$@"
+  }
+fi
