@@ -1,0 +1,48 @@
+# New list of dotfiles features as of 2025-10-17
+
+- configs
+  - zsh
+  - vm ubuntu
+  - docker
+  - obsidian
+  - macos and other os
+    - dock
+    - finder
+    - keyboard
+    - desktop
+  - 1password
+  - git
+  - ssh
+  - llm models
+  - claude code
+  - claude ai
+  - vscode
+  - codex
+  - cursor
+  - ollama-lm studio
+  - secrets
+- applications
+  - brew list
+  - apt list
+  - others macos
+  - other windows
+- scripts
+  - installation and symlink
+  - cron jobs
+  - clone r2 
+  - syncthing
+  - cron job backup
+  - setup stow
+  - setup macos
+  - setup new vm parallels
+- templates
+- fonts
+- backups
+- llm
+  - mcp.json
+  - AGENTS.md
+  - commands
+  - subagents
+  - plugins
+  - hooks
+  - skills

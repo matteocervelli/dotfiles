@@ -1,0 +1,1 @@
+/Users/matteocervelli/.oh-my-zsh/custom/aliases.zsh

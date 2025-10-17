@@ -1,0 +1,1 @@
+/Users/matteocervelli/.oh-my-zsh/custom/functions.zsh

@@ -14,7 +14,7 @@ ZSH_THEME="agnoster"
 
 # Uncomment the following line to use hyphen-insensitive completion
 # Case-sensitive completion must be off. _ and - will be interchangeable
-HYPHEN_INSENSITIVE="true"
+# HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks
 # DISABLE_AUTO_UPDATE="true"
@@ -59,10 +59,15 @@ setopt HIST_IGNORE_SPACE
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 plugins=(
+    1password
+    aliases
+    alias-finder
+    gh
     git
     brew
     docker
     docker-compose
+    dotenv
     node
     npm
     python
@@ -77,6 +82,13 @@ plugins=(
     zsh-syntax-highlighting
     zsh-completions
 )
+
+# Enable Specific Plugins Settings
+# alias-finder
+zstyle ':omz:plugins:alias-finder' autoload yes # disabled by default
+zstyle ':omz:plugins:alias-finder' longer yes # disabled by default
+zstyle ':omz:plugins:alias-finder' exact yes # disabled by default
+zstyle ':omz:plugins:alias-finder' cheaper yes # disabled by default
 
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
