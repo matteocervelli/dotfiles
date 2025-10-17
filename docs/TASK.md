@@ -97,11 +97,14 @@
 - [ ] **1.3.2** Create `.stow-local-ignore` with proper exclusions
 - [ ] **1.3.3** Test both files with `git status` and `stow -n`
 
-### 1.4 Utility Scripts
+### 1.4 Utility Scripts ✅
 
-- [ ] **1.4.1** Create `scripts/utils/detect-os.sh` (OS detection)
-- [ ] **1.4.2** Create `scripts/utils/logger.sh` (logging functions)
-- [ ] **1.4.3** Make scripts executable and test
+- [x] **1.4.1** Create `scripts/utils/detect-os.sh` (OS detection)
+- [x] **1.4.2** Create `scripts/utils/logger.sh` (logging functions)
+- [x] **1.4.3** Make scripts executable and test
+
+**Completed**: 2025-01-17
+**Status**: ✅ All utility scripts implemented with macOS, Linux, and Windows detection support
 
 ### 1.5 Bootstrap Scripts
 
