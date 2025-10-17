@@ -246,3 +246,39 @@ pnpm-lock.yaml
 
 ##### Specific files ##################################################
 # Add here any specific files which you don't want to be versioned
+
+
+
+# ====================================================================
+# DOTFILES SPECIFIC v1.0 2025-01-17
+# Patterns specific for this dotfiles management project
+# ====================================================================
+
+##### 1Password Config (contains account IDs) ########################
+.config/op/config
+
+##### Rclone Config (contains R2 credentials) ########################
+sync/rclone/rclone.conf
+.config/rclone/rclone.conf
+
+##### R2 Assets (too large for git) ##################################
+r2-assets/
+*.bin
+*.model
+*.weights
+*.gguf
+*.safetensors
+
+##### Backups (pre-migration snapshots) ##############################
+backups/
+*.backup
+*.bak
+
+##### Temporary & Local overrides ####################################
+.env
+.env.*
+!.env.template
+!.env.example
+
+##### GNU Stow test files ############################################
+.stow-test/

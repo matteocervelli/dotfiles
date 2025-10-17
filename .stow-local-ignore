@@ -1,48 +1,91 @@
 # Stow Local Ignore File
 # Files and directories to ignore when stowing packages
+# Syntax: Perl regex, ^/ means "from root of package"
 
-# macOS Files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# ====================================================================
+# PROJECT METADATA (don't symlink to home)
+# ====================================================================
+^/README\.md
+^/LICENSE
+^/\.git
+^/\.gitignore
+^/\.stow-local-ignore
+^/Makefile
 
-# Git
-.git
-.gitignore
-
-# Temporary files
-*.tmp
-*.temp
-*~
-*.swp
-*.swo
+# ====================================================================
+# PROJECT STRUCTURE (don't symlink to home)
+# ====================================================================
 
 # Documentation
-README.md
-LICENSE
-*.md
+^/docs
+
+# Scripts
+^/scripts
+
+# Templates
+^/templates
+
+# System configs
+^/system
+
+# Applications lists
+^/applications
+
+# Secrets templates (not actual secrets)
+^/secrets
+
+# Sync configs
+^/sync
+
+# Backups
+^/backups
+
+# ====================================================================
+# OS & TEMPORARY FILES
+# ====================================================================
+
+# macOS
+\.DS_Store
+\.DS_Store\?
+\._.*
+\.Spotlight-V100
+\.Trashes
+ehthumbs\.db
+Thumbs\.db
+
+# Git
+\.git$
+\.gitignore$
+
+# Temporary files
+\.tmp$
+\.temp$
+~$
+\.swp$
+\.swo$
+
+# Documentation in packages
+README\.md$
+LICENSE$
+\.md$
 
 # IDE files
-.vscode/
-.idea/
-*.sublime-*
+\.vscode/
+\.idea/
+\.sublime-.*
 
 # Node.js
 node_modules/
-npm-debug.log*
+npm-debug\.log.*
 
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-.Python
-*.egg-info/
+\.py[cod]$
+\*\$py\.class
+\.Python$
+\.egg-info/
 
 # Backup files
-*.bak
-*.backup
-*.old
+\.bak$
+\.backup$
+\.old$
