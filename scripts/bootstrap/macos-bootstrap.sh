@@ -61,9 +61,42 @@ else
     log_success "yq already installed"
 fi
 
+# Install Oh My Zsh
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    log_info "Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+    log_success "Oh My Zsh already installed"
+fi
+
+# Install zsh-autosuggestions plugin
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
+    log_info "Installing zsh-autosuggestions..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+else
+    log_success "zsh-autosuggestions already installed"
+fi
+
+# Install zsh-syntax-highlighting plugin
+if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
+    log_info "Installing zsh-syntax-highlighting..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+else
+    log_success "zsh-syntax-highlighting already installed"
+fi
+
+# Install Powerlevel10k theme
+if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+    log_info "Installing Powerlevel10k theme..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
+else
+    log_success "Powerlevel10k already installed"
+fi
+
 log_success "macOS dependencies installed successfully!"
 echo ""
 log_info "Next steps:"
 echo "  1. Sign in to 1Password CLI: eval \$(op signin)"
 echo "  2. Configure Rclone for R2: ./scripts/sync/setup-rclone.sh"
-echo "  3. Run full installation: make install"
+echo "  3. Deploy shell configuration: cd ~/dev/projects/dotfiles && stow -t ~ -d stow-packages shell"
+echo "  4. Run full installation: make install"

@@ -1,0 +1,18 @@
+# Stow Local Ignore - Shell Package
+# Files to ignore when stowing this package
+
+# Deployment scripts (don't symlink to home)
+^/deploy-shell\.sh$
+
+# README and documentation
+^/README\.md$
+
+# Backup files
+\.bak$
+\.backup$
+\.old$
+
+# Editor files
+\.swp$
+\.swo$
+~$
