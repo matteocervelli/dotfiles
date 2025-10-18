@@ -1,0 +1,121 @@
+# Git Configuration
+# Managed by: ~/dev/projects/dotfiles
+# Stow package: git
+
+[user]
+    name = Matteo Cervelli
+    email = 187242585+matteocervelli@users.noreply.github.com
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINss27NvNUj+RdfnD1v6MZZZc+Seapjlkp5t53pAPNry
+
+[core]
+    editor = cursor --wait
+    excludesfile = ~/.gitignore_global
+    autocrlf = input
+
+[init]
+    defaultBranch = main
+    templatedir = ~/.git-templates
+
+[pull]
+    rebase = false
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[commit]
+    gpgsign = true
+
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+    allowedSignersFile = ~/.ssh/allowed_signers
+
+[credential]
+    helper = osxkeychain
+    helper =
+    helper = /usr/local/share/gcm-core/git-credential-manager
+
+[credential "https://dev.azure.com"]
+    useHttpPath = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+[color]
+    ui = auto
+
+[diff]
+    tool = default-difftool
+
+[merge]
+    tool = default-mergetool
+
+[alias]
+    # Status & Info
+    st = status
+    s = status --short
+
+    # Branch operations
+    br = branch
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+
+    # Checkout
+    co = checkout
+    cob = checkout -b
+
+    # Commit
+    ci = commit
+    ca = commit -a
+    cm = commit -m
+    cam = commit -am
+    amend = commit --amend
+
+    # Add
+    a = add
+    aa = add --all
+    unstage = reset HEAD --
+
+    # Log & History
+    last = log -1 HEAD
+    l = log --oneline --graph --decorate
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    visual = log --graph --oneline --decorate --all
+    hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+
+    # Diff
+    d = diff
+    dc = diff --cached
+
+    # Remote
+    pu = push
+    puf = push --force-with-lease
+    pl = pull
+
+    # Stash
+    ss = stash save
+    sp = stash pop
+    sl = stash list
+
+    # Utilities
+    aliases = config --get-regexp alias
+    contributors = shortlog --summary --numbered
+
+    # Undo
+    undo = reset --soft HEAD^
+    discard = checkout --
+
+# Include machine-specific config (optional)
+# Copy .gitconfig.local.template to ~/.gitconfig.local and customize
+[include]
+    path = ~/.gitconfig.local

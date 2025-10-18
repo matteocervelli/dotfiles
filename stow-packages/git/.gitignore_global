@@ -1,0 +1,181 @@
+# ====================================================================
+# GLOBAL GITIGNORE — Minimal Base Patterns
+# Managed by: ~/dev/projects/dotfiles
+# Version: 2.0
+# Date: 2025-01-18
+# ====================================================================
+#
+# PHILOSOPHY: Keep this file minimal. Use gitignore.io for specifics.
+#
+# Use the `gi` command (gitignore.io ZSH plugin) to generate ignores:
+#   gi list                    # List available templates
+#   gi macos,node,python       # Generate ignore patterns
+#   gi macos,node >> .gitignore # Append to project .gitignore
+#
+# Plugin: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/gitignore
+# Web: https://www.toptal.com/developers/gitignore
+# ====================================================================
+
+# ====================================================================
+# OS FILES (Essential)
+# ====================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+*.icloud
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ====================================================================
+# EDITORS & IDEs (Essential only)
+# ====================================================================
+
+# VS Code / Cursor
+.vscode/
+.cursor/
+.claude/
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# ====================================================================
+# SECRETS & CREDENTIALS (Critical)
+# ====================================================================
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.sample
+
+# Cloud credentials
+.aws/credentials
+.gcloud/
+.azure/
+
+# SSH & GPG (private keys)
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.pem
+*.key
+*.gpg
+
+# ====================================================================
+# VERSION CONTROL
+# ====================================================================
+
+# Git
+.git/
+.gitattributes
+
+# ====================================================================
+# DEVELOPMENT TOOLS (Minimal — use `gi` for language-specific)
+# ====================================================================
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+ENV/
+.venv/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+
+# ====================================================================
+# PROJECT ARTIFACTS
+# ====================================================================
+
+# Build outputs (general)
+dist/
+build/
+out/
+*.o
+*.so
+*.dylib
+*.dll
+
+# Coverage
+.coverage
+coverage/
+*.lcov
+
+# ====================================================================
+# SHELL HISTORY & CONFIG
+# ====================================================================
+
+.bash_history
+.zsh_history
+.zsh_sessions/
+
+# Tool-specific
+.envrc
+.tool-versions
+
+# ====================================================================
+# FOR PROJECT-SPECIFIC PATTERNS:
+# ====================================================================
+# Use gitignore.io via the `gi` command:
+#
+# Examples:
+#   gi macos,linux,windows > .gitignore          # OS-specific
+#   gi node,react,nextjs >> .gitignore           # Frontend
+#   gi python,django,flask >> .gitignore         # Python
+#   gi go,rust,c++ >> .gitignore                 # Systems languages
+#   gi docker,terraform,ansible >> .gitignore    # DevOps
+#
+# Or combine multiple:
+#   gi macos,node,vscode,docker >> .gitignore
+#
+# Always commit .gitignore to your project repository!
+# ====================================================================
