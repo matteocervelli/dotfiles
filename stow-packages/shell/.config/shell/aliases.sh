@@ -91,9 +91,8 @@ alias passgen-32="pwgen -cny --remove-chars=\.\,\-\@\#\'\(\)\{\}\$\>\<\?\*\[\]\|
 # Network
 # =============================================================================
 
-# Tailscale SSH
-alias macbook="ssh matteocervelli@macbook4change"
-alias macstudio="ssh matteocervelli@studio4change"
+# Note: Tailscale SSH aliases removed - now managed in SSH config
+# Use: ssh macbook, ssh studio (configured in ~/.ssh/config.d/20-tailscale.conf)
 
 # =============================================================================
 # End of aliases

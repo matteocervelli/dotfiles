@@ -1,0 +1,13 @@
+# SSH Package - Local Files (Not Tracked in Git)
+
+# SSH socket directory (created by ControlMaster)
+.ssh/sockets/
+
+# SSH keys (should never be in git)
+.ssh/id_*
+.ssh/*.pem
+.ssh/*.key
+
+# Known hosts (machine-specific)
+.ssh/known_hosts
+.ssh/known_hosts.old
