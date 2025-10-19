@@ -1,6 +1,10 @@
 # Git Configuration
 # Managed by: ~/dev/projects/dotfiles
 # Stow package: git
+# Location: ~/.config/git/config (XDG Base Directory)
+#
+# Note: This configuration follows the XDG Base Directory Specification.
+# Global gitignore is at ~/.config/git/ignore (used automatically by Git)
 
 [user]
     name = Matteo Cervelli
@@ -9,12 +13,12 @@
 
 [core]
     editor = cursor --wait
-    excludesfile = ~/.gitignore_global
+    # Note: excludesfile not set - Git uses ~/.config/git/ignore by default (XDG)
     autocrlf = input
 
 [init]
     defaultBranch = main
-    templatedir = ~/.git-templates
+    templatedir = ~/.config/git/templates
 
 [pull]
     rebase = false
@@ -116,6 +120,6 @@
     discard = checkout --
 
 # Include machine-specific config (optional)
-# Copy .gitconfig.local.template to ~/.gitconfig.local and customize
+# Copy ~/.config/git/config.local.template to ~/.config/git/config.local and customize
 [include]
-    path = ~/.gitconfig.local
+    path = ~/.config/git/config.local

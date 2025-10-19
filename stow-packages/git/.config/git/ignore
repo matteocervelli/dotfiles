@@ -1,8 +1,13 @@
 # ====================================================================
 # GLOBAL GITIGNORE — Minimal Base Patterns
 # Managed by: ~/dev/projects/dotfiles
-# Version: 2.0
-# Date: 2025-01-18
+# Location: ~/.config/git/ignore (XDG Base Directory)
+# Version: 2.0 (XDG)
+# Date: 2025-10-19
+# ====================================================================
+#
+# NOTE: This file follows the XDG Base Directory Specification.
+# Git automatically uses this location when core.excludesFile is not set.
 # ====================================================================
 #
 # PHILOSOPHY: Keep this file minimal. Use gitignore.io for specifics.

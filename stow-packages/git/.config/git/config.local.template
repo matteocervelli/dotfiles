@@ -1,13 +1,14 @@
 # Machine-Specific Git Configuration
 # This file is NOT managed by Stow
+# Location: ~/.config/git/config.local (XDG Base Directory)
 #
 # SETUP INSTRUCTIONS:
-# 1. Copy this file to your home directory:
-#    cp .gitconfig.local.template ~/.gitconfig.local
+# 1. Copy this template to your config directory:
+#    cp ~/.config/git/config.local.template ~/.config/git/config.local
 #
 # 2. Customize for this machine (optional overrides)
 #
-# 3. The main .gitconfig includes this file automatically
+# 3. The main ~/.config/git/config includes this file automatically
 #
 # ====================================================================
 
@@ -30,7 +31,7 @@
 
 # Example: Local includes (company-specific config)
 # [include]
-#     path = ~/.gitconfig-work
+#     path = ~/.config/git/config-work
 
 # ====================================================================
 # COMMON USE CASES:
@@ -52,8 +53,8 @@
 #
 # 4. Directory-Specific Config (Conditional Includes):
 #    [includeIf "gitdir:~/work/"]
-#        path = ~/.gitconfig-work
+#        path = ~/.config/git/config-work
 #    [includeIf "gitdir:~/personal/"]
-#        path = ~/.gitconfig-personal
+#        path = ~/.config/git/config-personal
 #
 # ====================================================================
