@@ -1,0 +1,22 @@
+# Stow Local Ignore - GitHub CLI Package
+# Excludes sensitive files from stowing (credentials, tokens, etc.)
+
+# Exclude this file itself
+^/\.stow-local-ignore$
+
+# Exclude README (documentation only)
+^/README\.md$
+
+# IMPORTANT: Exclude authentication files (contain secrets)
+\.config/gh/hosts\.yml$
+
+# Exclude state files (machine-specific)
+\.config/gh/state\.yml$
+
+# Exclude cache and temporary files
+\.config/gh/cache/
+\.config/gh/.*\.lock$
+~$
+\.swp$
+\.bak$
+\.backup$
