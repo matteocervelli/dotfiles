@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Project Organization**: Reorganized LLM tools package for better sprint alignment
+  - Separated 1Password package (Issue #9) from LLM tools configuration
+  - Moved llm-tools package from FASE 1.6 to FASE 3.5 (Issue #28)
+  - Rationale: FASE 1 focuses on essential foundations, FASE 3 on application configurations
+  - 1Password remains in FASE 1 (required for secret management in subsequent phases)
+  - LLM tools (Claude Code, MCP servers) now grouped with other dev applications
 - Shell package (`stow-packages/shell/`) - Removed Tailscale SSH aliases
   - Removed `alias macbook` and `alias macstudio` from `aliases.sh`
   - Replaced with professional SSH config approach (better cross-tool compatibility)

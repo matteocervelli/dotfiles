@@ -91,12 +91,14 @@ dotfiles/
 - [x] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
 - [x] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
 - [x] packages/cursor/ - Configurazioni Cursor/VS Code (settings.json, keybindings.json)
-- [x] packages/claude/ - Configurazioni Claude Code e MCP
 - [x] packages/python/ - pyenv + pip configurations (.pyenvrc, .pythonrc, pip.conf)
 - [x] packages/node/ - nvm + npm configurations (.nvmrc, .npmrc, .nvmsh)
 - [x] packages/ssh/ - SSH config per rete Tailscale
 - [x] packages/homebrew/ - Brewfile completo con tutte le categorie
 - [x] scripts/install.sh - Script di installazione master completo
+- [x] packages/1password/ - 1Password CLI configuration (moved to FASE 1)
+
+**Note**: packages/llm-tools (Claude Code e MCP) è stato spostato a FASE 4 per meglio allinearsi con le configurazioni applicazioni.
 
 ### FASE 4: Automazione Homebrew e macOS 🟡 READY TO START
 
@@ -111,12 +113,13 @@ dotfiles/
 
 **DECISIONE RICHIESTA**: Preferisci screenshots manuali o script automatico per configurazioni macOS?
 
-### FASE 5: Infrastruttura e Development Environment  
+### FASE 5: Infrastruttura e Development Environment
 
 **Obiettivo**: Integrare con infrastruttura esistente
 
 - [ ] Template progetti con boilerplate esistenti
-- [ ] Configurazioni MCP servers
+- [ ] packages/llm-tools/ - Configurazioni Claude Code e MCP (spostato da FASE 3)
+- [ ] Configurazioni complete per 15+ MCP servers
 - [ ] Environment variables template per progetti
 - [ ] Script ricreazione struttura ~/dev
 - [ ] Integrazione con Mac Studio via Tailscale

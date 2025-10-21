@@ -153,12 +153,9 @@
 #### Package 4: 1password
 - [ ] **1.6.16** Create `stow-packages/1password/.config/op/` directory
 - [ ] **1.6.17** Add .gitkeep (config is auto-generated)
+- [ ] **1.6.18** Test 1password package
 
-#### Package 5: llm-tools
-- [ ] **1.6.18** Create `stow-packages/llm-tools/` structure
-- [ ] **1.6.19** Migrate Claude Code configs to `.config/claude/`
-- [ ] **1.6.20** Migrate MCP server configs to `.config/mcp/`
-- [ ] **1.6.21** Test llm-tools package
+**Note**: llm-tools package has been moved to FASE 3.5 for better logical separation with other application configurations.
 
 ### 1.7 Stow Automation
 
@@ -288,6 +285,15 @@
 #### Package: dev-env
 - [ ] **3.5.7** Create `stow-packages/dev-env/` for pyenv, nvm, docker configs
 - [ ] **3.5.8** Test dev-env package
+
+#### Package: llm-tools
+- [ ] **3.5.9** Create `stow-packages/llm-tools/` structure
+- [ ] **3.5.10** Migrate Claude Code configs to `.config/claude/`
+- [ ] **3.5.11** Migrate MCP server configs to `.config/mcp/`
+- [ ] **3.5.12** Document MCP server configurations
+- [ ] **3.5.13** Test llm-tools package
+
+**Note**: This package was moved from FASE 1.6 to better align with application configurations in FASE 3.
 
 **Acceptance Criteria**:
 - ✅ Brewfile installs all required apps
