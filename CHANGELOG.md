@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Stow automation scripts (`scripts/stow/`) - FASE 1.7
+  - `stow-all.sh` - Batch installer for all stow packages with statistics
+  - `stow-package.sh` - Individual package manager with --no-folding support
+  - `unstow-all.sh` - Batch uninstaller with safety confirmation and dry-run
+  - Comprehensive error handling and user feedback
+  - Dry-run mode support across all scripts
+  - Verbose and quiet output modes
 - SSH configuration package (`stow-packages/ssh/`) - FASE 1.6
   - Modular SSH configuration with `config.d/` directory structure
   - Cross-platform support (macOS and Linux) with platform-specific 1Password agent paths
