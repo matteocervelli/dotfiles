@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Makefile orchestration** (`Makefile`) - FASE 1.9
+  - Unified command interface for dotfiles management
+  - `make help` - Display all available commands with examples
+  - `make install` - Full installation (bootstrap + stow + health)
+  - `make bootstrap` - Install dependencies only
+  - `make stow` / `make stow-all` - Stow all packages (create symlinks)
+  - `make stow-dry-run` / `make stow-all-dry-run` - Preview all packages before stowing (dry-run mode)
+  - `make unstow` - Remove all symlinks
+  - `make stow-package PKG=<name>` - Stow single package
+  - `make stow-package-dry-run PKG=<name>` - Preview single package before stowing (dry-run mode)
+  - `make health` - Run comprehensive health checks
+  - `make backup` - Backup current configurations (placeholder, full implementation in FASE 2)
+  - `make clean` - Clean temporary files (.DS_Store, *.tmp, *.log)
+  - Formatted help menu with usage examples and emoji indicators
+  - Integration with all existing scripts in `scripts/` directory
+  - All stow operations support dry-run mode for safe preview before applying changes
 - Health check scripts (`scripts/health/`) - FASE 1.8
   - `check-stow.sh` - Verify GNU Stow symlinks point to correct dotfiles locations
   - `check-all.sh` - Comprehensive health check (OS, dependencies, 1Password auth, symlinks, Git config)
