@@ -1,5 +1,16 @@
 # Dotfiles Project - Piano Completo
 
+> **⚠️ NOTE**: This document is from the original project version (pre-refactor 2025-01-17).
+>
+> **Current active documents**:
+> - [TASK.md](TASK.md) - Current task list and project status (**FASE 1 ✅ COMPLETED 2025-10-21**)
+> - [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md) - Detailed implementation plan for FASE 1-6
+> - [ARCHITECTURE-DECISIONS.md](ARCHITECTURE-DECISIONS.md) - All design decisions
+>
+> This file is kept for historical reference only.
+
+---
+
 ## Obiettivo del Progetto
 
 Creare un sistema completo di dotfiles per macOS che permetta di:

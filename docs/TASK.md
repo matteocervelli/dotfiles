@@ -13,15 +13,15 @@
 
 ### Milestones
 
-| Phase | Milestone | Due Date | Issues |
-|-------|-----------|----------|--------|
-| ✅ FASE 0 | [Documentation & Refactor](https://github.com/matteocervelli/dotfiles/milestone/1) | 2025-01-17 | 0/0 (Closed) |
-| 🟡 FASE 1 | [Foundation](https://github.com/matteocervelli/dotfiles/milestone/2) | 2025-01-24 | [#1-#12](https://github.com/matteocervelli/dotfiles/milestone/2) |
-| ⚪ FASE 2 | [Secrets & Sync](https://github.com/matteocervelli/dotfiles/milestone/3) | 2025-01-31 | [#13-#18](https://github.com/matteocervelli/dotfiles/milestone/3) |
-| ⚪ FASE 3 | [Applications & XDG](https://github.com/matteocervelli/dotfiles/milestone/4) | 2025-02-07 | [#19-#21](https://github.com/matteocervelli/dotfiles/milestone/4) |
-| ⚪ FASE 4 | [VM Ubuntu Setup](https://github.com/matteocervelli/dotfiles/milestone/5) | 2025-02-14 | [#22-#23](https://github.com/matteocervelli/dotfiles/milestone/5) |
-| ⚪ FASE 5 | [Templates & Automation](https://github.com/matteocervelli/dotfiles/milestone/6) | 2025-02-21 | [#24-#25](https://github.com/matteocervelli/dotfiles/milestone/6) |
-| ⚪ FASE 6 | [Monitoring & Polish](https://github.com/matteocervelli/dotfiles/milestone/7) | 2025-02-28 | [#26-#27](https://github.com/matteocervelli/dotfiles/milestone/7) |
+| Phase | Milestone | Due Date | Issues | Status |
+|-------|-----------|----------|--------|--------|
+| ✅ FASE 0 | [Documentation & Refactor](https://github.com/matteocervelli/dotfiles/milestone/1) | 2025-01-17 | 0/0 | **CLOSED** |
+| ✅ FASE 1 | [Foundation](https://github.com/matteocervelli/dotfiles/milestone/2) | 2025-01-24 | 12/12 | **CLOSED** 2025-10-21 |
+| 🟡 FASE 2 | [Secrets & Sync](https://github.com/matteocervelli/dotfiles/milestone/3) | 2025-01-31 | [#13-#18](https://github.com/matteocervelli/dotfiles/milestone/3) | Ready to Start |
+| ⚪ FASE 3 | [Applications & XDG](https://github.com/matteocervelli/dotfiles/milestone/4) | 2025-02-07 | [#19-#21](https://github.com/matteocervelli/dotfiles/milestone/4) | Pending |
+| ⚪ FASE 4 | [VM Ubuntu Setup](https://github.com/matteocervelli/dotfiles/milestone/5) | 2025-02-14 | [#22-#23](https://github.com/matteocervelli/dotfiles/milestone/5) | Pending |
+| ⚪ FASE 5 | [Templates & Automation](https://github.com/matteocervelli/dotfiles/milestone/6) | 2025-02-21 | [#24-#25](https://github.com/matteocervelli/dotfiles/milestone/6) | Pending |
+| ⚪ FASE 6 | [Monitoring & Polish](https://github.com/matteocervelli/dotfiles/milestone/7) | 2025-02-28 | [#26-#27](https://github.com/matteocervelli/dotfiles/milestone/7) | Pending |
 
 ### Quick Links
 
@@ -33,9 +33,9 @@
 
 ## Status Overview
 
-- 📋 **Completed**: FASE 0 - Documentation & Refactor ([Milestone #1](https://github.com/matteocervelli/dotfiles/milestone/1))
-- 🟡 **Ready to Start**: FASE 1 - Foundation ([Issues #1-#12](https://github.com/matteocervelli/dotfiles/milestone/2))
-- ⚪ **Pending**: FASE 2 - Secrets & Sync ([Issues #13-#18](https://github.com/matteocervelli/dotfiles/milestone/3))
+- ✅ **Completed**: FASE 0 - Documentation & Refactor ([Milestone #1](https://github.com/matteocervelli/dotfiles/milestone/1))
+- ✅ **Completed**: FASE 1 - Foundation ([Milestone #2](https://github.com/matteocervelli/dotfiles/milestone/2)) - **CLOSED 2025-10-21**
+- 🟡 **Ready to Start**: FASE 2 - Secrets & Sync ([Issues #13-#18](https://github.com/matteocervelli/dotfiles/milestone/3))
 - ⚪ **Pending**: FASE 3 - Applications & XDG Compliance ([Issues #19-#21](https://github.com/matteocervelli/dotfiles/milestone/4))
 - ⚪ **Pending**: FASE 4 - VM Ubuntu Setup ([Issues #22-#23](https://github.com/matteocervelli/dotfiles/milestone/5))
 - ⚪ **Pending**: FASE 5 - Templates & Automation ([Issues #24-#25](https://github.com/matteocervelli/dotfiles/milestone/6))
@@ -67,11 +67,12 @@
 
 ---
 
-## FASE 1: Foundation
+## FASE 1: Foundation ✅
 
 **Obiettivo**: Establish base infrastructure for dotfiles management
 **Duration**: 6-8 hours
 **Priority**: Critical ⚡
+**Status**: ✅ **COMPLETED** 2025-10-21 | [Milestone #2](https://github.com/matteocervelli/dotfiles/milestone/2) CLOSED | All 12 issues resolved
 
 ### 1.1 Backup and Audit ✅
 
@@ -91,11 +92,14 @@
 **Completed**: 2025-01-17
 **Status**: ✅ All 60+ directories created and verified
 
-### 1.3 Configuration Files
+### 1.3 Configuration Files ✅
 
-- [ ] **1.3.1** Update `.gitignore` with comprehensive patterns
-- [ ] **1.3.2** Create `.stow-local-ignore` with proper exclusions
-- [ ] **1.3.3** Test both files with `git status` and `stow -n`
+- [x] **1.3.1** Update `.gitignore` with comprehensive patterns
+- [x] **1.3.2** Create `.stow-local-ignore` with proper exclusions
+- [x] **1.3.3** Test both files with `git status` and `stow -n`
+
+**Completed**: 2025-10-17
+**Status**: ✅ All configuration files created and tested
 
 ### 1.4 Utility Scripts ✅
 
@@ -106,12 +110,15 @@
 **Completed**: 2025-01-17
 **Status**: ✅ All utility scripts implemented with macOS, Linux, and Windows detection support
 
-### 1.5 Bootstrap Scripts
+### 1.5 Bootstrap Scripts ✅
 
-- [ ] **1.5.1** Create `scripts/bootstrap/macos-bootstrap.sh` (Homebrew, Stow, 1Password CLI, Rclone, yq)
-- [ ] **1.5.2** Create `scripts/bootstrap/ubuntu-bootstrap.sh` (apt, Stow, 1Password CLI, Rclone, yq)
-- [ ] **1.5.3** Create `scripts/bootstrap/install.sh` (master orchestrator)
-- [ ] **1.5.4** Test bootstrap on macOS
+- [x] **1.5.1** Create `scripts/bootstrap/macos-bootstrap.sh` (Homebrew, Stow, 1Password CLI, Rclone, yq)
+- [x] **1.5.2** Create `scripts/bootstrap/ubuntu-bootstrap.sh` (apt, Stow, 1Password CLI, Rclone, yq)
+- [x] **1.5.3** Create `scripts/bootstrap/install.sh` (master orchestrator)
+- [x] **1.5.4** Test bootstrap on macOS
+
+**Completed**: 2025-10-17
+**Status**: ✅ All bootstrap scripts implemented and tested
 
 ### 1.6 Stow Packages (Priority 5)
 
@@ -136,50 +143,69 @@
 - Bootstrap script with Oh My Zsh, zsh-autosuggestions, zsh-syntax-highlighting, Powerlevel10k
 - Verified symlinks: .zshrc, .bashrc, .p10k.zsh, .config/shell/
 
-#### Package 2: git
-- [ ] **1.6.6** Create `stow-packages/git/` structure
-- [ ] **1.6.7** Create `.gitconfig` with user info and aliases
-- [ ] **1.6.8** Create `.gitignore_global`
-- [ ] **1.6.9** Create `.git-templates/hooks/`
-- [ ] **1.6.10** Test git package
+#### Package 2: git ✅
+- [x] **1.6.6** Create `stow-packages/git/` structure
+- [x] **1.6.7** Create `.gitconfig` with user info and aliases
+- [x] **1.6.8** Create `.gitignore_global`
+- [x] **1.6.9** Create `.git-templates/hooks/`
+- [x] **1.6.10** Test git package
 
-#### Package 3: ssh
-- [ ] **1.6.11** Create `stow-packages/ssh/` structure
-- [ ] **1.6.12** Create `.ssh/config` with Include directive
-- [ ] **1.6.13** Create `.ssh/config.d/tailscale.conf` (Tailscale network)
-- [ ] **1.6.14** Create `.ssh/config.d/github.conf`
-- [ ] **1.6.15** Test ssh package
+**Completed**: 2025-10-20
+**Status**: ✅ Git package fully implemented with 1Password SSH signing, 30+ aliases, cross-platform support
 
-#### Package 4: 1password
-- [ ] **1.6.16** Create `stow-packages/1password/.config/op/` directory
-- [ ] **1.6.17** Add .gitkeep (config is auto-generated)
-- [ ] **1.6.18** Test 1password package
+#### Package 3: ssh ✅
+- [x] **1.6.11** Create `stow-packages/ssh/` structure
+- [x] **1.6.12** Create `.ssh/config` with Include directive
+- [x] **1.6.13** Create `.ssh/config.d/tailscale.conf` (Tailscale network)
+- [x] **1.6.14** Create `.ssh/config.d/github.conf`
+- [x] **1.6.15** Test ssh package
+
+**Completed**: 2025-10-20
+**Status**: ✅ SSH package fully implemented with Tailscale network, GitHub config, 1Password agent integration
+
+#### Package 4: 1password ✅
+- [x] **1.6.16** Create `stow-packages/1password/.config/op/` directory
+- [x] **1.6.17** Add .gitkeep (config is auto-generated)
+- [x] **1.6.18** Test 1password package
+
+**Completed**: 2025-10-19
+**Status**: ✅ 1Password package created (configuration auto-generated by CLI)
 
 **Note**: llm-tools package has been moved to FASE 3.5 for better logical separation with other application configurations.
 
-### 1.7 Stow Automation
+### 1.7 Stow Automation ✅
 
-- [ ] **1.7.1** Create `scripts/stow/stow-all.sh` (stow all packages)
-- [ ] **1.7.2** Create `scripts/stow/stow-package.sh` (stow single package)
-- [ ] **1.7.3** Create `scripts/stow/unstow-all.sh` (remove symlinks)
-- [ ] **1.7.4** Test stow scripts
+- [x] **1.7.1** Create `scripts/stow/stow-all.sh` (stow all packages)
+- [x] **1.7.2** Create `scripts/stow/stow-package.sh` (stow single package)
+- [x] **1.7.3** Create `scripts/stow/unstow-all.sh` (remove symlinks)
+- [x] **1.7.4** Test stow scripts
 
-### 1.8 Health Checks
+**Completed**: 2025-10-20
+**Status**: ✅ All stow automation scripts implemented with dry-run support, verbose/quiet modes, comprehensive error handling
 
-- [ ] **1.8.1** Create `scripts/health/check-stow.sh` (verify symlinks)
-- [ ] **1.8.2** Create `scripts/health/check-all.sh` (verify dependencies + symlinks)
-- [ ] **1.8.3** Test health check scripts
+### 1.8 Health Checks ✅
 
-### 1.9 Makefile
+- [x] **1.8.1** Create `scripts/health/check-stow.sh` (verify symlinks)
+- [x] **1.8.2** Create `scripts/health/check-all.sh` (verify dependencies + symlinks)
+- [x] **1.8.3** Test health check scripts
 
-- [ ] **1.9.1** Create `Makefile` with targets: install, stow, unstow, health, backup, clean
-- [ ] **1.9.2** Test all Makefile targets
+**Completed**: 2025-10-21
+**Status**: ✅ Comprehensive health checks implemented with OS detection, dependency verification, symlink validation, Git config checks
+
+### 1.9 Makefile ✅
+
+- [x] **1.9.1** Create `Makefile` with targets: install, stow, unstow, health, backup, clean
+- [x] **1.9.2** Test all Makefile targets
+
+**Completed**: 2025-10-21
+**Status**: ✅ Makefile orchestration complete with dry-run support, formatted help menu, integration with all scripts
 
 **Acceptance Criteria**:
 - ✅ `make install` completes without errors
-- ✅ All 5 packages stowed correctly
-- ✅ `make health` passes all checks
+- ✅ All packages stowed correctly
+- ✅ `make health` passes all checks (13/13 passed)
 - ✅ Symlinks point to correct dotfiles locations
+- ✅ Dry-run mode available for safe preview (`make stow-dry-run`, `make stow-package-dry-run`)
 
 ---
 
@@ -433,20 +459,22 @@
 **Date**: 2025-01-17
 **Criteria**: All architectural decisions documented, implementation plan ready
 
-### 🎯 Milestone 1: Foundation Complete
+### 🎯 Milestone 1: Foundation Complete ✅
 
-**Status**: 🟡 READY TO START
+**Status**: ✅ **COMPLETED** 2025-10-21
 **Target**: FASE 1 completion
 **Criteria**:
-- Directory structure complete
-- Bootstrap scripts working
-- 5 priority stow packages functional
-- Health checks passing
+- ✅ Directory structure complete (60+ directories)
+- ✅ Bootstrap scripts working (macOS, Ubuntu, master orchestrator)
+- ✅ 4 stow packages functional (shell, git, ssh, 1password) + 5 placeholder packages
+- ✅ Health checks passing (13/13 checks passed)
+- ✅ Makefile orchestration complete with dry-run support
+- ✅ All 12 GitHub issues closed ([Milestone #2](https://github.com/matteocervelli/dotfiles/milestone/2))
 
 ### 🎯 Milestone 2: Secrets & Sync Complete
 
-**Status**: ⚪ PENDING
-**Target**: FASE 2 completion
+**Status**: 🟡 READY TO START
+**Target**: FASE 2 completion ([Milestone #3](https://github.com/matteocervelli/dotfiles/milestone/3))
 **Criteria**:
 - 1Password integration working
 - R2 sync functional
@@ -508,8 +536,9 @@
 ## Quick Reference
 
 ### Current Status
-- **Phase**: FASE 0 ✅ Complete, FASE 1 🟡 Ready to Start
-- **Next Action**: Begin FASE 1.1 (Backup and Audit)
+- **Phase**: FASE 0 ✅ Complete, FASE 1 ✅ Complete (2025-10-21)
+- **Next Phase**: FASE 2 🟡 Ready to Start ([Secrets & Sync](https://github.com/matteocervelli/dotfiles/milestone/3))
+- **Next Action**: Begin FASE 2.1 (1Password CLI Integration)
 - **Blockers**: None
 
 ### Key Documents
@@ -545,5 +574,5 @@ make backup         # Backup configs
 
 **Created**: 2024-12-06 (Original)
 **Refactored**: 2025-01-17 (Complete rewrite)
-**Last Updated**: 2025-01-17
-**Status**: FASE 0 ✅ Complete | FASE 1 🟡 Ready to Start
+**Last Updated**: 2025-10-21
+**Status**: FASE 0 ✅ Complete | FASE 1 ✅ Complete (2025-10-21) | FASE 2 🟡 Ready to Start
