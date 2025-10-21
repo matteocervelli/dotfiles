@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Health check scripts (`scripts/health/`) - FASE 1.8
+  - `check-stow.sh` - Verify GNU Stow symlinks point to correct dotfiles locations
+  - `check-all.sh` - Comprehensive health check (OS, dependencies, 1Password auth, symlinks, Git config)
+  - Support for verbose mode (`-v`) to show all checks including successful ones
+  - Proper exit codes: 0 (success), 1 (failures detected)
+  - Smart symlink verification with relative path resolution (GNU Stow compatibility)
+  - Actionable error messages with suggested fixes
+  - Statistics summary: total checks, passed, warnings, failed
 - Stow automation scripts (`scripts/stow/`) - FASE 1.7
   - `stow-all.sh` - Batch installer for all stow packages with statistics
   - `stow-package.sh` - Individual package manager with --no-folding support
