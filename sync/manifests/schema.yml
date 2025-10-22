@@ -25,6 +25,11 @@ assets:                        # List of assets (required, can be empty array)
                               # Format: "project-name/category/filename"
                               # Example: "my-ai-app/models/whisper-large-v3.bin"
 
+    cdn_url: string            # Public CDN URL (optional)
+                              # Used when file is served via Cloudflare CDN
+                              # Example: "https://cdn.adlimen.it/logos/adlimen/logo.svg"
+                              # If omitted, file is private (R2 only)
+
     size: integer              # File size in bytes (required)
                               # Used for verification and progress display
                               # Example: 2847213568 (2.65 GB)
@@ -141,7 +146,7 @@ assets:                        # List of assets (required, can be empty array)
 #     description: "Validation dataset (1GB)"
 
 # ============================================================================
-# EXAMPLE 3: Media/Content Project
+# EXAMPLE 3: Media/Content Project with CDN URLs
 # ============================================================================
 
 # project: website-assets
@@ -150,28 +155,31 @@ assets:                        # List of assets (required, can be empty array)
 # assets:
 #   - path: data/media/hero-background.jpg
 #     r2_key: website-assets/media/hero-background.jpg
+#     cdn_url: https://cdn.example.com/media/hero-background.jpg
 #     size: 2097152
 #     sha256: 123456789012345678901234567890abcdef1234567890abcdef1234567890
 #     type: media
 #     sync: true
-#     description: "Hero section background image (2MB)"
+#     description: "Hero section background image (2MB) - publicly accessible via CDN"
 #
 #   - path: data/videos/product-demo.mp4
 #     r2_key: website-assets/videos/product-demo.mp4
+#     cdn_url: https://cdn.example.com/videos/product-demo.mp4
 #     size: 52428800
 #     sha256: 234567890123456789012345678901abcdef1234567890abcdef12345678901
 #     type: video
 #     sync: true
 #     devices: [macbook, mac-studio]
-#     description: "Product demonstration video (50MB)"
+#     description: "Product demonstration video (50MB) - streamed via CDN"
 #
 #   - path: data/documents/user-manual.pdf
 #     r2_key: website-assets/documents/user-manual.pdf
+#     cdn_url: https://cdn.example.com/docs/user-manual.pdf
 #     size: 5242880
 #     sha256: 34567890123456789012345678901abcdef1234567890abcdef123456789012
 #     type: document
 #     sync: true
-#     description: "User manual PDF (5MB)"
+#     description: "User manual PDF (5MB) - public download link"
 
 # ============================================================================
 # EXAMPLE 4: Empty Project (No Assets Yet)

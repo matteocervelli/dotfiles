@@ -547,6 +547,49 @@ assets:
     description: "Model v2.0 - improved, accuracy: 92%"
 ```
 
+### CDN URLs for Public Assets
+
+For assets served publicly via Cloudflare CDN, include the `cdn_url` field:
+
+```yaml
+assets:
+  - path: data/media/logo.svg
+    r2_key: my-project/media/logo.svg
+    cdn_url: https://cdn.example.com/media/logo.svg
+    size: 15234
+    sha256: a1b2c3d4...
+    type: media
+    sync: true
+    description: "Company logo - publicly accessible via CDN"
+```
+
+**Use cases**:
+- **Web assets**: Images, videos, fonts served to website visitors
+- **Public downloads**: Documentation, installers, user guides
+- **API responses**: Media URLs returned by your API
+- **Sharing links**: Direct links to share files with clients
+
+**Benefits**:
+- **Documentation**: Team knows the public URL for each asset
+- **Code generation**: Scripts can generate code with correct CDN URLs
+- **Verification**: Check if file is accessible publicly
+- **Migration**: Track which files need CDN setup
+
+**Example workflow**:
+```bash
+# 1. Upload to R2
+rclone copy data/media/logo.svg r2:dotfiles-assets/my-project/media/
+
+# 2. Configure Cloudflare R2 public bucket or custom domain
+# (via Cloudflare dashboard)
+
+# 3. Add cdn_url to manifest
+yq eval '.assets[0].cdn_url = "https://cdn.example.com/media/logo.svg"' -i .r2-manifest.yml
+
+# 4. Test public access
+curl -I https://cdn.example.com/media/logo.svg
+```
+
 ### Cross-Project Assets
 
 Share assets between projects by using consistent R2 paths:
