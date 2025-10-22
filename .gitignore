@@ -278,6 +278,7 @@ backups/
 .env.*
 !.env.template
 !.env.example
+!.env.*.template
 
 ##### GNU Stow test files ############################################
 .stow-test/

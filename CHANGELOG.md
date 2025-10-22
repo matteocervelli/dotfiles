@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Project Setup Script Template** (`templates/project/`) - FASE 2.2 (Issue #14)
+  - `dev-setup.sh.template` - Standard project initialization script for all projects
+  - `README.md` - Comprehensive usage documentation with examples and troubleshooting
+  - `.env.development.template` - Development environment template with 1Password references
+  - `.env.production.template` - Production environment template with 1Password references
+  - Automated workflow: Git clone/pull → Secret injection → Asset sync (R2) → Project-specific setup
+  - Multi-level 1Password tagging system: [PROJECT] + [ENVIRONMENT] + [TYPE] + [CUSTOM]
+  - Support for shared secrets across multiple projects via tags
+  - Environment-aware configuration (development, staging, production)
+  - Vault override support: `export OP_VAULT=Projects` for centralized vault strategy
+  - `scripts/secrets/create-project-secret.sh` - CLI tool for creating 1Password secrets with proper categories
+  - Supports proper 1Password item types: Database, API Credential, Login, Server (native fields)
+  - Tag hierarchy enables flexible querying: by project, environment, type, or combinations
+  - Example: `op item list --vault=Projects --tags=APP-Discreto,production,database`
+- **Production Secret Management** (`templates/production/`) - FASE 2.2 (Issue #14)
+  - `setup-prod-secrets.sh` - VPS setup script for Docker Secrets initialization
+  - `.env.prod.template` - Production environment template (for VPS without 1Password)
+  - Docker Secrets integration: encrypted at rest, mounted as files in `/run/secrets/`
+  - One-time secret injection from 1Password to Docker Secrets on VPS
+  - Security: Secrets stored encrypted, accessed via file mounts (not environment variables)
+  - Integration with docker-compose for production deployments
 - **1Password CLI Integration** (`scripts/secrets/`, `secrets/`) - FASE 2.1 (Issue #13)
   - `inject-env.sh` - Wrapper for `op inject` with authentication checking and validation
   - `validate-secrets.sh` - Verify secret injection completeness (detects remaining op:// references)
