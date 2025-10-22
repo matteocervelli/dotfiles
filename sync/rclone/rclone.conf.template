@@ -1,0 +1,33 @@
+# Rclone Configuration Template for Cloudflare R2
+# Generate actual config: ~/dotfiles/scripts/sync/setup-rclone.sh
+# Or manually: op inject -i rclone.conf.template -o ~/.config/rclone/rclone.conf
+
+[remote-cdn]
+type = s3
+provider = Cloudflare
+access_key_id = op://Private/Cloudflare-R2/access_key_id
+secret_access_key = op://Private/Cloudflare-R2/secret_access_key
+region = auto
+endpoint = op://Private/Cloudflare-R2/endpoint
+bucket_acl = private
+description = CDN for Ad Limen integrated infrastructure
+no_check_bucket = true
+
+# Notes:
+# - This template uses 1Password secret references (op://...)
+# - Actual config is generated in: ~/.config/rclone/rclone.conf
+# - Never commit the actual rclone.conf file (contains secrets)
+# - Credentials are managed centrally in 1Password
+#
+# 1Password Item Structure:
+#   Vault: Private
+#   Item: Cloudflare-R2
+#   Fields:
+#     - access_key_id: Your R2 Access Key ID
+#     - secret_access_key: Your R2 Secret Access Key
+#     - endpoint: https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com
+#
+# Usage:
+#   1. Ensure 1Password CLI is authenticated: eval $(op signin)
+#   2. Run setup script: ~/dotfiles/scripts/sync/setup-rclone.sh
+#   3. Test connection: rclone lsd remote-cdn:

@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Rclone Setup for R2** (`sync/rclone/`, `scripts/sync/`) - FASE 2.3 (Issue #15)
+  - `sync/rclone/rclone.conf.template` - Configuration template with 1Password references
+  - `sync/rclone/README.md` - Comprehensive documentation with setup, usage, and troubleshooting
+  - `scripts/sync/setup-rclone.sh` - Automated setup with 1Password secret injection
+  - `scripts/sync/test-rclone.sh` - Connection testing and validation script
+  - `scripts/sync/sync-cdn-media.sh` - Media CDN synchronization to R2 (migrated from ~/dev/scripts/)
+  - 1Password integration: Credentials stored in vault (Private/Cloudflare-R2)
+  - Security: Config file permissions 600, gitignored, never committed
+  - Remote configured: `remote-cdn:` for Cloudflare R2 bucket `media-adlimen`
+  - Usage: `./scripts/sync/setup-rclone.sh` → `rclone lsd remote-cdn:`
+  - Tested: ✅ Connection verified, 253 files in bucket
 - **Project Setup Script Template** (`templates/project/`) - FASE 2.2 (Issue #14)
   - `dev-setup.sh.template` - Standard project initialization script for all projects
   - `README.md` - Comprehensive usage documentation with examples and troubleshooting
