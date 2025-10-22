@@ -215,13 +215,17 @@
 **Duration**: 4-6 hours
 **Priority**: Critical ⚡
 
-### 2.1 1Password CLI Integration
+### 2.1 1Password CLI Integration ✅
 
-- [ ] **2.1.1** Create `scripts/secrets/inject-env.sh` (op inject wrapper)
-- [ ] **2.1.2** Create `scripts/secrets/validate-secrets.sh` (verify no remaining op:// refs)
-- [ ] **2.1.3** Create `secrets/template.env` (standard template)
-- [ ] **2.1.4** Create `secrets/docker-compose-op.yml` (example)
-- [ ] **2.1.5** Test secret injection with 1Password
+- [x] **2.1.1** Create `scripts/secrets/inject-env.sh` (op inject wrapper)
+- [x] **2.1.2** Create `scripts/secrets/validate-secrets.sh` (verify no remaining op:// refs)
+- [x] **2.1.3** Create `secrets/template.env` (standard template)
+- [x] **2.1.4** Create `secrets/docker-compose-op.yml` (example)
+- [x] **2.1.5** Test secret injection with 1Password
+
+**Completed**: 2025-10-21
+**Status**: ✅ All tasks completed, scripts tested and working
+**GitHub Issue**: [#13](https://github.com/matteocervelli/dotfiles/issues/13)
 
 ### 2.2 Project Setup Script Template
 

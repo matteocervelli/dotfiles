@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **1Password CLI Integration** (`scripts/secrets/`, `secrets/`) - FASE 2.1 (Issue #13)
+  - `inject-env.sh` - Wrapper for `op inject` with authentication checking and validation
+  - `validate-secrets.sh` - Verify secret injection completeness (detects remaining op:// references)
+  - `template.env` - Standard .env template with 1Password reference examples
+  - `docker-compose-op.yml` - Docker Compose example with 1Password integration
+  - Automated secret injection from 1Password to .env files
+  - Security: No secrets ever committed to git (gitignore configured)
+  - Usage: `./scripts/secrets/inject-env.sh .env.template` (auto-generates .env)
+  - Validation: `./scripts/secrets/validate-secrets.sh .env` (checks for uninjected refs)
+  - Intended workflow: Each project has `dev-setup.sh` script that calls inject-env.sh
+  - Cross-platform support (macOS, Linux)
 - **Makefile orchestration** (`Makefile`) - FASE 1.9
   - Unified command interface for dotfiles management
   - `make help` - Display all available commands with examples
