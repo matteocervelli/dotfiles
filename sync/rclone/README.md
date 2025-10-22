@@ -63,7 +63,8 @@ You need to create an item in 1Password with the following structure:
 eval $(op signin)
 
 # 2. Run setup script
-~/dotfiles/scripts/sync/setup-rclone.sh
+setup-rclone
+# Or with full path: ~/.local/bin/setup-rclone
 ```
 
 The script will:
@@ -123,7 +124,8 @@ rclone ls remote-cdn:media-adlimen
 rclone sync ~/media/cdn remote-cdn:media-adlimen --progress
 
 # Or use the provided script
-~/dotfiles/scripts/sync/sync-cdn-media.sh
+rclone-cdn-sync
+# Or via alias: cdnsync
 ```
 
 ### Download from R2
@@ -137,7 +139,8 @@ rclone copy remote-cdn:media-adlimen/file.jpg ~/Downloads/
 ### Test Connection
 
 ```bash
-~/dotfiles/scripts/sync/test-rclone.sh
+test-rclone
+# Or with full path: ~/.local/bin/test-rclone
 ```
 
 ### Manual Connection Test
@@ -266,9 +269,12 @@ export RCLONE_CONFIG_REMOTE_CDN_ENDPOINT="$(op read 'op://Private/Cloudflare-R2/
 
 ## Related Scripts
 
-- [`scripts/sync/setup-rclone.sh`](../../scripts/sync/setup-rclone.sh) - Setup script
-- [`scripts/sync/test-rclone.sh`](../../scripts/sync/test-rclone.sh) - Connection test
-- [`scripts/sync/sync-cdn-media.sh`](../../scripts/sync/sync-cdn-media.sh) - Media sync script
+After `stow bin`, these scripts are available in `~/.local/bin/`:
+
+- `setup-rclone` - Setup script ([source](../../stow-packages/bin/.local/bin/setup-rclone))
+- `test-rclone` - Connection test ([source](../../stow-packages/bin/.local/bin/test-rclone))
+- `rclone-cdn-sync` - Media sync script ([source](../../stow-packages/bin/.local/bin/rclone-cdn-sync))
+  - Alias: `cdnsync` (defined in shell aliases)
 
 ## Additional Resources
 

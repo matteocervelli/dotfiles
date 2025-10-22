@@ -66,7 +66,7 @@ alias pip=pip3
 # =============================================================================
 
 alias newshort=~/dev/scripts/add-new-short-link.sh
-alias cdnsync=~/dev/scripts/rclone-cdn-sync.sh
+alias cdnsync=~/.local/bin/rclone-cdn-sync
 alias initproject=~/dev/scripts/launch-project.sh
 alias ollama-sync=~/dev/scripts/add-llm-to-ollama.sh
 
