@@ -1,0 +1,222 @@
+# R2 Asset Manifest Schema
+# Version: 1.0
+# Purpose: Track binary assets stored in Cloudflare R2
+# Location: Each project should have a `.r2-manifest.yml` file in its root directory
+
+# ============================================================================
+# SCHEMA DEFINITION
+# ============================================================================
+
+project: string                # Project name (required)
+                              # Example: "my-ai-app", "discreto-backend"
+
+version: string                # Manifest version (required, default: "1.0")
+                              # Semantic versioning recommended: "1.0", "1.1", "2.0"
+
+updated: datetime              # Last update timestamp (required)
+                              # Format: ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)
+                              # Example: "2025-01-17T10:30:00Z"
+
+assets:                        # List of assets (required, can be empty array)
+  - path: string               # Local path relative to project root (required)
+                              # Example: "data/models/whisper-large-v3.bin"
+
+    r2_key: string             # R2 object key / bucket path (required)
+                              # Format: "project-name/category/filename"
+                              # Example: "my-ai-app/models/whisper-large-v3.bin"
+
+    size: integer              # File size in bytes (required)
+                              # Used for verification and progress display
+                              # Example: 2847213568 (2.65 GB)
+
+    sha256: string             # SHA256 checksum (required)
+                              # Used for integrity verification after download
+                              # Example: "a1b2c3d4e5f6789..."
+
+    type: string               # Asset type (required)
+                              # Valid values: model, dataset, media, video, audio, document, data
+                              # Used for categorization and selective sync
+
+    sync: boolean              # Whether to sync automatically (optional, default: true)
+                              # Set to false for manual-only downloads
+                              # Example: true (auto-sync), false (manual)
+
+    devices: array             # Target devices (optional)
+                              # List of device names that need this asset
+                              # Example: [macbook, mac-studio, ubuntu-vm-1]
+                              # If omitted, asset syncs to all devices
+
+    description: string        # Human-readable description (optional)
+                              # Helpful for team collaboration and documentation
+                              # Example: "OpenAI Whisper Large V3 model for transcription"
+
+# ============================================================================
+# FIELD TYPE REFERENCE
+# ============================================================================
+
+# string    - Text value, quoted or unquoted in YAML
+# integer   - Numeric value without decimals
+# boolean   - true or false
+# datetime  - ISO 8601 formatted timestamp (UTC recommended)
+# array     - List of values: [value1, value2, value3]
+
+# ============================================================================
+# ASSET TYPES
+# ============================================================================
+
+# model      - AI/ML models (.bin, .gguf, .safetensors, .weights, .pt, .h5)
+# dataset    - Training data, archives (.tar, .tar.gz, .zip, .parquet)
+# media      - Images (.jpg, .png, .gif, .webp, .svg)
+# video      - Video files (.mp4, .mov, .avi, .mkv)
+# audio      - Audio files (.mp3, .wav, .flac, .m4a)
+# document   - Documents (.pdf, .doc, .docx, .epub)
+# data       - Generic data files (anything else)
+
+# ============================================================================
+# EXAMPLE 1: AI/ML Project with Multiple Models
+# ============================================================================
+
+# project: discreto-ai
+# version: "1.0"
+# updated: 2025-01-17T10:30:00Z
+# assets:
+#   - path: data/models/whisper-large-v3.bin
+#     r2_key: discreto-ai/models/whisper-large-v3.bin
+#     size: 2847213568
+#     sha256: a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456
+#     type: model
+#     sync: true
+#     devices: [macbook, mac-studio, ubuntu-vm-1]
+#     description: "OpenAI Whisper Large V3 model for high-quality transcription"
+#
+#   - path: data/models/whisper-medium.bin
+#     r2_key: discreto-ai/models/whisper-medium.bin
+#     size: 1542842368
+#     sha256: b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567
+#     type: model
+#     sync: true
+#     devices: [macbook]
+#     description: "Whisper Medium model for laptop use (smaller, faster)"
+#
+#   - path: data/models/embedding-model.bin
+#     r2_key: discreto-ai/models/embedding-model.bin
+#     size: 438976512
+#     sha256: c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678
+#     type: model
+#     sync: true
+#     description: "Sentence embedding model for RAG system"
+
+# ============================================================================
+# EXAMPLE 2: Dataset-Heavy Project with Selective Sync
+# ============================================================================
+
+# project: ml-training
+# version: "1.0"
+# updated: 2025-01-18T15:45:00Z
+# assets:
+#   - path: data/datasets/training-small.tar.gz
+#     r2_key: ml-training/datasets/training-small.tar.gz
+#     size: 104857600
+#     sha256: d4e5f6789012345678901234567890abcdef1234567890abcdef123456789
+#     type: dataset
+#     sync: true
+#     devices: [macbook, mac-studio]
+#     description: "Small training dataset (100MB) for development"
+#
+#   - path: data/datasets/training-full.tar.gz
+#     r2_key: ml-training/datasets/training-full.tar.gz
+#     size: 53687091200
+#     sha256: e5f6789012345678901234567890abcdef1234567890abcdef1234567890a
+#     type: dataset
+#     sync: false
+#     devices: [mac-studio]
+#     description: "Full training dataset (50GB) - manual download only"
+#
+#   - path: data/datasets/validation.tar.gz
+#     r2_key: ml-training/datasets/validation.tar.gz
+#     size: 1073741824
+#     sha256: f6789012345678901234567890abcdef1234567890abcdef1234567890ab
+#     type: dataset
+#     sync: true
+#     description: "Validation dataset (1GB)"
+
+# ============================================================================
+# EXAMPLE 3: Media/Content Project
+# ============================================================================
+
+# project: website-assets
+# version: "1.0"
+# updated: 2025-01-19T09:00:00Z
+# assets:
+#   - path: data/media/hero-background.jpg
+#     r2_key: website-assets/media/hero-background.jpg
+#     size: 2097152
+#     sha256: 123456789012345678901234567890abcdef1234567890abcdef1234567890
+#     type: media
+#     sync: true
+#     description: "Hero section background image (2MB)"
+#
+#   - path: data/videos/product-demo.mp4
+#     r2_key: website-assets/videos/product-demo.mp4
+#     size: 52428800
+#     sha256: 234567890123456789012345678901abcdef1234567890abcdef12345678901
+#     type: video
+#     sync: true
+#     devices: [macbook, mac-studio]
+#     description: "Product demonstration video (50MB)"
+#
+#   - path: data/documents/user-manual.pdf
+#     r2_key: website-assets/documents/user-manual.pdf
+#     size: 5242880
+#     sha256: 34567890123456789012345678901abcdef1234567890abcdef123456789012
+#     type: document
+#     sync: true
+#     description: "User manual PDF (5MB)"
+
+# ============================================================================
+# EXAMPLE 4: Empty Project (No Assets Yet)
+# ============================================================================
+
+# project: new-project
+# version: "1.0"
+# updated: 2025-01-20T12:00:00Z
+# assets: []
+
+# ============================================================================
+# USAGE NOTES
+# ============================================================================
+
+# 1. This file is a SCHEMA DEFINITION for reference
+#    - Copy relevant examples to create your project's `.r2-manifest.yml`
+#    - Place `.r2-manifest.yml` in your project root directory
+
+# 2. Generation
+#    - Use: ~/dotfiles/scripts/sync/generate-manifest.sh PROJECT_NAME
+#    - Scans data/ directory and generates manifest automatically
+
+# 3. Sync Operations
+#    - Pull assets: ~/dotfiles/scripts/sync/sync-r2.sh pull PROJECT_NAME
+#    - Push assets: ~/dotfiles/scripts/sync/sync-r2.sh push PROJECT_NAME --path FILE
+
+# 4. Best Practices
+#    - Commit `.r2-manifest.yml` to git (contains only metadata)
+#    - Add actual binary assets to `.gitignore`
+#    - Use `sync: false` for very large files (manual download)
+#    - Use `devices: [specific-machine]` for device-specific assets
+#    - Update checksums after modifying assets
+#    - Keep descriptions clear for team collaboration
+
+# 5. Integration
+#    - Works with rclone for R2 access
+#    - Integrates with 1Password for credentials
+#    - Called by project dev-setup.sh scripts
+#    - Version-controlled for history tracking
+
+# ============================================================================
+# RELATED DOCUMENTATION
+# ============================================================================
+
+# - Manifest Documentation: sync/manifests/README.md
+# - Rclone Setup: sync/rclone/README.md
+# - Implementation Plan: docs/IMPLEMENTATION-PLAN.md (section 2.4)
+# - Project Template: templates/project/dev-setup.sh.template

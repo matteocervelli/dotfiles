@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **R2 Manifest System** (`sync/manifests/`) - FASE 2.4 (Issue #16)
+  - `sync/manifests/schema.yml` - Complete YAML schema definition with field types and examples
+  - `sync/manifests/README.md` - Comprehensive documentation covering workflow, best practices, and troubleshooting
+  - Schema defines structure for `.r2-manifest.yml` files in project roots
+  - Manifest tracks binary assets: path, R2 key, size, SHA256 checksum, type, sync settings, device targeting
+  - Asset types supported: model, dataset, media, video, audio, document, data
+  - Selective sync with `sync: false` for manual-only downloads
+  - Device targeting with `devices: [macbook, mac-studio]` for machine-specific assets
+  - Integration with rclone, 1Password, and project dev-setup.sh scripts
+  - Workflow documented: generate → push → pull → update → verify
+  - Best practices: commit manifests to git, gitignore actual assets, selective sync, checksum verification
+  - Troubleshooting guide for common issues (checksum mismatch, missing assets, large transfers)
+  - Example manifests for AI/ML projects, datasets, media files, and empty projects
+  - Scripts (to be implemented in FASE 2.5): generate-manifest.sh, sync-r2.sh, update-manifest.sh, verify-manifest.sh
 - **Rclone Setup for R2** (`sync/rclone/`, `stow-packages/bin/`) - FASE 2.3 (Issue #15)
   - `sync/rclone/rclone.conf.template` - Configuration template with 1Password references
   - `sync/rclone/README.md` - Comprehensive documentation with setup, usage, and troubleshooting
