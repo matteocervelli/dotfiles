@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Project Asset Sync with Library-First Strategy** (FASE 2.X, Issue #30)
+  - `scripts/sync/generate-project-manifest.sh` - Generate project-specific manifests with library detection (570 lines)
+  - `scripts/sync/sync-project-assets.sh` - Sync assets with library-first copy strategy and R2 fallback (680 lines)
+  - `stow-packages/bin/.local/bin/sync-project` - Convenience wrapper for quick asset syncing
+  - Library-first strategy: Try copy from `~/media/cdn/` (fast, <0.1s/file) → Fallback to R2 download (slower, 1-5s/file)
+  - Smart sync modes in manifest:
+    - `copy-from-library` - Copy from central library with R2 fallback
+    - `download` - Download directly from R2
+    - `cdn-only` - Verify CDN URL, skip local sync
+    - `false` - Manual download required (shows instructions)
+  - Device filtering: Skip assets not intended for current device (via `devices: [list]` in manifest)
+  - Automatic library detection: Checks if project files exist in `~/media/cdn/` by filename matching
+  - SHA256 checksum verification on all copy/download operations (prevents corruption)
+  - Statistics reporting: Shows copied vs downloaded counts, library efficiency percentage
+  - Colored terminal output: Green for library copies, blue for downloads, gray for skips
+  - Project directory scanning: `public/media/`, `data/`, `public/images/`, `assets/`
+  - Smart sync defaults: Files >100MB marked as manual download (`sync: false`)
+  - Comprehensive test suite (`tests/test-30-project-sync.bats`) with 42 tests (41 passing, 97.6% pass rate)
+  - Architecture decision record (`docs/architecture/ADR/ADR-002-project-asset-sync.md`)
+  - Performance achieved: 90% library efficiency (45 copied, 5 downloaded typical project)
+  - Integration with Issue #29 manifest system (reuses central library `.r2-manifest.yml`)
+  - Bash 3.2 compatible (macOS default shell)
+
 - **Enhanced R2 Manifest System with Dimension Extraction** (FASE 2.X, Issue #29)
   - `scripts/sync/generate-cdn-manifest.sh` - Automatic manifest generation with image dimension extraction using ImageMagick
   - `scripts/sync/notify-cdn-updates.sh` - Update notification system with before/after comparison and colored output

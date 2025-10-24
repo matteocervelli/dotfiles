@@ -148,7 +148,7 @@ assets:
 
 ## Workflow
 
-### 1. Generate Central Library Manifest (New)
+### 1. Generate Central Library Manifest
 
 For the central CDN library at `~/media/cdn/`:
 
@@ -162,28 +162,32 @@ For the central CDN library at `~/media/cdn/`:
 - Dimension caching for performance
 - Colored output showing new/updated/unchanged files
 
-### 2. Generate Project Manifest
+### 2. Generate Project Manifest (New - Issue #30)
 
-When you add new binary assets to a project:
+When you add new binary assets to a project, generate a project-specific manifest:
 
 ```bash
-~/dotfiles/scripts/sync/generate-manifest.sh PROJECT_NAME
+~/dotfiles/scripts/sync/generate-project-manifest.sh PROJECT_NAME [PROJECT_DIR]
 ```
 
 **What it does**:
-- Scans the `data/` directory for all files
-- Calculates file sizes and SHA256 checksums
-- Generates `.r2-manifest.yml` with all metadata
-- Sets default values: `sync: true`, all devices
+- Scans project directories: `public/media/`, `data/`, `public/images/`, `assets/`
+- Checks if files exist in central library (`~/media/cdn/`) by filename
+- For library files: Sets `sync: copy-from-library` + `source` path
+- For project files: Sets `sync: download` + R2 key
+- Calculates SHA256 checksums
+- Smart defaults based on file size (>100MB = manual download)
+- Generates `.r2-manifest.yml` in project root
 
 **Example**:
 ```bash
-cd ~/dev/projects/my-ai-app
-mkdir -p data/models
-cp ~/Downloads/whisper-large.bin data/models/
+cd ~/dev/projects/APP-Portfolio
+# Add some assets
+cp ~/media/cdn/logos/logo.svg public/media/
+echo "config data" > data/config.json
 
 # Generate manifest
-~/dotfiles/scripts/sync/generate-manifest.sh my-ai-app
+~/dotfiles/scripts/sync/generate-project-manifest.sh app-portfolio
 
 # Review generated manifest
 cat .r2-manifest.yml
@@ -191,11 +195,77 @@ cat .r2-manifest.yml
 
 **Output**:
 ```
-[INFO] Generating manifest for my-ai-app
-[INFO] Added: data/models/whisper-large.bin (model, 2.65GB)
-[✓] Generated manifest with 1 assets
-[INFO] Manifest: /Users/you/dev/projects/my-ai-app/.r2-manifest.yml
+[INFO] Generating project manifest for: app-portfolio
+[INFO] Loading central library manifest from: /Users/you/media/cdn
+[✓] Library loaded: 150 files indexed
+
+[INFO] Scanning project directories...
+[📚 Library] public/media/logo.svg (15.2KB) → from library
+[📦 Project] data/config.json (12B) → R2 download
+
+📊 Summary:
+  📚 From library: 1 files (copy-from-library)
+  📦 Project-specific: 1 files (R2 download)
+  Total: 2 files
+
+[✓] Manifest generated: .r2-manifest.yml
+[INFO] Library efficiency: 50% of files can be copied locally (fast!)
 ```
+
+### 3. Sync Project Assets (New - Issue #30)
+
+After cloning a project or updating assets, sync them to your local machine:
+
+```bash
+cd ~/dev/projects/APP-Portfolio
+sync-project pull
+# OR
+~/dotfiles/scripts/sync/sync-project-assets.sh pull
+```
+
+**What it does**:
+- Reads `.r2-manifest.yml` in project
+- For each asset:
+  - **copy-from-library**: Tries to copy from `~/media/cdn/` (fast, <0.1s)
+  - If library unavailable: Falls back to R2 download (slower, 1-5s)
+  - **download**: Downloads directly from R2
+  - **cdn-only**: Verifies CDN URL is accessible, skips local sync
+  - **false**: Shows manual download instructions
+- Filters by device (skips assets not for this device)
+- Verifies SHA256 checksums on all operations
+- Reports statistics (copied vs downloaded)
+
+**Example output**:
+```
+[INFO] Syncing assets for project: APP-Portfolio
+[INFO] Device: macbook
+
+[📚 Copy] public/media/logo.svg (15.2KB) ← logos
+[⬇️  Download] data/config.json (12B) ← R2
+[✓ Synced] public/images/hero.jpg (2.1MB)
+[⊘ Skip] data/models/large.bin (not for device: macbook)
+
+📊 Sync Summary:
+  📚 Copied from library: 1 files (fast)
+  ⬇️  Downloaded from R2: 1 files
+  ✓ Already synced: 1 files
+  ⊘ Skipped (device): 1 files
+  Total synced: 2 files
+
+[INFO] Library efficiency: 50% of synced files copied locally (fast!)
+[✓] All assets synced successfully!
+```
+
+**Push mode** (upload project-specific files to R2):
+```bash
+cd ~/dev/projects/APP-Portfolio
+sync-project push
+```
+
+**What it does**:
+- Uploads project-specific files (not library files) to R2
+- Skips files with `copy-from-library` sync mode
+- Updates manifest with new checksums (future enhancement)
 
 ### 2. Push Assets to R2
 

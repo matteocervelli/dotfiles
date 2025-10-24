@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# sync-project
+# Convenience wrapper for sync-project-assets.sh
+#
+# Usage: sync-project [pull|push]
+#
+# This script calls sync-project-assets.sh with the current directory as the project directory.
+
+set -euo pipefail
+
+# Find dotfiles root
+if [ -n "${DOTFILES_ROOT:-}" ]; then
+    SCRIPT_DIR="$DOTFILES_ROOT/scripts/sync"
+elif [ -f "$HOME/.dotfiles_root" ]; then
+    SCRIPT_DIR="$(cat "$HOME/.dotfiles_root")/scripts/sync"
+else
+    # Try to find dotfiles by looking for the script
+    SCRIPT_DIR="$HOME/dotfiles/scripts/sync"
+    if [ ! -d "$SCRIPT_DIR" ]; then
+        SCRIPT_DIR="$HOME/dev/dotfiles/scripts/sync"
+    fi
+    if [ ! -d "$SCRIPT_DIR" ]; then
+        SCRIPT_DIR="$HOME/dev/projects/dotfiles/scripts/sync"
+    fi
+fi
+
+SYNC_SCRIPT="$SCRIPT_DIR/sync-project-assets.sh"
+
+if [ ! -f "$SYNC_SCRIPT" ]; then
+    echo "Error: sync-project-assets.sh not found at: $SYNC_SCRIPT" >&2
+    echo "Please set DOTFILES_ROOT environment variable or create ~/.dotfiles_root" >&2
+    exit 1
+fi
+
+# Pass all arguments and current directory
+exec "$SYNC_SCRIPT" "${1:-pull}" "$(pwd)"
