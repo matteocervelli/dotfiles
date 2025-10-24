@@ -73,7 +73,7 @@ Implement a comprehensive asset management system with:
                              ↓
                     ┌────────────────────┐
                     │  CDN Distribution  │
-                    │  cdn.adlimen.it    │ ← Working
+                    │  cdn.adlimen.com    │ ← Working
                     └────────────────────┘
                              ↓
         ┌────────────────────┴────────────────────┐
@@ -116,7 +116,7 @@ Implement a comprehensive asset management system with:
 
 #### Environment Switching (Dev vs Prod)
 - **Development**: `ASSET_MODE=local` → Use `/media/logo.svg` (local file)
-- **Production**: `ASSET_MODE=cdn` → Use `https://cdn.adlimen.it/logos/logo.svg`
+- **Production**: `ASSET_MODE=cdn` → Use `https://cdn.adlimen.com/logos/logo.svg`
 - Helper libraries (`assets.ts`, `assets.py`) handle switching automatically
 
 ---
@@ -220,7 +220,7 @@ Implement a comprehensive asset management system with:
 import { useAsset } from '@/lib/assets';
 
 function Logo() {
-  const url = useAsset('/media/logo.png', 'https://cdn.adlimen.it/logos/logo.png');
+  const url = useAsset('/media/logo.png', 'https://cdn.adlimen.com/logos/logo.png');
   return <img src={url} />;
 }
 ```
@@ -240,7 +240,7 @@ from lib.assets import get_asset_url
 
 model_path = get_asset_url(
     'data/models/whisper.bin',
-    'https://cdn.adlimen.it/models/whisper.bin'
+    'https://cdn.adlimen.com/models/whisper.bin'
 )
 ```
 
@@ -501,7 +501,7 @@ ASSET_MODE=local npm run dev
 
 # Test prod build
 ASSET_MODE=cdn npm run build
-# → Should use https://cdn.adlimen.it/logos/logo.svg
+# → Should use https://cdn.adlimen.com/logos/logo.svg
 ```
 
 ### Test 6: Interactive Template Generator

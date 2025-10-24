@@ -392,6 +392,7 @@ EOF
         cat >> "$temp_manifest" <<EOF
   - path: $relpath
     r2_key: media-cdn/$relpath
+    cdn_url: https://cdn.adlimen.com/$relpath
     size: $size
     sha256: $sha256
     type: $file_type

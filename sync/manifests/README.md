@@ -112,10 +112,10 @@ Control when to use local vs CDN URLs with the `env_mode` field:
 ```yaml
 assets:
   - path: public/media/logo.svg
-    cdn_url: https://cdn.adlimen.it/logos/logo.svg
+    cdn_url: https://cdn.adlimen.com/logos/logo.svg
     env_mode: cdn-production-local-dev
     # Development: Uses /media/logo.svg (local file)
-    # Production: Uses https://cdn.adlimen.it/logos/logo.svg (CDN)
+    # Production: Uses https://cdn.adlimen.com/logos/logo.svg (CDN)
 ```
 
 ### Smart Sync Strategies
@@ -142,7 +142,7 @@ assets:
 
   # CDN-only, no local copy
   - path: public/images/hero.jpg
-    cdn_url: https://cdn.adlimen.it/images/hero.jpg
+    cdn_url: https://cdn.adlimen.com/images/hero.jpg
     sync: cdn-only
 ```
 
