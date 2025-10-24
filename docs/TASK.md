@@ -260,12 +260,64 @@
 - [ ] **2.6.4** Create `scripts/sync/install-autoupdate.sh` (install LaunchAgent/timer)
 - [ ] **2.6.5** Test auto-update mechanism
 
+### 2.7 Enhanced Manifest System with Auto-Update ⏳
+
+- [ ] **2.7.1** Add `dimensions` and `env_mode` fields to schema
+- [ ] **2.7.2** Create `scripts/sync/generate-cdn-manifest.sh` (with ImageMagick dimensions)
+- [ ] **2.7.3** Create `scripts/sync/notify-cdn-updates.sh` (show size/dimension changes)
+- [ ] **2.7.4** Test manifest generation with images
+
+**GitHub Issue**: [#29](https://github.com/matteocervelli/dotfiles/issues/29)
+
+### 2.8 Project Asset Sync with Library-First Strategy ⏳
+
+- [ ] **2.8.1** Create `scripts/sync/generate-project-manifest.sh` (interactive)
+- [ ] **2.8.2** Create `scripts/sync/sync-project-assets.sh` (copy from ~/media/cdn, fallback to R2)
+- [ ] **2.8.3** Add `stow-packages/bin/.local/bin/sync-project` symlink
+- [ ] **2.8.4** Test with sample project
+
+**GitHub Issue**: [#30](https://github.com/matteocervelli/dotfiles/issues/30)
+
+### 2.9 Auto-Update Propagation Across Projects ⏳
+
+- [ ] **2.9.1** Create `scripts/sync/update-cdn-and-notify.sh` (update + notify workflow)
+- [ ] **2.9.2** Create `scripts/sync/propagate-cdn-updates.sh` (update all projects using changed files)
+- [ ] **2.9.3** Add `stow-packages/bin/.local/bin/update-cdn` symlink
+- [ ] **2.9.4** Test propagation workflow
+
+**GitHub Issue**: [#31](https://github.com/matteocervelli/dotfiles/issues/31)
+
+### 2.10 Environment-Aware Asset Helpers ⏳
+
+- [ ] **2.10.1** Create `templates/project/lib/assets.ts` (TypeScript helper with React hook)
+- [ ] **2.10.2** Create `templates/project/lib/assets.py` (Python helper)
+- [ ] **2.10.3** Create `.env.template` with ASSET_MODE examples
+- [ ] **2.10.4** Test helpers in sample projects
+
+**GitHub Issue**: [#32](https://github.com/matteocervelli/dotfiles/issues/32)
+
+### 2.11 Documentation: Asset Management System ⏳
+
+- [ ] **2.11.1** Create `sync/library/README.md` (central library guide)
+- [ ] **2.11.2** Update `sync/manifests/README.md` (add library workflow, env switching)
+- [ ] **2.11.3** Update `sync/manifests/schema.yml` (document new fields)
+- [ ] **2.11.4** Update main `README.md` (add asset management overview)
+
+**GitHub Issue**: [#34](https://github.com/matteocervelli/dotfiles/issues/34)
+
 **Acceptance Criteria**:
 - ✅ `op inject` works with .env.template
 - ✅ Rclone configured for R2
 - ✅ Manifest generation works
 - ✅ R2 pull/push works
 - ✅ Auto-update commits and pushes changes every 30min
+- ⏳ Enhanced manifest with dimensions and env_mode
+- ⏳ Project sync with library-first strategy
+- ⏳ Auto-update notifications with size/dimension comparison
+- ⏳ Environment helpers working in TypeScript and Python
+- ⏳ Complete asset management documentation
+
+**Master Plan**: See [ASSET-MANAGEMENT-PLAN.md](ASSET-MANAGEMENT-PLAN.md) for detailed implementation plan
 
 ---
 
@@ -381,12 +433,20 @@
 **Duration**: 6-8 hours
 **Priority**: Medium 🔶
 
-### 5.1 Project Templates
+### 5.1 Interactive Project Template Generator ⏳
 
-- [ ] **5.1.1** Create `templates/python-project/` boilerplate
-- [ ] **5.1.2** Create `templates/nextjs-project/` boilerplate
-- [ ] **5.1.3** Create `templates/swift-project/` boilerplate
-- [ ] **5.1.4** Create template generation script
+- [ ] **5.1.1** Create `scripts/templates/new-project.sh` (interactive CLI)
+- [ ] **5.1.2** Create `templates/nextjs-app/` (Next.js 14 App Router)
+- [ ] **5.1.3** Create `templates/nextjs-pages/` (Next.js 14 Pages Router)
+- [ ] **5.1.4** Create `templates/vite-react/` (Vite + React + TypeScript)
+- [ ] **5.1.5** Create `templates/python-fastapi/` (FastAPI + SQLAlchemy)
+- [ ] **5.1.6** Create `templates/python-ml/` (Python + Jupyter + MLX)
+- [ ] **5.1.7** Create `templates/swift-app/` (SwiftUI + SwiftPM)
+- [ ] **5.1.8** Create `templates/monorepo/` (Turborepo structure)
+- [ ] **5.1.9** Create `templates/README.md` (template usage docs)
+- [ ] **5.1.10** Test template generation workflow (target: <3 minutes per project)
+
+**GitHub Issue**: [#33](https://github.com/matteocervelli/dotfiles/issues/33)
 
 ### 5.2 Advanced Health Checks
 
