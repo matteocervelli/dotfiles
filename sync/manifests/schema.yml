@@ -19,7 +19,13 @@ updated: datetime              # Last update timestamp (required)
 
 assets:                        # List of assets (required, can be empty array)
   - path: string               # Local path relative to project root (required)
-                              # Example: "data/models/whisper-large-v3.bin"
+                              # Where the file will be in the project
+                              # Example: "public/media/logo.svg", "data/models/whisper-large-v3.bin"
+
+    source: string             # Source path in central library (optional)
+                              # Used to copy file from ~/media/cdn/ or other central location
+                              # Example: "~/media/cdn/logos/adlimen/logo.svg"
+                              # If omitted, file is downloaded from R2 directly
 
     r2_key: string             # R2 object key / bucket path (required)
                               # Format: "project-name/category/filename"
@@ -182,7 +188,47 @@ assets:                        # List of assets (required, can be empty array)
 #     description: "User manual PDF (5MB) - public download link"
 
 # ============================================================================
-# EXAMPLE 4: Empty Project (No Assets Yet)
+# EXAMPLE 4: Project Using Central Library
+# ============================================================================
+
+# This example shows how to use a central media library (~/media/cdn/)
+# The project copies only needed files from the library
+
+# project: app-rag
+# version: "1.0"
+# updated: 2025-01-22T16:00:00Z
+# assets:
+#   # Logo copied from central library
+#   - path: public/media/logo-adlimen.svg
+#     source: ~/media/cdn/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     r2_key: media-cdn/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     cdn_url: https://cdn.adlimen.it/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     size: 15234
+#     sha256: a1b2c3d4e5f6...
+#     type: media
+#     sync: true
+#     description: "Ad Limen logo - copied from central library"
+#
+#   # Another logo from library
+#   - path: public/media/logo-personal.png
+#     source: ~/media/cdn/logos/matteocervelli/logo.png
+#     r2_key: media-cdn/logos/matteocervelli/logo.png
+#     cdn_url: https://cdn.adlimen.it/logos/matteocervelli/logo.png
+#     size: 18865
+#     sha256: 226465731b72609fd144c666fef1ffcb12528a58b8018dd279b50ee35f1b5d15
+#     type: media
+#     sync: true
+#     description: "Personal logo - copied from central library"
+#
+# Workflow:
+# 1. Central library ~/media/cdn/ syncs bidirectionally with R2
+# 2. Project manifest lists only assets needed for THIS project
+# 3. Script copies files from library to project (source → path)
+# 4. Development uses local paths: /media/logo-adlimen.svg
+# 5. Production build replaces with CDN URLs from manifest
+
+# ============================================================================
+# EXAMPLE 5: Empty Project (No Assets Yet)
 # ============================================================================
 
 # project: new-project
