@@ -202,18 +202,23 @@ Implement a comprehensive asset management system with:
 
 ---
 
-### Phase 3: Environment Helpers (2 hours)
-**GitHub Issue**: [#32](https://github.com/matteocervelli/dotfiles/issues/32) ✅ Created
+### Phase 3: Environment Helpers (2 hours) ✅ COMPLETED
+**GitHub Issue**: [#32](https://github.com/matteocervelli/dotfiles/issues/32) ✅ Implemented
 
-#### 3.1 TypeScript Asset Helper (1 hour)
-**File**: `templates/project/lib/assets.ts`
+#### 3.1 TypeScript Asset Helper (1 hour) ✅ COMPLETED
+**File**: `templates/project/lib/assets.ts` (370 lines)
 
-**Features**:
-- `AssetResolver` class
-- Reads `process.env.ASSET_MODE` from `.env`
-- `getAssetUrl(localPath, cdnUrl, envMode?)` function
-- `useAsset()` React hook for Next.js/React
-- Full TypeScript types
+**Features Implemented**:
+- ✅ `AssetResolver` singleton class with cached environment detection
+- ✅ Reads `process.env.NODE_ENV` and `process.env.ASSET_MODE`
+- ✅ `getAssetUrl(localPath, cdnUrl, envMode?)` function
+- ✅ `useAsset()` React hook with useMemo optimization
+- ✅ `batchResolveAssets()` for multiple assets
+- ✅ Full TypeScript types and comprehensive JSDoc
+- ✅ Security: Path traversal prevention, HTTPS validation
+- ✅ Performance: Environment caching, React memoization
+- ✅ Zero external dependencies
+- ✅ Example tests in `templates/project/lib/__tests__/assets.test.ts` (280 lines)
 
 **Usage**:
 ```tsx
@@ -225,14 +230,20 @@ function Logo() {
 }
 ```
 
-#### 3.2 Python Asset Helper (1 hour)
-**File**: `templates/project/lib/assets.py`
+#### 3.2 Python Asset Helper (1 hour) ✅ COMPLETED
+**File**: `templates/project/lib/assets.py` (380 lines)
 
-**Features**:
-- `AssetResolver` class
-- Reads `os.getenv('ASSET_MODE')`
-- `get_asset_url(local_path, cdn_url, env_mode?)` function
-- Type hints with `typing` module
+**Features Implemented**:
+- ✅ `AssetResolver` singleton class with @lru_cache optimization
+- ✅ Reads `os.getenv('ENVIRONMENT')` and `os.getenv('ASSET_MODE')`
+- ✅ `get_asset_url(local_path, cdn_url, env_mode?)` function
+- ✅ `batch_resolve_assets()` for multiple assets
+- ✅ Complete type hints with typing module
+- ✅ Comprehensive docstrings with examples
+- ✅ Security: Path traversal prevention, HTTPS validation
+- ✅ Performance: @lru_cache decorator for environment detection
+- ✅ Zero external dependencies
+- ✅ Example tests in `templates/project/lib/tests/test_assets.py` (440 lines)
 
 **Usage**:
 ```python
@@ -243,6 +254,12 @@ model_path = get_asset_url(
     'https://cdn.adlimen.com/models/whisper.bin'
 )
 ```
+
+**Test Coverage**:
+- ✅ BATS validation tests: `tests/test-32-environment-helpers.bats` (57 tests)
+- ✅ TypeScript example tests: Jest/Vitest compatible (36 test cases)
+- ✅ Python example tests: pytest compatible (27 test cases)
+- ✅ All security and performance requirements validated
 
 ---
 
@@ -323,12 +340,12 @@ Each template includes:
 | Phase | Issue | Milestone | Estimate | Status |
 |-------|-------|-----------|----------|--------|
 | Phase 1: Core Manifest | [#29](https://github.com/matteocervelli/dotfiles/issues/29) | FASE 2 | 4h | ✅ Complete |
-| Phase 2: Project Sync | [#30](https://github.com/matteocervelli/dotfiles/issues/30) | FASE 2 | 3h | ⚪ Ready |
-| Phase 3: Env Helpers | [#32](https://github.com/matteocervelli/dotfiles/issues/32) | FASE 2 | 2h | ⚪ Ready |
+| Phase 2: Project Sync | [#30](https://github.com/matteocervelli/dotfiles/issues/30) | FASE 2 | 3h | ✅ Complete |
+| Phase 3: Env Helpers | [#32](https://github.com/matteocervelli/dotfiles/issues/32) | FASE 2 | 2h | ✅ Complete |
 | Phase 4: Templates | [#33](https://github.com/matteocervelli/dotfiles/issues/33) | FASE 5 | 3h | ⚪ Ready |
-| Phase 5: Auto-Update | [#31](https://github.com/matteocervelli/dotfiles/issues/31) | FASE 2 | 2h | ⚪ Ready |
+| Phase 5: Auto-Update | [#31](https://github.com/matteocervelli/dotfiles/issues/31) | FASE 2 | 2h | ✅ Complete |
 | Phase 6: Documentation | [#34](https://github.com/matteocervelli/dotfiles/issues/34) | FASE 2 | 2h | ⚪ Ready |
-| **TOTAL** | | | **16h** | |
+| **TOTAL** | | | **16h** | **12h Complete** |
 
 ---
 

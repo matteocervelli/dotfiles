@@ -2,7 +2,10 @@
 
 ## Purpose
 
-This template provides a standard `dev-setup.sh` script for all development projects, automating the complete development environment setup workflow.
+This directory contains **template files** for development projects, including:
+- **Project Setup Script** (`dev-setup.sh.template`) - Automates development environment setup
+- **Asset Helpers** (`lib/assets.ts`, `lib/assets.py`) - Environment-aware asset URL resolution
+- **Example Tests** (`lib/__tests__/`, `lib/tests/`) - Test templates for asset helpers
 
 ## Features
 
@@ -56,6 +59,267 @@ fi
 ```bash
 cd ~/dev/projects/MY_PROJECT
 ./scripts/dev-setup.sh
+```
+
+## Asset Helpers
+
+### Overview
+
+The asset helpers provide **environment-aware URL resolution** for assets (images, fonts, videos, ML models, etc.):
+- **Development**: Uses local file paths (`/media/logo.png`)
+- **Production**: Uses CDN URLs (`https://cdn.example.com/logo.png`)
+- **Zero dependencies**: Pure TypeScript/Python implementations
+
+### TypeScript/JavaScript Helper
+
+**Location**: `lib/assets.ts` (370 lines)
+
+**Features**:
+- ✅ AssetResolver singleton class with cached environment detection
+- ✅ getAssetUrl() convenience function
+- ✅ useAsset() React hook with useMemo optimization
+- ✅ batchResolveAssets() for multiple assets
+- ✅ Full TypeScript types and JSDoc documentation
+- ✅ Security: Path traversal prevention, HTTPS validation
+- ✅ Works with: Next.js, Vite, React, any Node.js/browser environment
+
+**Quick Start**:
+```bash
+# Copy to your TypeScript/JavaScript project
+cp ~/dev/projects/dotfiles/templates/project/lib/assets.ts src/lib/
+cp -r ~/dev/projects/dotfiles/templates/project/lib/__tests__ src/lib/
+```
+
+**Usage Examples**:
+
+```tsx
+// Next.js App Router
+import { useAsset } from '@/lib/assets';
+
+export default function Logo() {
+  const logoUrl = useAsset(
+    '/media/logo.png',
+    'https://cdn.example.com/logos/logo.png'
+  );
+  return <img src={logoUrl} alt="Logo" />;
+}
+
+// Next.js Pages Router or Vite
+import { getAssetUrl } from '@/lib/assets';
+
+const bannerUrl = getAssetUrl(
+  '/media/banner.jpg',
+  'https://cdn.example.com/banners/hero.jpg'
+);
+
+// Batch resolution
+import { batchResolveAssets } from '@/lib/assets';
+
+const [logoUrl, bannerUrl, iconUrl] = batchResolveAssets([
+  { localPath: '/media/logo.png', cdnUrl: 'https://cdn.example.com/logo.png' },
+  { localPath: '/media/banner.jpg', cdnUrl: 'https://cdn.example.com/banner.jpg' },
+  { localPath: '/media/icon.svg', cdnUrl: 'https://cdn.example.com/icon.svg' }
+]);
+```
+
+**Environment Configuration**:
+```bash
+# .env.development
+NODE_ENV=development
+ASSET_MODE=auto  # optional, defaults to 'auto'
+
+# .env.production
+NODE_ENV=production
+ASSET_MODE=auto
+```
+
+**Testing**:
+```bash
+# Copy example tests
+cp ~/dev/projects/dotfiles/templates/project/lib/__tests__/assets.test.ts src/lib/__tests__/
+
+# Run with Jest
+npm install --save-dev jest @types/jest ts-jest
+npm test
+
+# Or with Vitest
+npm install --save-dev vitest
+npm run test
+```
+
+### Python Helper
+
+**Location**: `lib/assets.py` (380 lines)
+
+**Features**:
+- ✅ AssetResolver singleton class with @lru_cache optimization
+- ✅ get_asset_url() convenience function
+- ✅ batch_resolve_assets() for multiple assets
+- ✅ Complete type hints with typing module
+- ✅ Comprehensive docstrings with examples
+- ✅ Security: Path traversal prevention, HTTPS validation
+- ✅ Works with: FastAPI, Flask, Django, standalone Python apps
+
+**Quick Start**:
+```bash
+# Copy to your Python project
+mkdir -p lib
+cp ~/dev/projects/dotfiles/templates/project/lib/assets.py lib/
+cp -r ~/dev/projects/dotfiles/templates/project/lib/tests tests/
+```
+
+**Usage Examples**:
+
+```python
+# FastAPI
+from fastapi import FastAPI
+from lib.assets import get_asset_url
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {
+        "logo": get_asset_url('/static/logo.png', 'https://cdn.example.com/logo.png'),
+        "banner": get_asset_url('/static/banner.jpg', 'https://cdn.example.com/banner.jpg')
+    }
+
+# Flask
+from flask import Flask
+from lib.assets import get_asset_url
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    logo_url = get_asset_url('/static/logo.png', 'https://cdn.example.com/logo.png')
+    return f'<img src="{logo_url}" />'
+
+# ML/AI Model Loading
+from lib.assets import get_asset_url
+
+model_path = get_asset_url(
+    'data/models/whisper-large-v3.bin',
+    'https://cdn.example.com/models/whisper-large-v3.bin',
+    env_mode='local-always'  # Always use local for ML models
+)
+model = load_model(model_path)
+
+# Batch resolution
+from lib.assets import batch_resolve_assets
+
+urls = batch_resolve_assets([
+    {'local_path': '/static/logo.png', 'cdn_url': 'https://cdn.example.com/logo.png'},
+    {'local_path': '/static/banner.jpg', 'cdn_url': 'https://cdn.example.com/banner.jpg'}
+])
+logo_url, banner_url = urls
+```
+
+**Environment Configuration**:
+```bash
+# .env.development
+ENVIRONMENT=development
+ASSET_MODE=auto  # optional, defaults to 'auto'
+
+# .env.production
+ENVIRONMENT=production
+ASSET_MODE=auto
+```
+
+**Testing**:
+```bash
+# Copy example tests
+mkdir -p tests
+cp ~/dev/projects/dotfiles/templates/project/lib/tests/test_assets.py tests/
+
+# Run with pytest
+pip install pytest pytest-cov
+pytest tests/test_assets.py -v
+pytest tests/test_assets.py -v --cov=lib.assets
+```
+
+### Environment Modes
+
+Both helpers support three environment modes:
+
+1. **cdn-production-local-dev** (default)
+   - Production: Uses CDN URL
+   - Development: Uses local path
+   - Most common use case
+
+2. **cdn-always**
+   - Always uses CDN URL regardless of environment
+   - Useful for shared assets that must always come from CDN
+
+3. **local-always**
+   - Always uses local path regardless of environment
+   - Useful for large files (ML models, datasets) that should never be downloaded
+
+**Example**:
+```typescript
+// TypeScript
+const url = getAssetUrl(
+  '/data/model.bin',
+  'https://cdn.example.com/model.bin',
+  'local-always'  // Never download this 5GB model
+);
+```
+
+```python
+# Python
+url = get_asset_url(
+    '/data/model.bin',
+    'https://cdn.example.com/model.bin',
+    env_mode='local-always'
+)
+```
+
+### Manual Override
+
+Override environment detection with `ASSET_MODE` environment variable:
+
+```bash
+# Force local paths (useful for testing CDN failures)
+ASSET_MODE=local npm run dev
+
+# Force CDN URLs (useful for testing production behavior in dev)
+ASSET_MODE=cdn npm run dev
+```
+
+### Security Features
+
+Both helpers include security measures:
+- ✅ **Path traversal prevention**: Rejects paths containing `..`
+- ✅ **HTTPS validation**: Requires HTTPS in production environment
+- ✅ **Input sanitization**: Validates all inputs before processing
+- ✅ **No eval/exec**: Pure string manipulation, no code execution
+
+### Performance Optimizations
+
+- **TypeScript**: Singleton pattern caches environment detection
+- **Python**: @lru_cache decorator caches environment detection
+- **React hook**: useMemo prevents unnecessary re-renders
+- **Zero network calls**: Pure URL resolution (no fetching)
+
+### Integration with R2 Manifests
+
+Asset helpers work alongside `.r2-manifest.yml` files:
+
+```yaml
+# .r2-manifest.yml
+assets:
+  - path: public/media/logo.png
+    r2_key: media-cdn/logos/logo.png
+    cdn_url: https://cdn.example.com/logos/logo.png
+    sync: copy-from-library
+```
+
+```typescript
+// In your code, reference the CDN URL from manifest
+import manifest from '@/r2-manifest.yml';
+
+const logoAsset = manifest.assets.find(a => a.path.endsWith('logo.png'));
+const logoUrl = useAsset('/media/logo.png', logoAsset.cdn_url);
 ```
 
 ## Detailed Usage

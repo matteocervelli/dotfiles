@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Environment-Aware Asset Helpers** (FASE 2.X, Issue #32)
+  - `templates/project/lib/assets.ts` - TypeScript/JavaScript asset URL resolver (370 lines)
+  - `templates/project/lib/assets.py` - Python asset URL resolver (380 lines)
+  - `templates/project/lib/__tests__/assets.test.ts` - Example Jest/Vitest tests (280 lines)
+  - `templates/project/lib/tests/test_assets.py` - Example pytest tests (440 lines)
+  - `tests/test-32-environment-helpers.bats` - BATS validation tests (57 tests)
+  - Environment-aware URL resolution: local paths in dev, CDN URLs in production
+  - Zero external dependencies for maximum compatibility
+  - Support for three env modes: `cdn-production-local-dev` (default), `cdn-always`, `local-always`
+  - TypeScript features:
+    - AssetResolver singleton class with cached environment detection
+    - getAssetUrl() convenience function
+    - useAsset() React hook with useMemo optimization
+    - batchResolveAssets() for multiple assets
+    - Full TypeScript types and comprehensive JSDoc
+  - Python features:
+    - AssetResolver singleton class with @lru_cache performance optimization
+    - get_asset_url() convenience function
+    - batch_resolve_assets() for multiple assets
+    - Complete type hints with typing module
+    - Comprehensive docstrings with examples
+  - Security features:
+    - Path traversal prevention (rejects '..' in paths)
+    - URL validation (HTTPS required in production)
+    - Input sanitization for all parameters
+  - Performance optimizations:
+    - Environment detection cached (TypeScript: singleton pattern, Python: @lru_cache)
+    - React hook memoization prevents unnecessary re-renders
+    - Zero network calls (pure URL resolution)
+  - Framework compatibility:
+    - TypeScript: Next.js, Vite, React, any Node.js/browser environment
+    - Python: FastAPI, Flask, Django, standalone applications
+  - Auto-detects environment from NODE_ENV (TypeScript) or ENVIRONMENT (Python)
+  - Manual override via ASSET_MODE environment variable (local, cdn, auto)
+  - Comprehensive test suites included as templates for projects
+  - All files under 500 lines, modular design
+  - Ready-to-copy templates for project integration
 - **Auto-Update Propagation Across Projects** (FASE 2.X, Issue #31)
   - `scripts/sync/update-cdn-and-notify.sh` - Orchestrate CDN update workflow with notifications and propagation (280 lines)
   - `scripts/sync/propagate-cdn-updates.sh` - Propagate library changes to all affected projects (570 lines)
