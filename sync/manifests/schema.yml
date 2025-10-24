@@ -48,9 +48,27 @@ assets:                        # List of assets (required, can be empty array)
                               # Valid values: model, dataset, media, video, audio, document, data
                               # Used for categorization and selective sync
 
-    sync: boolean              # Whether to sync automatically (optional, default: true)
-                              # Set to false for manual-only downloads
-                              # Example: true (auto-sync), false (manual)
+    dimensions: object         # Image dimensions (optional, images only)
+                              # Object with width and height in pixels
+                              # Example: {width: 1920, height: 1080}
+                              # Automatically extracted by generate-cdn-manifest.sh using ImageMagick
+                              # Only present for image files (jpg, png, gif, webp, svg, etc.)
+
+    env_mode: string           # Environment mode (optional)
+                              # Controls when to use local vs CDN URL
+                              # Valid values:
+                              #   - cdn-production-local-dev: CDN in production, local in development (default)
+                              #   - cdn-always: Always use CDN URL
+                              #   - local-always: Always use local file path
+                              # Example: "cdn-production-local-dev"
+
+    sync: string               # Sync strategy (optional, default: true for backward compatibility)
+                              # Valid values:
+                              #   - true/false: Legacy boolean support (true = download, false = manual)
+                              #   - "copy-from-library": Copy from ~/media/cdn/ (fastest, recommended)
+                              #   - "download": Download from R2 directly
+                              #   - "cdn-only": Asset is only on CDN, don't sync locally
+                              # Example: "copy-from-library"
 
     devices: array             # Target devices (optional)
                               # List of device names that need this asset
@@ -237,6 +255,80 @@ assets:                        # List of assets (required, can be empty array)
 # assets: []
 
 # ============================================================================
+# EXAMPLE 6: Environment-Aware Assets with Dimensions
+# ============================================================================
+
+# This example shows the enhanced manifest features:
+# - Image dimensions automatically extracted
+# - Environment-aware URL resolution
+# - Smart sync strategies (copy from library vs download)
+
+# project: website-portfolio
+# version: "1.1"
+# updated: 2025-01-24T16:00:00Z
+# assets:
+#   # Logo with dimensions, copied from central library
+#   - path: public/media/logo-adlimen.svg
+#     source: ~/media/cdn/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     r2_key: media-cdn/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     cdn_url: https://cdn.adlimen.it/logos/adlimen/logo-adlimen-stacked-original-bn-transparent-edge.svg
+#     size: 15234
+#     sha256: a1b2c3d4e5f6...
+#     type: media
+#     dimensions: {width: 512, height: 512}
+#     env_mode: cdn-production-local-dev
+#     sync: copy-from-library
+#     description: "Ad Limen logo - use local in dev, CDN in production"
+#
+#   # Hero image with dimensions, downloaded from R2
+#   - path: public/images/hero-background.jpg
+#     r2_key: website-portfolio/images/hero-background.jpg
+#     cdn_url: https://cdn.adlimen.it/portfolio/hero-background.jpg
+#     size: 2097152
+#     sha256: 123456789012345678901234567890abcdef1234567890abcdef1234567890
+#     type: media
+#     dimensions: {width: 1920, height: 1080}
+#     env_mode: cdn-production-local-dev
+#     sync: download
+#     description: "Hero section background - Full HD image"
+#
+#   # Profile photo, always use CDN (don't sync locally)
+#   - path: public/images/profile.png
+#     r2_key: website-portfolio/images/profile.png
+#     cdn_url: https://cdn.adlimen.it/portfolio/profile.png
+#     size: 156234
+#     sha256: 234567890123456789012345678901abcdef1234567890abcdef12345678901
+#     type: media
+#     dimensions: {width: 800, height: 800}
+#     env_mode: cdn-always
+#     sync: cdn-only
+#     description: "Profile photo - always served from CDN, no local copy"
+#
+#   # Non-image asset (no dimensions field)
+#   - path: data/content/blog-posts.json
+#     r2_key: website-portfolio/data/blog-posts.json
+#     size: 45678
+#     sha256: 34567890123456789012345678901abcdef1234567890abcdef123456789012
+#     type: data
+#     env_mode: local-always
+#     sync: copy-from-library
+#     description: "Blog content - always use local file for development"
+
+# Workflow with environment-aware assets:
+# 1. Development: ASSET_MODE=local npm run dev
+#    → Uses /media/logo.svg, /images/hero-background.jpg (local files)
+#    → Except cdn-always assets which use CDN URL
+#
+# 2. Production: ASSET_MODE=cdn npm run build
+#    → Uses https://cdn.adlimen.it/logos/logo.svg (CDN URLs)
+#    → Except local-always assets which use local paths
+#
+# 3. Sync assets: ~/dotfiles/scripts/sync/sync-project-assets.sh pull
+#    → copy-from-library: Fast copy from ~/media/cdn/
+#    → download: Download from R2
+#    → cdn-only: Skip (verify CDN URL accessible)
+
+# ============================================================================
 # USAGE NOTES
 # ============================================================================
 
@@ -247,6 +339,8 @@ assets:                        # List of assets (required, can be empty array)
 # 2. Generation
 #    - Use: ~/dotfiles/scripts/sync/generate-manifest.sh PROJECT_NAME
 #    - Scans data/ directory and generates manifest automatically
+#    - For central library: ~/dotfiles/scripts/sync/generate-cdn-manifest.sh
+#    - Automatically extracts image dimensions (requires ImageMagick: brew install imagemagick)
 
 # 3. Sync Operations
 #    - Pull assets: ~/dotfiles/scripts/sync/sync-r2.sh pull PROJECT_NAME

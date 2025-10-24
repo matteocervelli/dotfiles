@@ -123,8 +123,8 @@ Implement a comprehensive asset management system with:
 
 ## 📅 Implementation Phases
 
-### Phase 1: Core Manifest System (4 hours)
-**GitHub Issue**: [#29](https://github.com/matteocervelli/dotfiles/issues/29) ✅ Created
+### Phase 1: Core Manifest System (4 hours) ✅ COMPLETED
+**GitHub Issue**: [#29](https://github.com/matteocervelli/dotfiles/issues/29) ✅ Implemented
 
 #### 1.1 Enhanced Manifest Schema (30 min)
 - Add `dimensions: {width, height}` field for images
@@ -322,7 +322,7 @@ Each template includes:
 
 | Phase | Issue | Milestone | Estimate | Status |
 |-------|-------|-----------|----------|--------|
-| Phase 1: Core Manifest | [#29](https://github.com/matteocervelli/dotfiles/issues/29) | FASE 2 | 4h | ⚪ Ready |
+| Phase 1: Core Manifest | [#29](https://github.com/matteocervelli/dotfiles/issues/29) | FASE 2 | 4h | ✅ Complete |
 | Phase 2: Project Sync | [#30](https://github.com/matteocervelli/dotfiles/issues/30) | FASE 2 | 3h | ⚪ Ready |
 | Phase 3: Env Helpers | [#32](https://github.com/matteocervelli/dotfiles/issues/32) | FASE 2 | 2h | ⚪ Ready |
 | Phase 4: Templates | [#33](https://github.com/matteocervelli/dotfiles/issues/33) | FASE 5 | 3h | ⚪ Ready |

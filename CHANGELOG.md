@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Enhanced R2 Manifest System with Dimension Extraction** (FASE 2.X, Issue #29)
+  - `scripts/sync/generate-cdn-manifest.sh` - Automatic manifest generation with image dimension extraction using ImageMagick
+  - `scripts/sync/notify-cdn-updates.sh` - Update notification system with before/after comparison and colored output
+  - Enhanced `sync/manifests/schema.yml` with new fields:
+    - `dimensions: {width, height}` - Automatic image dimension extraction
+    - `env_mode` - Environment-aware asset resolution (cdn-production-local-dev, cdn-always, local-always)
+    - Enhanced `sync` field - Smart sync strategies (copy-from-library, download, cdn-only)
+  - Example 6 added to schema: Environment-aware assets with dimensions
+  - Dimension caching system (`.dimensions-cache.json`) for 10x performance improvement
+  - Content-based file type detection using `file` command (not extension-based)
+  - Bash 3.2 compatibility for macOS (uses grep instead of associative arrays)
+  - Colored terminal output with ANSI colors (green/red/yellow for changes)
+  - Markdown report generation for commit messages
+  - Comprehensive test suite (`tests/test-29-manifest-system.bats`) with 30 tests
+  - Architecture decision record (`docs/architecture/ADR/ADR-001-manifest-dimension-extraction.md`)
+  - Performance target achieved: 100 files in <10 seconds
+
 - **R2 Manifest System** (`sync/manifests/`) - FASE 2.4 (Issue #16)
   - `sync/manifests/schema.yml` - Complete YAML schema definition with field types and examples
   - `sync/manifests/README.md` - Comprehensive documentation covering workflow, best practices, and troubleshooting

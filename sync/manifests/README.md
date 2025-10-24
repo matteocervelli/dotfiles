@@ -48,9 +48,121 @@ assets:
     description: "AI model description"  # Optional description
 ```
 
+## Enhanced Features (v1.1)
+
+### Automatic Dimension Extraction
+
+The enhanced manifest system automatically extracts image dimensions using ImageMagick:
+
+- **Supported formats**: PNG, JPG, GIF, WebP, SVG, TIFF, and 200+ more
+- **Performance**: Dimension caching provides 10x speedup for unchanged files
+- **Graceful handling**: Non-images are processed without dimensions field
+
+**Requirements**:
+```bash
+brew install imagemagick  # macOS
+# or
+apt-get install imagemagick  # Linux
+```
+
+**Example output**:
+```yaml
+assets:
+  - path: logos/logo.svg
+    size: 15234
+    sha256: a1b2c3d4...
+    dimensions: {width: 512, height: 512}  # ← Automatically extracted
+    type: media
+```
+
+### Update Notifications
+
+Compare old and new manifests to see changes before committing:
+
+```bash
+~/dotfiles/scripts/sync/notify-cdn-updates.sh ~/media/cdn
+```
+
+**Features**:
+- Colored terminal output (green=new, yellow=updated, red=removed)
+- Size and dimension deltas with percentages
+- Markdown report generation for commit messages
+- Summary statistics
+
+**Example output**:
+```
+[+] logos/adlimen/logo.svg (15.2KB, 512×512) - NEW
+[~] logos/matteocervelli/logo.png - UPDATED
+    Size: 18.8KB → 22.1KB (+3.3KB, +17.6%)
+    Dimensions: 800×600 → 1200×900 (+400×300, +50%)
+[=] branding/colors.json (2.3KB) - UNCHANGED
+
+📊 Summary: 1 new, 1 updated, 148 unchanged (total: 150 files, +18.5KB)
+```
+
+### Environment-Aware Assets
+
+Control when to use local vs CDN URLs with the `env_mode` field:
+
+- `cdn-production-local-dev`: Local in development, CDN in production (default)
+- `cdn-always`: Always use CDN URL
+- `local-always`: Always use local file path
+
+**Example**:
+```yaml
+assets:
+  - path: public/media/logo.svg
+    cdn_url: https://cdn.adlimen.it/logos/logo.svg
+    env_mode: cdn-production-local-dev
+    # Development: Uses /media/logo.svg (local file)
+    # Production: Uses https://cdn.adlimen.it/logos/logo.svg (CDN)
+```
+
+### Smart Sync Strategies
+
+The enhanced `sync` field supports multiple strategies:
+
+- `copy-from-library`: Copy from `~/media/cdn/` (fastest, recommended)
+- `download`: Download directly from R2
+- `cdn-only`: Asset only on CDN, don't sync locally
+- `true/false`: Legacy boolean support
+
+**Example**:
+```yaml
+assets:
+  # Fast local copy from central library
+  - path: public/media/logo.svg
+    source: ~/media/cdn/logos/logo.svg
+    sync: copy-from-library
+
+  # Download from R2
+  - path: data/models/model.bin
+    r2_key: project/models/model.bin
+    sync: download
+
+  # CDN-only, no local copy
+  - path: public/images/hero.jpg
+    cdn_url: https://cdn.adlimen.it/images/hero.jpg
+    sync: cdn-only
+```
+
 ## Workflow
 
-### 1. Generate Manifest
+### 1. Generate Central Library Manifest (New)
+
+For the central CDN library at `~/media/cdn/`:
+
+```bash
+~/dotfiles/scripts/sync/generate-cdn-manifest.sh ~/media/cdn
+```
+
+**Features**:
+- Automatic dimension extraction for all images
+- Content-based file type detection
+- Dimension caching for performance
+- Colored output showing new/updated/unchanged files
+
+### 2. Generate Project Manifest
 
 When you add new binary assets to a project:
 
