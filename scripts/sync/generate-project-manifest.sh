@@ -403,6 +403,9 @@ EOF
 
                 log_library "$relpath ($size_human) → from library"
 
+                # Register in central CDN registry
+                register_project_in_cdn "$cdn_dir" "$project_name" "$project_dir" "$lib_path" "$relpath"
+
             else
                 # File NOT in library - project-specific
                 ((PROJECT_COUNT++))
@@ -527,6 +530,79 @@ Requirements:
   - yq (brew install yq)
   - Central library at ~/media/cdn/ with .r2-manifest.yml
 EOF
+}
+
+# ============================================================================
+# PROJECT REGISTRY FUNCTIONS
+# ============================================================================
+
+# Register project in central CDN registry
+register_project_in_cdn() {
+    local cdn_dir="$1"
+    local project_name="$2"
+    local project_path="$3"
+    local asset_library_path="$4"
+    local asset_project_path="$5"
+
+    # Check if jq is available
+    if ! command -v jq &> /dev/null; then
+        log_warn "jq not installed - skipping registry registration"
+        return
+    fi
+
+    local registry_dir="$cdn_dir/.project-registry"
+    mkdir -p "$registry_dir"
+
+    # Create registry file per asset (filename-based)
+    local asset_filename
+    asset_filename=$(basename "$asset_library_path")
+    local registry_file="$registry_dir/${asset_filename}.json"
+
+    # Initialize registry file if it doesn't exist
+    if [ ! -f "$registry_file" ]; then
+        cat > "$registry_file" <<EOF
+{
+  "asset": "$asset_library_path",
+  "updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "projects": []
+}
+EOF
+    fi
+
+    # Check if project already registered
+    if jq -e ".projects[] | select(.name == \"$project_name\")" "$registry_file" > /dev/null 2>&1; then
+        # Update existing entry
+        local temp_file
+        temp_file=$(mktemp)
+        jq --arg name "$project_name" \
+           --arg path "$project_path" \
+           --arg asset_path "$asset_project_path" \
+           --arg updated "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+           '(.projects[] | select(.name == $name)) |= {
+             name: $name,
+             path: $path,
+             manifest_path: ".r2-manifest.yml",
+             asset_path: $asset_path,
+             updated: $updated
+           } | .updated = $updated' "$registry_file" > "$temp_file"
+        mv "$temp_file" "$registry_file"
+    else
+        # Add new entry
+        local temp_file
+        temp_file=$(mktemp)
+        jq --arg name "$project_name" \
+           --arg path "$project_path" \
+           --arg asset_path "$asset_project_path" \
+           --arg registered "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+           '.projects += [{
+             name: $name,
+             path: $path,
+             manifest_path: ".r2-manifest.yml",
+             asset_path: $asset_path,
+             registered_at: $registered
+           }] | .updated = $registered' "$registry_file" > "$temp_file"
+        mv "$temp_file" "$registry_file"
+    fi
 }
 
 # ============================================================================

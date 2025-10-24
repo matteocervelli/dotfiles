@@ -30,6 +30,21 @@ cd dotfiles
 source ~/.zshrc
 ```
 
+### Key Commands
+
+After running `make stow` (or `stow bin/`), these commands become available:
+
+**Asset Management** (Issue #29-#31):
+- `update-cdn` - Update central library manifest, propagate to projects, sync to R2
+- `sync-project` - Sync project assets with library-first strategy
+- `cdnsync` - Sync central library to R2 (alias for rclone-cdn-sync)
+
+**R2 Configuration**:
+- `setup-rclone` - Configure rclone for Cloudflare R2
+- `test-rclone` - Test R2 connection
+
+See [sync/manifests/README.md](sync/manifests/README.md) for complete asset management documentation.
+
 ## 📁 Project Structure
 
 ```text

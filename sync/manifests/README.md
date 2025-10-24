@@ -267,76 +267,136 @@ sync-project push
 - Skips files with `copy-from-library` sync mode
 - Updates manifest with new checksums (future enhancement)
 
-### 2. Push Assets to R2
+### 4. Auto-Update Propagation (New - Issue #31)
 
-Upload assets to Cloudflare R2 storage:
+When you update an asset in the central library (`~/media/cdn/`), automatically propagate changes to all projects using that asset:
 
 ```bash
-# Push specific file
-~/dotfiles/scripts/sync/sync-r2.sh push PROJECT_NAME --path data/models/new-model.bin
+update-cdn
+# OR
+~/dotfiles/scripts/sync/update-cdn-and-notify.sh ~/media/cdn
+```
 
-# Or push all assets manually with rclone
-cd ~/dev/projects/PROJECT_NAME
-rclone sync data/ r2:dotfiles-assets/PROJECT_NAME/ --progress
+**Interactive workflow**:
+1. Backs up current central manifest
+2. Regenerates manifest with dimension extraction
+3. Shows notification with before/after comparison:
+   - Size changes: 18.8KB → 22.1KB (+3.3KB, +17.6%)
+   - Dimensions: 800×600 → 1200×900 (+400×300, +50%)
+   - SHA256 changes
+4. Prompts: "Propagate updates to projects? [Y/n]"
+5. If yes: Scans all projects, updates affected ones
+6. Prompts: "Sync to R2? [Y/n]"
+7. If yes: Runs `rclone-cdn-sync` to upload changes
+
+**Example output**:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 CDN Update & Notification Workflow
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[INFO] Step 1: Backing up current manifest...
+[✓] Backup created: ~/media/cdn/.r2-manifest.yml.backup
+
+[INFO] Step 2: Regenerating central manifest...
+[+] logos/adlimen/logo.svg (22.1KB, 1200×900) - NEW
+[~] branding/colors.json
+    Size: 2.3KB → 2.5KB (+0.2KB, +8.7%)
+
+📊 Summary: 1 new, 1 updated, 148 unchanged (total: 150 files, +0.2KB)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Change Notification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[INFO] Changed files detected: 2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 Propagate Updates to Projects
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+? Propagate updates to projects using these files? [Y/n] y
+
+[INFO] Running propagation...
+[↻ Update] APP-Portfolio
+  ✓ logos/adlimen/logo.svg → public/images/logo.svg (22.1KB)
+  ✓ branding/colors.json → src/theme/colors.json (2.5KB)
+
+[⊘ Skip] WEB-Landing (not affected)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Propagation Summary
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Projects scanned: 2
+  Projects updated: 1
+  Files copied: 2
+  Projects skipped: 1
+
+Affected projects:
+  ✓ APP-Portfolio
+
+[✓] Propagation completed successfully
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☁️  Sync to R2
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+? Sync changes to R2? [Y/n] y
+
+[INFO] Running R2 sync...
+[✓] R2 sync completed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Workflow Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[✓] CDN manifest updated
+[INFO] Changed files: 2
+```
+
+**Non-interactive modes**:
+```bash
+# Fully automated
+update-cdn --auto-propagate --auto-sync
+
+# Skip propagation
+update-cdn --no-propagate
+
+# Skip R2 sync
+update-cdn --no-sync
+
+# With git commits in projects
+propagate-cdn-updates --git-commit logo.svg
 ```
 
 **What it does**:
-- Reads manifest to get R2 path mapping
-- Uploads file to correct R2 location
-- Preserves directory structure in R2
+- **Project detection**: Scans `~/dev/projects/*/` for projects using changed files
+- **Detection methods**:
+  - Exact source match: `source: ~/media/cdn/logos/logo.svg`
+  - Filename match: Projects using same filename from library
+- **Updates per project**:
+  - Updates manifest (checksum, size, dimensions)
+  - Re-copies file from library to project
+  - Verifies checksum after copy
+  - Optional: Creates git commit with auto-generated message
+- **Smart skipping**: Projects not using changed files are skipped
+- **Statistics**: Shows copied files, updated projects, skipped projects
 
-**Example**:
+**Manual propagation** (for specific files):
 ```bash
-~/dotfiles/scripts/sync/sync-r2.sh push my-ai-app --path data/models/whisper-large.bin
+~/dotfiles/scripts/sync/propagate-cdn-updates.sh logo.svg colors.json
 ```
 
-**Output**:
-```
-[INFO] Pushing data/models/whisper-large.bin to R2
-[INFO] Uploading: /path/to/file → r2:dotfiles-assets/my-ai-app/models/whisper-large.bin
-Transferred:   	    2.650 GiB / 2.650 GiB, 100%, 45.32 MiB/s, ETA 0s
-[✓] Upload complete!
-```
+**Performance**: Completes in <5 minutes for 10+ projects (vs ~30 min manual)
 
-### 3. Pull Assets from R2
+**Safety**:
+- User confirmation required before propagation
+- Checksum verification on all copy operations
+- No destructive operations without explicit consent
+- Git commits optional (off by default)
 
-On a new machine or after clean install:
-
-```bash
-cd ~/dev/projects/PROJECT_NAME
-~/dotfiles/scripts/sync/sync-r2.sh pull PROJECT_NAME
-```
-
-**What it does**:
-- Reads `.r2-manifest.yml` from project
-- Downloads all assets marked with `sync: true`
-- Filters by current device if `devices:` list specified
-- Verifies checksums after download
-- Creates parent directories as needed
-
-**Example workflow on new MacBook**:
-```bash
-# 1. Clone project repository
-git clone https://github.com/you/my-ai-app.git
-cd my-ai-app
-
-# 2. Pull assets from R2
-~/dotfiles/scripts/sync/sync-r2.sh pull my-ai-app
-
-# 3. Verify downloads
-ls -lh data/models/
-```
-
-**Output**:
-```
-[INFO] Pulling assets for my-ai-app from R2
-[INFO] Syncing: my-ai-app/models/whisper-large.bin → data/models/whisper-large.bin
-Transferred:   	    2.650 GiB / 2.650 GiB, 100%, 52.18 MiB/s, ETA 0s
-[✓] Downloaded: data/models/whisper-large.bin
-[✓] R2 pull complete!
-```
-
-### 4. Update Manifest
+### 6. Update Manifest (Legacy)
 
 After modifying assets (adding, removing, updating files):
 
@@ -903,14 +963,30 @@ done
 
 ## Related Scripts
 
-After `stow bin`, these scripts are available:
+After `stow bin`, these scripts and commands are available:
 
+**Central Library Management**:
+- **`generate-cdn-manifest.sh`**: Generate/update central library manifest with dimensions
+- **`notify-cdn-updates.sh`**: Show before/after comparison of manifest changes
+- **`update-cdn`**: Convenience wrapper - update library + notify + propagate (Issue #31)
+- **`update-cdn-and-notify.sh`**: Full update workflow with prompts
+- **`propagate-cdn-updates.sh`**: Propagate library changes to all affected projects
+
+**Project Asset Management**:
+- **`generate-project-manifest.sh`**: Create project manifest with library detection
+- **`sync-project`**: Convenience wrapper - sync project assets
+- **`sync-project-assets.sh`**: Sync assets with library-first strategy
+
+**Legacy/Manual Operations**:
 - **`generate-manifest.sh`**: Create/update manifest from data/ directory
 - **`sync-r2.sh`**: Pull/push assets to R2
 - **`update-manifest.sh`**: Update timestamps and checksums
 - **`verify-manifest.sh`**: Verify asset integrity
+
+**R2 Configuration**:
 - **`setup-rclone`**: Configure rclone for R2 (from stow-packages/bin)
 - **`test-rclone`**: Test R2 connection (from stow-packages/bin)
+- **`rclone-cdn-sync`**: Sync central library to R2
 
 ## Additional Resources
 

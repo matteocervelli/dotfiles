@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Auto-Update Propagation Across Projects** (FASE 2.X, Issue #31)
+  - `scripts/sync/update-cdn-and-notify.sh` - Orchestrate CDN update workflow with notifications and propagation (280 lines)
+  - `scripts/sync/propagate-cdn-updates.sh` - Propagate library changes to all affected projects (570 lines)
+  - `stow-packages/bin/.local/bin/update-cdn` - Convenience wrapper for update workflow
+  - Interactive workflow with user confirmation prompts
+  - Before/after comparison showing dimension and size changes
+  - Project detection via source field and filename matching
+  - Automatic manifest updates (checksum, size, dimensions)
+  - Re-copy files from library to projects with verification
+  - Optional git commits (off by default, `--git-commit` flag)
+  - Optional R2 sync integration
+  - Statistics reporting: projects scanned/updated/skipped, files copied
+  - Colored terminal output: green (updates), gray (skips), red (errors)
+  - Non-interactive modes: `--auto-propagate`, `--auto-sync`, `--no-propagate`, `--no-sync`
+  - Performance: <5 minutes for 10+ projects (vs ~30 min manual)
+  - Comprehensive test suite (`tests/test-31-auto-update.bats`) with 24 tests
+  - Architecture decision record (`docs/architecture/ADR/ADR-003-auto-update-propagation.md`)
+  - Integration with Issues #29 and #30 (notification and project sync systems)
+  - Bash 3.2 compatible (macOS default shell)
+  - Documentation updates in `sync/manifests/README.md` and `README.md`
 - **Project Asset Sync with Library-First Strategy** (FASE 2.X, Issue #30)
   - `scripts/sync/generate-project-manifest.sh` - Generate project-specific manifests with library detection (570 lines)
   - `scripts/sync/sync-project-assets.sh` - Sync assets with library-first copy strategy and R2 fallback (680 lines)

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# update-cdn
+# Convenience wrapper for update-cdn-and-notify.sh
+#
+# Usage: update-cdn [CDN_DIR] [OPTIONS]
+#
+# This script calls update-cdn-and-notify.sh with proper path resolution.
+
+set -euo pipefail
+
+# Find dotfiles root
+if [ -n "${DOTFILES_ROOT:-}" ]; then
+    SCRIPT_DIR="$DOTFILES_ROOT/scripts/sync"
+elif [ -f "$HOME/.dotfiles_root" ]; then
+    SCRIPT_DIR="$(cat "$HOME/.dotfiles_root")/scripts/sync"
+else
+    # Try to find dotfiles by looking for the script
+    SCRIPT_DIR="$HOME/dotfiles/scripts/sync"
+    if [ ! -d "$SCRIPT_DIR" ]; then
+        SCRIPT_DIR="$HOME/dev/dotfiles/scripts/sync"
+    fi
+    if [ ! -d "$SCRIPT_DIR" ]; then
+        SCRIPT_DIR="$HOME/dev/projects/dotfiles/scripts/sync"
+    fi
+fi
+
+UPDATE_SCRIPT="$SCRIPT_DIR/update-cdn-and-notify.sh"
+
+if [ ! -f "$UPDATE_SCRIPT" ]; then
+    echo "Error: update-cdn-and-notify.sh not found at: $UPDATE_SCRIPT" >&2
+    echo "Please set DOTFILES_ROOT environment variable or create ~/.dotfiles_root" >&2
+    exit 1
+fi
+
+# Pass all arguments
+exec "$UPDATE_SCRIPT" "$@"
