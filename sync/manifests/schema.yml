@@ -53,22 +53,57 @@ assets:                        # List of assets (required, can be empty array)
                               # Example: {width: 1920, height: 1080}
                               # Automatically extracted by generate-cdn-manifest.sh using ImageMagick
                               # Only present for image files (jpg, png, gif, webp, svg, etc.)
+                              # Benefits:
+                              #   - Track size changes (800×600 → 1200×900 +50%)
+                              #   - No layout shift (set img width/height attributes)
+                              #   - Optimize responsive images (generate correct srcset)
+                              #   - Performance monitoring (detect oversized images)
 
     env_mode: string           # Environment mode (optional)
                               # Controls when to use local vs CDN URL
                               # Valid values:
                               #   - cdn-production-local-dev: CDN in production, local in development (default)
-                              #   - cdn-always: Always use CDN URL
+                              #     Use for: Most web assets (images, fonts, videos)
+                              #     Development: /media/logo.svg (fast, no latency)
+                              #     Production: https://cdn.example.com/logo.svg (cached, global)
+                              #
+                              #   - cdn-always: Always use CDN URL in all environments
+                              #     Use for: Shared assets across domains, third-party embeds
+                              #     Development: https://cdn.example.com/shared.jpg
+                              #     Production: https://cdn.example.com/shared.jpg
+                              #
                               #   - local-always: Always use local file path
+                              #     Use for: Large ML models, datasets, server-side files
+                              #     Development: /data/model.bin (no accidental downloads)
+                              #     Production: /data/model.bin (stays on server)
                               # Example: "cdn-production-local-dev"
+                              # Works with: lib/assets.ts (TypeScript) and lib/assets.py (Python)
 
     sync: string               # Sync strategy (optional, default: true for backward compatibility)
                               # Valid values:
                               #   - true/false: Legacy boolean support (true = download, false = manual)
+                              #
                               #   - "copy-from-library": Copy from ~/media/cdn/ (fastest, recommended)
+                              #     Performance: <0.1s per file (local filesystem copy)
+                              #     Fallback: Downloads from R2 if library unavailable
+                              #     Use for: Assets in central library
+                              #     Example: Logos, fonts shared across projects
+                              #
                               #   - "download": Download from R2 directly
+                              #     Performance: 1-5s per file (network download)
+                              #     Use for: Project-specific assets not in library
+                              #     Example: Project screenshots, custom graphics
+                              #
                               #   - "cdn-only": Asset is only on CDN, don't sync locally
+                              #     Performance: No local sync (verify CDN URL accessible)
+                              #     Use for: Assets served only via CDN, not needed locally
+                              #     Example: Public hero images, marketing banners
+                              #
+                              #   - false: Manual download required
+                              #     Use for: Very large files (>100MB), selective downloads
+                              #     Example: Full training datasets, 4K video files
                               # Example: "copy-from-library"
+                              # Best practice: Use copy-from-library for 90%+ of assets
 
     devices: array             # Target devices (optional)
                               # List of device names that need this asset

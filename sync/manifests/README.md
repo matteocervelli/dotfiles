@@ -118,6 +118,170 @@ assets:
     # Production: Uses https://cdn.adlimen.com/logos/logo.svg (CDN)
 ```
 
+## Environment Switching Guide
+
+### How It Works
+
+Asset helpers (`lib/assets.ts` for TypeScript, `lib/assets.py` for Python) automatically switch between local and CDN URLs based on environment:
+
+**Development Mode**:
+```typescript
+// NODE_ENV=development or ENVIRONMENT=development
+const url = getAssetUrl('/media/logo.png', 'https://cdn.example.com/logo.png');
+// Returns: '/media/logo.png' (local path)
+```
+
+**Production Mode**:
+```typescript
+// NODE_ENV=production or ENVIRONMENT=production
+const url = getAssetUrl('/media/logo.png', 'https://cdn.example.com/logo.png');
+// Returns: 'https://cdn.example.com/logo.png' (CDN URL)
+```
+
+### Environment Modes Explained
+
+#### 1. cdn-production-local-dev (Default)
+
+**Use case**: Most web assets (images, fonts, videos)
+
+**Behavior**:
+- Development: Local file paths for fast iteration
+- Production: CDN URLs for performance and scalability
+
+**Example**:
+```yaml
+assets:
+  - path: public/media/hero.jpg
+    cdn_url: https://cdn.example.com/hero.jpg
+    env_mode: cdn-production-local-dev  # or omit (default)
+```
+
+**Benefits**:
+- ✅ Fast local development (no CDN latency)
+- ✅ Production uses CDN (cached, globally distributed)
+- ✅ Easy testing without internet connection
+
+#### 2. cdn-always
+
+**Use case**: Shared assets across multiple domains, third-party integrations
+
+**Behavior**:
+- Development: CDN URL
+- Production: CDN URL
+
+**Example**:
+```yaml
+assets:
+  - path: public/images/shared-banner.jpg
+    cdn_url: https://cdn.example.com/shared/banner.jpg
+    env_mode: cdn-always
+```
+
+**Benefits**:
+- ✅ Consistent URLs across environments
+- ✅ Share assets between multiple apps
+- ✅ Test CDN behavior in development
+
+**When to use**:
+- Assets used by multiple unrelated projects
+- Third-party widgets embedding your assets
+- Testing CDN caching behavior
+- Assets not needed locally (save disk space)
+
+#### 3. local-always
+
+**Use case**: Large ML models, datasets, development-only assets
+
+**Behavior**:
+- Development: Local path
+- Production: Local path (even in production build)
+
+**Example**:
+```yaml
+assets:
+  - path: data/models/whisper-large-v3.bin
+    cdn_url: https://cdn.example.com/models/whisper-large-v3.bin
+    env_mode: local-always
+```
+
+**Benefits**:
+- ✅ No accidental CDN downloads of huge files
+- ✅ Keep models local for inference performance
+- ✅ Avoid CDN bandwidth costs for large files
+
+**When to use**:
+- AI/ML models (always loaded from disk)
+- Datasets (too large for CDN)
+- Development-only test files
+- Files that must stay on server (security/licensing)
+
+### Manual Override
+
+Override automatic environment detection:
+
+**Force local paths** (useful for testing offline):
+```bash
+ASSET_MODE=local npm run dev
+```
+
+**Force CDN URLs** (useful for testing production behavior):
+```bash
+ASSET_MODE=cdn npm run dev
+```
+
+**Auto mode** (default, respects NODE_ENV/ENVIRONMENT):
+```bash
+ASSET_MODE=auto npm run dev  # or omit ASSET_MODE
+```
+
+### Configuration
+
+**TypeScript/JavaScript** (`.env.development`):
+```bash
+NODE_ENV=development
+ASSET_MODE=auto  # optional, auto is default
+```
+
+**Python** (`.env.development`):
+```bash
+ENVIRONMENT=development
+ASSET_MODE=auto  # optional, auto is default
+```
+
+### Integration with Asset Helpers
+
+**TypeScript/React**:
+```typescript
+import { useAsset } from '@/lib/assets';
+
+// Default mode (cdn-production-local-dev)
+const logoUrl = useAsset('/media/logo.png', 'https://cdn.example.com/logo.png');
+
+// Explicit mode override
+const modelUrl = useAsset(
+  '/data/model.bin',
+  'https://cdn.example.com/model.bin',
+  'local-always'  // Never use CDN for this
+);
+```
+
+**Python/FastAPI**:
+```python
+from lib.assets import get_asset_url
+
+# Default mode
+logo_url = get_asset_url('/static/logo.png', 'https://cdn.example.com/logo.png')
+
+# Explicit mode override
+model_path = get_asset_url(
+    '/data/model.bin',
+    'https://cdn.example.com/model.bin',
+    env_mode='local-always'
+)
+```
+
+See [templates/README.md](../../templates/README.md) for complete asset helper documentation.
+
 ### Smart Sync Strategies
 
 The enhanced `sync` field supports multiple strategies:
@@ -145,6 +309,36 @@ assets:
     cdn_url: https://cdn.adlimen.com/images/hero.jpg
     sync: cdn-only
 ```
+
+## Central Library Workflow
+
+The central media library (`~/media/cdn/`) serves as the single source of truth for shared assets. This workflow integrates with project-specific manifests to provide seamless asset management.
+
+### Overview
+
+```
+~/media/cdn/               # Central library
+├── .r2-manifest.yml      # Central manifest (tracked in git)
+└── logos/fonts/images/   # Asset directories
+         ↓
+    bidirectional sync
+         ↓
+Cloudflare R2 (media-cdn)  # Cloud storage
+         ↓
+    downloaded by projects
+         ↓
+~/dev/projects/*/          # Individual projects
+├── .r2-manifest.yml      # Project-specific manifest
+└── public/media/         # Local asset copies
+```
+
+### Key Concepts
+
+1. **Library-First Strategy**: Projects copy from central library (fast) before falling back to R2 download (slower)
+2. **Auto-Update Propagation**: Changes in library automatically propagate to all affected projects
+3. **Environment Awareness**: Assets switch between local paths (dev) and CDN URLs (production)
+
+See [sync/library/README.md](../library/README.md) for detailed central library documentation.
 
 ## Workflow
 
