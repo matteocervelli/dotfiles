@@ -35,7 +35,7 @@ source "$PROJECT_ROOT/scripts/utils/detect-os.sh"
 
 # Default configuration
 VERBOSE=0
-OUTPUT_FILE="$PROJECT_ROOT/applications/current-apps.txt"
+OUTPUT_FILE="$PROJECT_ROOT/applications/current_macos_apps_$(date +%Y-%m-%d).txt"
 
 # =============================================================================
 # Helper Functions
@@ -53,7 +53,7 @@ USAGE:
 OPTIONS:
     -h, --help       Show this help message
     -v, --verbose    Show detailed output
-    -o, --output     Output file (default: applications/current-apps.txt)
+    -o, --output     Output file (default: applications/current_macos_apps_YYYY-MM-DD.txt)
 
 EXAMPLES:
     $0
@@ -61,10 +61,12 @@ EXAMPLES:
     $0 --output /tmp/apps.txt
 
 OUTPUT:
-    Creates categorized list with three sections:
-    1. Homebrew Casks - Apps installed via brew
-    2. Mac App Store Apps - Apps from MAS
-    3. Manual Installations - Apps in /Applications
+    Creates categorized list with five sections:
+    1. Homebrew Casks - GUI apps installed via brew
+    2. Homebrew Formulae - CLI tools installed via brew
+    3. Mac App Store Apps - Apps from MAS
+    4. Setapp Apps - Apps from Setapp subscription
+    5. Manual Installations - Apps in /Applications
 
 EXIT CODES:
     0    Success
@@ -171,6 +173,26 @@ list_homebrew_casks() {
     echo "$casks"
 }
 
+# List Homebrew formulae (CLI tools)
+list_homebrew_formulae() {
+    if ! command -v brew &> /dev/null; then
+        [[ $VERBOSE -eq 1 ]] && log_warning "Skipping Homebrew formulae (brew not installed)" >&2 || true
+        return 0
+    fi
+
+    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Homebrew formulae..." >&2 || true
+
+    local formulae
+    formulae=$(brew list --formula 2>/dev/null | sort)
+
+    if [[ -z "$formulae" ]]; then
+        [[ $VERBOSE -eq 1 ]] && log_info "No Homebrew formulae found" >&2 || true
+        return 0
+    fi
+
+    echo "$formulae"
+}
+
 # List Mac App Store applications
 list_mas_apps() {
     if ! command -v mas &> /dev/null; then
@@ -208,6 +230,31 @@ list_manual_apps() {
     fi
 
     echo "$manual_apps"
+}
+
+# List Setapp applications
+list_setapp_apps() {
+    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Setapp applications..." >&2 || true
+
+    # Check if Setapp directory exists
+    if [[ ! -d "/Applications/Setapp" ]]; then
+        [[ $VERBOSE -eq 1 ]] && log_info "No Setapp installation found" >&2 || true
+        return 0
+    fi
+
+    # Find all .app bundles in Setapp directory
+    local setapp_apps
+    setapp_apps=$(find /Applications/Setapp -maxdepth 2 -type d -name "*.app" 2>/dev/null | \
+        sed 's|/Applications/Setapp/||' | \
+        sed 's|\.app$||' | \
+        sort)
+
+    if [[ -z "$setapp_apps" ]]; then
+        [[ $VERBOSE -eq 1 ]] && log_info "No Setapp apps found" >&2 || true
+        return 0
+    fi
+
+    echo "$setapp_apps"
 }
 
 # Filter manual apps to exclude Homebrew-managed apps
@@ -270,31 +317,43 @@ generate_audit_report() {
 
     # Discover applications
     local homebrew_casks
+    local homebrew_formulae
     local mas_apps
+    local setapp_apps
     local manual_apps
     local manual_only_apps
 
     homebrew_casks=$(list_homebrew_casks)
+    homebrew_formulae=$(list_homebrew_formulae)
     mas_apps=$(list_mas_apps)
+    setapp_apps=$(list_setapp_apps)
     manual_apps=$(list_manual_apps)
     manual_only_apps=$(filter_manual_apps "$manual_apps" "$homebrew_casks")
 
     # Count applications
-    local homebrew_count=0
+    local homebrew_casks_count=0
+    local homebrew_formulae_count=0
     local mas_count=0
+    local setapp_count=0
     local manual_count=0
 
     if [[ -n "$homebrew_casks" ]]; then
-        homebrew_count=$(echo "$homebrew_casks" | wc -l | tr -d ' ')
+        homebrew_casks_count=$(echo "$homebrew_casks" | wc -l | tr -d ' ')
+    fi
+    if [[ -n "$homebrew_formulae" ]]; then
+        homebrew_formulae_count=$(echo "$homebrew_formulae" | wc -l | tr -d ' ')
     fi
     if [[ -n "$mas_apps" ]]; then
         mas_count=$(echo "$mas_apps" | wc -l | tr -d ' ')
+    fi
+    if [[ -n "$setapp_apps" ]]; then
+        setapp_count=$(echo "$setapp_apps" | wc -l | tr -d ' ')
     fi
     if [[ -n "$manual_only_apps" ]]; then
         manual_count=$(echo "$manual_only_apps" | wc -l | tr -d ' ')
     fi
 
-    local total_count=$((homebrew_count + mas_count + manual_count))
+    local total_count=$((homebrew_casks_count + homebrew_formulae_count + mas_count + setapp_count + manual_count))
 
     # Generate report
     {
@@ -306,10 +365,22 @@ generate_audit_report() {
         echo ""
 
         # Homebrew Casks Section
-        echo "=== Homebrew Casks ($homebrew_count) ==="
+        echo "=== Homebrew Casks ($homebrew_casks_count) ==="
         echo ""
         if [[ -n "$homebrew_casks" ]]; then
             echo "$homebrew_casks"
+        else
+            echo "(none)"
+        fi
+        echo ""
+        echo "========================================================================"
+        echo ""
+
+        # Homebrew Formulae Section
+        echo "=== Homebrew Formulae ($homebrew_formulae_count) ==="
+        echo ""
+        if [[ -n "$homebrew_formulae" ]]; then
+            echo "$homebrew_formulae"
         else
             echo "(none)"
         fi
@@ -322,6 +393,18 @@ generate_audit_report() {
         echo ""
         if [[ -n "$mas_apps" ]]; then
             echo "$mas_apps"
+        else
+            echo "(none)"
+        fi
+        echo ""
+        echo "========================================================================"
+        echo ""
+
+        # Setapp Apps Section
+        echo "=== Setapp Apps ($setapp_count) ==="
+        echo ""
+        if [[ -n "$setapp_apps" ]]; then
+            echo "$setapp_apps"
         else
             echo "(none)"
         fi
@@ -342,14 +425,17 @@ generate_audit_report() {
         echo ""
         echo "Notes:"
         echo "- Manual installations exclude apps already managed by Homebrew"
+        echo "- Setapp apps are from /Applications/Setapp/"
         echo "- To remove apps, add names to applications/remove-apps.txt"
         echo "- Then run: ./scripts/apps/cleanup-apps.sh --execute"
 
     } > "$output_file"
 
     log_success "Audit complete! Found $total_count applications"
-    log_info "  Homebrew Casks: $homebrew_count"
+    log_info "  Homebrew Casks: $homebrew_casks_count"
+    log_info "  Homebrew Formulae: $homebrew_formulae_count"
     log_info "  Mac App Store: $mas_count"
+    log_info "  Setapp Apps: $setapp_count"
     log_info "  Manual Installs: $manual_count"
     log_info ""
     log_success "Report saved to: $output_file"

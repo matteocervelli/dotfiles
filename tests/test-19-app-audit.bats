@@ -62,7 +62,9 @@ teardown() {
     "$AUDIT_SCRIPT" --output "$TEST_OUTPUT"
 
     grep -q "=== Homebrew Casks" "$TEST_OUTPUT"
+    grep -q "=== Homebrew Formulae" "$TEST_OUTPUT"
     grep -q "=== Mac App Store Apps" "$TEST_OUTPUT"
+    grep -q "=== Setapp Apps" "$TEST_OUTPUT"
     grep -q "=== Manual Installations" "$TEST_OUTPUT"
 }
 
@@ -107,7 +109,9 @@ teardown() {
 
     # Check format: "=== Section (N) ==="
     grep -E "=== Homebrew Casks \([0-9]+\) ===" "$TEST_OUTPUT"
+    grep -E "=== Homebrew Formulae \([0-9]+\) ===" "$TEST_OUTPUT"
     grep -E "=== Mac App Store Apps \([0-9]+\) ===" "$TEST_OUTPUT"
+    grep -E "=== Setapp Apps \([0-9]+\) ===" "$TEST_OUTPUT"
     grep -E "=== Manual Installations \([0-9]+\) ===" "$TEST_OUTPUT"
 }
 

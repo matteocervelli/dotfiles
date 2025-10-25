@@ -12,25 +12,27 @@ First, run the audit script to discover all installed applications:
 ./scripts/apps/audit-apps.sh
 ```
 
-This will generate `current-apps.txt` with a categorized list of all applications:
-- **Homebrew Casks**: Apps installed via `brew install --cask`
+This will generate `current_macos_apps_YYYY-MM-DD.txt` with a categorized list of all applications:
+- **Homebrew Casks**: GUI apps installed via `brew install --cask`
+- **Homebrew Formulae**: CLI tools installed via `brew install`
 - **Mac App Store**: Apps installed via Mac App Store
-- **Manual Installations**: Apps in `/Applications` not managed by Homebrew or MAS
+- **Setapp Apps**: Apps from Setapp subscription service
+- **Manual Installations**: Apps in `/Applications` not managed by Homebrew, MAS, or Setapp
 
 ### 2. Manual Review
 
-Review the `current-apps.txt` file and manually categorize applications:
+Review the generated audit file and manually categorize applications:
 
 **Create two lists**:
 
 1. **keep-apps.txt** - Applications you want to keep
    - Add one app name per line
-   - Match exact names from `current-apps.txt`
+   - Match exact names from the audit report
    - These apps will NOT be removed
 
 2. **remove-apps.txt** - Applications you want to remove
    - Add one app name per line
-   - Match exact names from `current-apps.txt`
+   - Match exact names from the audit report
    - These apps will be uninstalled by the cleanup script
 
 ### 3. Test Cleanup (Dry-Run)

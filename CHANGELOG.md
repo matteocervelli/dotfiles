@@ -10,18 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Application Management System** (FASE 3.1, Issue #19)
-  - `scripts/apps/audit-apps.sh` - Comprehensive application discovery and listing (~200 lines)
+  - `scripts/apps/audit-apps.sh` - Comprehensive application discovery and listing (~450 lines)
   - `scripts/apps/cleanup-apps.sh` - Safe application removal with dry-run mode (~250 lines)
   - `applications/` directory structure with README and templates
   - `applications/README.md` - Complete workflow guide with examples and troubleshooting
   - `applications/keep-apps.txt` - Template for apps to preserve
   - `applications/remove-apps.txt` - Template for apps to remove
-  - `tests/test-19-app-audit.bats` - Comprehensive BATS test suite (38 tests)
+  - `tests/test-19-app-audit.bats` - Comprehensive BATS test suite (38 tests, 33/34 passing)
   - `docs/TECH-STACK.md` - Complete technology stack documentation
-  - Application discovery from three sources:
-    - Homebrew casks via `brew list --cask`
+  - Application discovery from five sources:
+    - Homebrew casks (GUI apps) via `brew list --cask`
+    - Homebrew formulae (CLI tools) via `brew list --formula`
     - Mac App Store apps via `mas list`
+    - Setapp apps from `/Applications/Setapp/`
     - Manual installations from `/Applications/*.app`
+  - Timestamped audit reports: `current_macos_apps_YYYY-MM-DD.txt`
   - Smart removal detection (Homebrew vs manual)
   - Safety features:
     - Default dry-run mode (no deletions without explicit `--execute` flag)
@@ -31,11 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Detailed logging to `applications/cleanup.log`
     - Path sanitization and validation
   - Workflow: Audit → Review → Categorize → Test (dry-run) → Execute
-  - Categorized output with counts per source
+  - Categorized output with counts per source (5 sections)
   - Statistics reporting (removed/failed/skipped apps)
   - Integration with Brewfile management
-  - Performance: < 5 seconds for audit, < 5 seconds for cleanup dry-run
+  - Performance: < 10 seconds for audit, < 5 seconds for cleanup dry-run
   - Complete documentation in README.md, CLAUDE.md, and applications/README.md
+  - **Bug fix**: Resolved critical `set -e` + conditional logging issue that caused silent failures
+    - Added `|| true` to all conditional log statements to ensure proper exit codes
 
 - **Auto-Update Dotfiles Mechanism** (FASE 2.6, Issue #18)
   - `scripts/sync/auto-update-dotfiles.sh` - Automatically sync dotfiles with pull-before-push strategy (100 lines)
