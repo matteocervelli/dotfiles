@@ -1,0 +1,19 @@
+# Applications to Keep
+#
+# Instructions:
+# - Add one application name per line
+# - Use exact names from current-apps.txt
+# - Lines starting with # are comments (ignored)
+# - Blank lines are ignored
+# - Apps listed here will NOT be removed by cleanup script
+#
+# Example:
+# 1password-cli
+# docker
+# visual-studio-code
+# 1Password
+# Xcode
+# Claude
+
+# Add your applications below this line:
+

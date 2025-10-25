@@ -43,13 +43,18 @@ dotfiles/
 
 ### Technology Stack
 
-- **Shell**: ZSH with Oh My Zsh framework
-- **Symlink Manager**: GNU Stow
-- **Package Manager**: Homebrew + Mac App Store integration
+Full technology stack documented in [docs/TECH-STACK.md](docs/TECH-STACK.md).
+
+**Key Technologies:**
+- **Shell**: ZSH with Oh My Zsh framework, Bash 3.2+ scripting
+- **Symlink Manager**: GNU Stow 2.3.1+
+- **Package Managers**: Homebrew (macOS), mas-cli, apt (Ubuntu)
+- **Secret Management**: 1Password CLI with `op inject`
+- **Cloud Storage**: Rclone with Cloudflare R2
+- **Testing**: BATS (Bash Automated Testing System)
 - **Development**: HTML/SCSS, JS/TS, React/Next.js, Python, SwiftUI, PostgreSQL
 - **Editor**: Cursor (VS Code based) + Xcode
 - **Infrastructure**: Tailscale, MCP servers, Docker integration
-- **Security**: 1Password, GPG signing, Bitdefender
 
 ## Development Commands
 
@@ -84,6 +89,24 @@ stow -n -t ~ zsh           # Test symlink creation without executing
 ./scripts/scan-system.sh                # Document current system configuration
 ```
 
+### Application Management
+
+```bash
+# Audit installed applications
+./scripts/apps/audit-apps.sh                    # Discover all apps
+./scripts/apps/audit-apps.sh --verbose          # Detailed output
+
+# Cleanup unwanted applications
+./scripts/apps/cleanup-apps.sh                  # Dry-run (safe preview)
+./scripts/apps/cleanup-apps.sh --execute        # Actually remove apps
+
+# Workflow
+./scripts/apps/audit-apps.sh                    # 1. Generate current-apps.txt
+vim applications/remove-apps.txt                # 2. List apps to remove
+./scripts/apps/cleanup-apps.sh                  # 3. Preview changes
+./scripts/apps/cleanup-apps.sh --execute        # 4. Execute cleanup
+```
+
 ### Development & Maintenance
 
 ```bash
@@ -91,34 +114,50 @@ stow -n -t ~ zsh           # Test symlink creation without executing
 chmod +x scripts/*.sh
 
 # Update Brewfile from current system
-brew bundle dump --describe --force --file=packages/homebrew/Brewfile
+brew bundle dump --describe --force --file=system/macos/Brewfile
 
-# Test configurations
-./scripts/test-config.sh               # Validate all configurations
+# Run tests
+bats tests/test-19-app-audit.bats              # Application audit tests
+bats tests/*.bats                               # All tests
+
+# Health checks
+./scripts/health/check-all.sh                   # Comprehensive health check
+make health                                     # via Makefile
 
 # Backup current configs
-./scripts/backup-current.sh            # Save existing dotfiles
+./scripts/backup-current.sh                     # Save existing dotfiles
 ```
 
 ## Implementation Status
 
-### ✅ Completed (FASE 1)
-- Documentation structure (PLANNING.md, TASK.md)
-- Directory structure with GNU Stow packages
-- Project architecture definition
-- .stow-local-ignore configuration
+### ✅ FASE 1 - Foundation (COMPLETED)
+- Bootstrap scripts (macOS, Ubuntu)
+- GNU Stow packages: shell, git, ssh, 1password
+- Stow automation scripts
+- Health check system
+- Makefile orchestration
+- **Milestone**: [Closed 2025-10-21](https://github.com/matteocervelli/dotfiles/milestone/2)
 
-### 🚧 In Progress (FASE 2)
-- System configuration scanning
-- Existing dotfiles backup
-- Screenshot documentation
+### ✅ FASE 2 - Secrets & Sync (COMPLETED)
+- 1Password CLI integration
+- Rclone + Cloudflare R2 setup
+- Asset manifest system with dimension extraction
+- Project sync with library-first strategy
+- Auto-update propagation system
+- Environment-aware asset helpers (TypeScript + Python)
+- Complete asset management documentation
+- **Milestone**: [Closed 2025-01-25](https://github.com/matteocervelli/dotfiles/milestone/3)
 
-### ⏳ Planned (FASE 3-6)
-- Core package implementations (zsh, git, cursor, etc.)
-- Automation scripts development
-- macOS system configuration
-- Infrastructure integration
-- Testing and documentation
+### 🔄 FASE 3 - Applications & XDG (IN PROGRESS)
+- **✅ Issue #19**: Application audit & cleanup system
+- ⏳ Issue #20: Brewfile management
+- ⏳ Issue #21: XDG Base Directory compliance
+- **Current Status**: Implementing application management
+
+### ⏳ FASE 4-6 - Upcoming
+- VM Ubuntu setup
+- Project templates
+- Monitoring & backup automation
 
 ## Key Implementation Notes
 

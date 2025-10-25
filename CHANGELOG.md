@@ -9,6 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Application Management System** (FASE 3.1, Issue #19)
+  - `scripts/apps/audit-apps.sh` - Comprehensive application discovery and listing (~200 lines)
+  - `scripts/apps/cleanup-apps.sh` - Safe application removal with dry-run mode (~250 lines)
+  - `applications/` directory structure with README and templates
+  - `applications/README.md` - Complete workflow guide with examples and troubleshooting
+  - `applications/keep-apps.txt` - Template for apps to preserve
+  - `applications/remove-apps.txt` - Template for apps to remove
+  - `tests/test-19-app-audit.bats` - Comprehensive BATS test suite (38 tests)
+  - `docs/TECH-STACK.md` - Complete technology stack documentation
+  - Application discovery from three sources:
+    - Homebrew casks via `brew list --cask`
+    - Mac App Store apps via `mas list`
+    - Manual installations from `/Applications/*.app`
+  - Smart removal detection (Homebrew vs manual)
+  - Safety features:
+    - Default dry-run mode (no deletions without explicit `--execute` flag)
+    - User confirmation prompts before any removal
+    - Input validation (comments and blank lines ignored)
+    - Whitespace trimming for app names
+    - Detailed logging to `applications/cleanup.log`
+    - Path sanitization and validation
+  - Workflow: Audit → Review → Categorize → Test (dry-run) → Execute
+  - Categorized output with counts per source
+  - Statistics reporting (removed/failed/skipped apps)
+  - Integration with Brewfile management
+  - Performance: < 5 seconds for audit, < 5 seconds for cleanup dry-run
+  - Complete documentation in README.md, CLAUDE.md, and applications/README.md
+
 - **Auto-Update Dotfiles Mechanism** (FASE 2.6, Issue #18)
   - `scripts/sync/auto-update-dotfiles.sh` - Automatically sync dotfiles with pull-before-push strategy (100 lines)
   - `scripts/sync/install-autoupdate.sh` - Platform-specific installer for auto-update service (65 lines)

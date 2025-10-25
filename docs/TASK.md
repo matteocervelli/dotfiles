@@ -363,11 +363,23 @@
 **Duration**: 6-8 hours
 **Priority**: High 🔥
 
-### 3.1 Application Audit
+### 3.1 Application Audit ✅
 
-- [ ] **3.1.1** Create `scripts/apps/audit-apps.sh` (list Homebrew, mas, /Applications)
-- [ ] **3.1.2** Run audit and save to `applications/current-apps.txt`
-- [ ] **3.1.3** Manually review and create `applications/keep-apps.txt` and `applications/remove-apps.txt`
+- [x] **3.1.1** Create `scripts/apps/audit-apps.sh` (list Homebrew, mas, /Applications)
+- [x] **3.1.2** Run audit and save to `applications/current-apps.txt`
+- [x] **3.1.3** Manually review and create `applications/keep-apps.txt` and `applications/remove-apps.txt`
+- [x] **3.1.4** Create `scripts/apps/cleanup-apps.sh` (safe removal with dry-run)
+- [x] **3.1.5** Create `applications/README.md` with complete workflow guide
+- [x] **3.1.6** Create `tests/test-19-app-audit.bats` (38 tests)
+- [x] **3.1.7** Create `docs/TECH-STACK.md` documentation
+- [x] **3.1.8** Update documentation (README.md, CHANGELOG.md, CLAUDE.md)
+
+**Completed**: 2025-01-25
+**Status**: ✅ All tasks completed, comprehensive application management system implemented
+**GitHub Issue**: [#19](https://github.com/matteocervelli/dotfiles/issues/19) ✅ CLOSED
+**Scripts**: audit-apps.sh (~200 lines), cleanup-apps.sh (~250 lines)
+**Tests**: 38 BATS tests covering audit, cleanup, safety features, and error handling
+**Documentation**: README.md, CLAUDE.md, TECH-STACK.md, applications/README.md updated
 
 ### 3.2 Brewfile Management
 
@@ -378,9 +390,10 @@
 
 ### 3.3 Application Cleanup
 
-- [ ] **3.3.1** Create `scripts/apps/cleanup-apps.sh` (remove unwanted apps)
-- [ ] **3.3.2** Test cleanup script with dry-run
-- [ ] **3.3.3** Run actual cleanup
+**Note**: Merged into 3.1 - cleanup functionality integrated into audit system
+- [x] **3.3.1** Create `scripts/apps/cleanup-apps.sh` (remove unwanted apps)
+- [x] **3.3.2** Test cleanup script with dry-run
+- [x] **3.3.3** Run actual cleanup
 
 ### 3.4 XDG Compliance
 

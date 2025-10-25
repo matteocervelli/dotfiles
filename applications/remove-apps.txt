@@ -1,0 +1,23 @@
+# Applications to Remove
+#
+# Instructions:
+# - Add one application name per line
+# - Use exact names from current-apps.txt
+# - Lines starting with # are comments (ignored)
+# - Blank lines are ignored
+# - Apps listed here WILL BE REMOVED by cleanup script with --execute flag
+#
+# IMPORTANT: Always test with dry-run first (default mode)
+#   ./scripts/apps/cleanup-apps.sh
+#
+# Then execute when ready:
+#   ./scripts/apps/cleanup-apps.sh --execute
+#
+# Example:
+# google-chrome
+# firefox
+# microsoft-edge
+# libreoffice
+
+# Add your applications below this line:
+

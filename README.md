@@ -7,6 +7,7 @@ Personal dotfiles and development environment configuration for macOS.
 - ✅ ZSH configuration with custom aliases and functions
 - ✅ Git configuration and aliases
 - ✅ Development tools setup
+- ✅ **Application Management** - Audit and cleanup macOS applications
 - ✅ **Asset Management System** - Central library with auto-update propagation
 - ✅ **Environment-Aware Helpers** - TypeScript & Python asset URL resolution
 - ✅ R2 sync with Cloudflare integration
@@ -225,6 +226,98 @@ sync-project pull
 # Development: /media/new-logo.svg
 # Production: https://cdn.example.com/logos/company/new-logo.svg
 ```
+
+## 🗂️ Application Management
+
+Comprehensive system for auditing and cleaning up macOS applications across Homebrew, Mac App Store, and manual installations.
+
+### Quick Start
+
+**Audit all installed applications**:
+```bash
+./scripts/apps/audit-apps.sh
+# Generates: applications/current-apps.txt
+```
+
+**Cleanup unwanted applications**:
+```bash
+# 1. Review and edit removal list
+vim applications/remove-apps.txt
+
+# 2. Preview changes (dry-run, safe)
+./scripts/apps/cleanup-apps.sh
+
+# 3. Execute cleanup
+./scripts/apps/cleanup-apps.sh --execute
+```
+
+### Features
+
+1. **Comprehensive Discovery**
+   - Homebrew casks (`brew list --cask`)
+   - Mac App Store apps (`mas list`)
+   - Manual installations (`/Applications/*.app`)
+   - Automatic categorization
+
+2. **Safe Cleanup**
+   - **Dry-run by default** - No deletions without explicit --execute flag
+   - User confirmation before removal
+   - Smart detection: Homebrew vs manual apps
+   - Proper uninstall methods (`brew uninstall --cask` or `rm -rf`)
+
+3. **Workflow**
+   - Audit → Review → Categorize → Test → Execute
+   - Template files with instructions
+   - Statistics and logging
+
+### Command Reference
+
+| Command | Purpose | Safety |
+|---------|---------|--------|
+| `./scripts/apps/audit-apps.sh` | Discover all applications | ✅ Read-only |
+| `./scripts/apps/audit-apps.sh --verbose` | Detailed audit output | ✅ Read-only |
+| `./scripts/apps/cleanup-apps.sh` | Preview removals (dry-run) | ✅ Safe |
+| `./scripts/apps/cleanup-apps.sh --execute` | Actually remove apps | ⚠️  Destructive |
+| `./scripts/apps/cleanup-apps.sh -e -y` | Skip confirmation | ⚠️  Dangerous |
+
+### Example Workflow
+
+```bash
+# 1. Audit current applications
+./scripts/apps/audit-apps.sh
+# Output: applications/current-apps.txt
+#   === Homebrew Casks (45) ===
+#   === Mac App Store Apps (12) ===
+#   === Manual Installations (8) ===
+
+# 2. Review and decide what to remove
+cat applications/current-apps.txt
+vim applications/remove-apps.txt
+
+# Add unwanted apps:
+# google-chrome
+# firefox
+# microsoft-edge
+
+# 3. Test with dry-run (safe preview)
+./scripts/apps/cleanup-apps.sh
+# Shows what would be removed, no actual changes
+
+# 4. Execute cleanup
+./scripts/apps/cleanup-apps.sh --execute
+# Prompts for confirmation
+# Removes listed apps
+# Shows statistics
+
+# 5. Update Brewfile to reflect current state
+brew bundle dump --describe --force --file=system/macos/Brewfile
+```
+
+### Documentation
+
+- **Detailed Guide**: [applications/README.md](applications/README.md)
+- **Script Source**: [scripts/apps/](scripts/apps/)
+- **Tests**: [tests/test-19-app-audit.bats](tests/test-19-app-audit.bats)
 
 ## 📁 Project Structure
 
