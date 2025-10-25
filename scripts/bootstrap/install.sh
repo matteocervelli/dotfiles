@@ -56,6 +56,15 @@ else
     log_warning "Health check script not found, skipping..."
 fi
 
+# Install auto-update service
+log_step "Installing auto-update service"
+if [ -f "$DOTFILES_DIR/scripts/sync/install-autoupdate.sh" ]; then
+    "$DOTFILES_DIR/scripts/sync/install-autoupdate.sh"
+else
+    log_warning "Auto-update installer not found, skipping..."
+    log_info "Install manually later: ./scripts/sync/install-autoupdate.sh"
+fi
+
 log_success "Dotfiles installation complete!"
 echo ""
 log_info "Next steps:"
@@ -63,3 +72,6 @@ echo "  1. Restart your shell: exec \$SHELL"
 echo "  2. Sign in to 1Password: eval \$(op signin)"
 echo "  3. Configure Rclone: ./scripts/sync/setup-rclone.sh"
 echo "  4. Run health check: make health"
+echo ""
+log_info "Auto-update service installed and running every 30 minutes"
+log_info "View logs: tail -f /tmp/dotfiles-autoupdate.log"
