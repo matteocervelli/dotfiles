@@ -147,7 +147,7 @@ check_os() {
         exit 2
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Running on macOS"
+    [[ $VERBOSE -eq 1 ]] && log_info "Running on macOS" || true
 }
 
 # Check required dependencies
@@ -169,7 +169,7 @@ check_dependencies() {
         exit 3
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_success "All dependencies OK"
+    [[ $VERBOSE -eq 1 ]] && log_success "All dependencies OK" || true
 }
 
 # =============================================================================
@@ -192,7 +192,7 @@ validate_input_file() {
         exit 5
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_success "Input file found: $INPUT_FILE"
+    [[ $VERBOSE -eq 1 ]] && log_success "Input file found: $INPUT_FILE" || true
 }
 
 # Read and parse input file
@@ -288,7 +288,7 @@ remove_homebrew_app() {
         return 0
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Uninstalling Homebrew cask: $app_name"
+    [[ $VERBOSE -eq 1 ]] && log_info "Uninstalling Homebrew cask: $app_name" || true
 
     if brew uninstall --cask "$app_name" 2>&1 | tee -a "$PROJECT_ROOT/applications/cleanup.log"; then
         log_success "Removed Homebrew app: $app_name"
@@ -315,7 +315,7 @@ remove_manual_app() {
         return 0
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Removing manual installation: $app_path"
+    [[ $VERBOSE -eq 1 ]] && log_info "Removing manual installation: $app_path" || true
 
     if rm -rf "$app_path" 2>&1 | tee -a "$PROJECT_ROOT/applications/cleanup.log"; then
         log_success "Removed manual app: $app_name"
@@ -340,14 +340,14 @@ remove_app() {
 
     # Determine removal method
     if is_homebrew_app "$app_name"; then
-        [[ $VERBOSE -eq 1 ]] && log_info "Detected as Homebrew app: $app_name"
+        [[ $VERBOSE -eq 1 ]] && log_info "Detected as Homebrew app: $app_name" || true
         if remove_homebrew_app "$app_name"; then
             ((REMOVED_COUNT++))
         else
             ((FAILED_COUNT++))
         fi
     elif app_exists "$app_name"; then
-        [[ $VERBOSE -eq 1 ]] && log_info "Detected as manual installation: $app_name"
+        [[ $VERBOSE -eq 1 ]] && log_info "Detected as manual installation: $app_name" || true
         if remove_manual_app "$app_name"; then
             ((REMOVED_COUNT++))
         else
@@ -493,7 +493,7 @@ main() {
     local apps
     read -ra apps <<< "$(read_app_list)"
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Found ${#apps[@]} apps to process"
+    [[ $VERBOSE -eq 1 ]] && log_info "Found ${#apps[@]} apps to process" || true
 
     # Show summary
     show_summary "${apps[@]}"

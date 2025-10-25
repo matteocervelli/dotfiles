@@ -21,7 +21,7 @@
 #   ./scripts/apps/audit-apps.sh --verbose
 #   ./scripts/apps/audit-apps.sh --output /tmp/apps.txt
 
-set -euo pipefail
+set -eo pipefail
 
 # Script directory and root detection
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -116,7 +116,7 @@ check_os() {
         exit 2
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Running on macOS"
+    [[ $VERBOSE -eq 1 ]] && log_info "Running on macOS" || true
 }
 
 # Check required dependencies
@@ -144,7 +144,7 @@ check_dependencies() {
         exit 3
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_success "All dependencies OK"
+    [[ $VERBOSE -eq 1 ]] && log_success "All dependencies OK" || true
 }
 
 # =============================================================================
@@ -154,17 +154,17 @@ check_dependencies() {
 # List Homebrew cask applications
 list_homebrew_casks() {
     if ! command -v brew &> /dev/null; then
-        [[ $VERBOSE -eq 1 ]] && log_warning "Skipping Homebrew casks (brew not installed)" >&2
+        [[ $VERBOSE -eq 1 ]] && log_warning "Skipping Homebrew casks (brew not installed)" >&2 || true
         return 0
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Homebrew casks..." >&2
+    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Homebrew casks..." >&2 || true
 
     local casks
     casks=$(brew list --cask 2>/dev/null | sort)
 
     if [[ -z "$casks" ]]; then
-        [[ $VERBOSE -eq 1 ]] && log_info "No Homebrew casks found" >&2
+        [[ $VERBOSE -eq 1 ]] && log_info "No Homebrew casks found" >&2 || true
         return 0
     fi
 
@@ -174,17 +174,17 @@ list_homebrew_casks() {
 # List Mac App Store applications
 list_mas_apps() {
     if ! command -v mas &> /dev/null; then
-        [[ $VERBOSE -eq 1 ]] && log_warning "Skipping MAS apps (mas not installed)" >&2
+        [[ $VERBOSE -eq 1 ]] && log_warning "Skipping MAS apps (mas not installed)" >&2 || true
         return 0
     fi
 
-    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Mac App Store apps..." >&2
+    [[ $VERBOSE -eq 1 ]] && log_info "Discovering Mac App Store apps..." >&2 || true
 
     local mas_apps
     mas_apps=$(mas list 2>/dev/null | sort)
 
     if [[ -z "$mas_apps" ]]; then
-        [[ $VERBOSE -eq 1 ]] && log_info "No Mac App Store apps found" >&2
+        [[ $VERBOSE -eq 1 ]] && log_info "No Mac App Store apps found" >&2 || true
         return 0
     fi
 
@@ -193,7 +193,7 @@ list_mas_apps() {
 
 # List manually installed applications
 list_manual_apps() {
-    [[ $VERBOSE -eq 1 ]] && log_info "Discovering manual installations..." >&2
+    [[ $VERBOSE -eq 1 ]] && log_info "Discovering manual installations..." >&2 || true
 
     # Find all .app bundles in /Applications
     local manual_apps
@@ -203,7 +203,7 @@ list_manual_apps() {
         sort)
 
     if [[ -z "$manual_apps" ]]; then
-        [[ $VERBOSE -eq 1 ]] && log_info "No manual installations found" >&2
+        [[ $VERBOSE -eq 1 ]] && log_info "No manual installations found" >&2 || true
         return 0
     fi
 
@@ -262,7 +262,7 @@ generate_audit_report() {
 
     # Create output directory if it doesn't exist
     if [[ ! -d "$output_dir" ]]; then
-        [[ $VERBOSE -eq 1 ]] && log_info "Creating directory: $output_dir"
+        [[ $VERBOSE -eq 1 ]] && log_info "Creating directory: $output_dir" || true
         mkdir -p "$output_dir"
     fi
 
