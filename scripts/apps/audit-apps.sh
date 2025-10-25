@@ -284,9 +284,15 @@ generate_audit_report() {
     local mas_count=0
     local manual_count=0
 
-    [[ -n "$homebrew_casks" ]] && homebrew_count=$(echo "$homebrew_casks" | grep -c '^' || echo 0)
-    [[ -n "$mas_apps" ]] && mas_count=$(echo "$mas_apps" | grep -c '^' || echo 0)
-    [[ -n "$manual_only_apps" ]] && manual_count=$(echo "$manual_only_apps" | grep -c '^' || echo 0)
+    if [[ -n "$homebrew_casks" ]]; then
+        homebrew_count=$(echo "$homebrew_casks" | wc -l | tr -d ' ')
+    fi
+    if [[ -n "$mas_apps" ]]; then
+        mas_count=$(echo "$mas_apps" | wc -l | tr -d ' ')
+    fi
+    if [[ -n "$manual_only_apps" ]]; then
+        manual_count=$(echo "$manual_only_apps" | wc -l | tr -d ' ')
+    fi
 
     local total_count=$((homebrew_count + mas_count + manual_count))
 
