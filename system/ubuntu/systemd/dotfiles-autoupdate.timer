@@ -1,0 +1,11 @@
+[Unit]
+Description=Auto-update dotfiles timer
+Requires=dotfiles-autoupdate.service
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

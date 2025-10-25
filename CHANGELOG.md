@@ -9,6 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Auto-Update Dotfiles Mechanism** (FASE 2.6, Issue #18)
+  - `scripts/sync/auto-update-dotfiles.sh` - Automatically sync dotfiles with pull-before-push strategy (100 lines)
+  - `scripts/sync/install-autoupdate.sh` - Platform-specific installer for auto-update service (65 lines)
+  - `system/macos/launch-agents/com.dotfiles.autoupdate.plist` - macOS LaunchAgent configuration (30 min interval)
+  - `system/ubuntu/systemd/dotfiles-autoupdate.service` - Ubuntu systemd service configuration
+  - `system/ubuntu/systemd/dotfiles-autoupdate.timer` - Ubuntu systemd timer (30 min interval, persistent)
+  - `tests/test-18-auto-update-dotfiles.bats` - Comprehensive test suite (13 tests, all passing)
+  - **Pull-Before-Push Strategy**: Automatically syncs changes across machines every 30 minutes
+  - Smart sync workflow:
+    1. Fetch remote changes first
+    2. If remote has updates: stash local changes → pull with rebase → pop stash
+    3. If no conflicts: commit local changes → push to GitHub
+    4. If conflicts: log error and stop (manual intervention required)
+  - Security features:
+    - Only operates on main branch (skips feature branches to avoid conflicts)
+    - Uses existing git credentials (SSH keys or 1Password integration)
+    - Early exit when no changes detected (performance optimization)
+    - User-level permissions (no sudo required for operation)
+    - Safe stashing prevents data loss during pull operations
+  - Conflict handling:
+    - Automatic resolution for non-overlapping changes (different files)
+    - Stops and logs error for real conflicts (same file, same lines)
+    - Preserves local changes in git stash for manual resolution
+    - Clear error messages with recovery instructions
+  - Platform support:
+    - macOS: LaunchAgent with launchctl integration, logs to `/tmp/dotfiles-autoupdate.log`
+    - Ubuntu: systemd service + timer with journalctl logging
+    - Auto-detection via existing `detect-os.sh` utility
+  - Offline-safe: Gracefully handles network failures, retries next cycle
+  - Commit message format: `chore: auto-update dotfiles from <hostname> - <timestamp>`
+  - Easy installation: `./scripts/sync/install-autoupdate.sh`
+  - Easy disable: `launchctl unload` (macOS) or `systemctl stop` (Ubuntu)
+  - Logs available for debugging: stdout and stderr separated on macOS, journalctl on Ubuntu
+  - Integration with existing dotfiles infrastructure (logger.sh, detect-os.sh)
 - **Asset Management System Documentation** (FASE 2.X, Issue #34)
   - `sync/library/README.md` - Comprehensive central library guide with workflows, best practices, and troubleshooting
   - `templates/README.md` - Complete asset helpers documentation for TypeScript and Python

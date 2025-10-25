@@ -90,6 +90,91 @@ cdnsync
 | `setup-rclone` | Configure R2 connection | [Rclone Setup](sync/rclone/README.md) |
 | `test-rclone` | Test R2 connection | [Rclone Setup](sync/rclone/README.md) |
 
+## 🔄 Auto-Update Dotfiles
+
+Automatic bidirectional synchronization of dotfiles changes across machines every 30 minutes using a **pull-before-push strategy**.
+
+### Features
+
+- **Pull-Before-Push**: Automatically fetches remote changes before committing local changes
+- **Smart conflict handling**: Auto-resolves non-overlapping changes, stops on real conflicts
+- **Safe stashing**: Preserves local work when pulling remote updates
+- **Branch safety**: Only operates on `main` branch (skips feature branches)
+- **Platform support**: macOS (LaunchAgent) and Ubuntu (systemd)
+- **Performance**: Early exit when no changes detected (~1s check)
+- **Offline-safe**: Gracefully handles network failures
+- **Logging**: Full logs for debugging on both platforms
+
+### How It Works
+
+Every 30 minutes, the script:
+1. **Fetch** remote changes from GitHub
+2. **Stash** local uncommitted changes (if any)
+3. **Pull** remote changes with rebase
+4. **Pop** stashed changes back
+5. **Commit** local changes (if any)
+6. **Push** to GitHub
+
+**Result**: Your dotfiles stay in sync across all machines automatically, with minimal conflicts.
+
+### Installation
+
+```bash
+# Install auto-update service
+./scripts/sync/install-autoupdate.sh
+```
+
+**macOS**: Creates LaunchAgent, runs every 30 minutes
+**Ubuntu**: Creates systemd timer, runs every 30 minutes
+
+### Manual Usage
+
+```bash
+# Run auto-update manually
+./scripts/sync/auto-update-dotfiles.sh
+```
+
+### Monitoring
+
+**macOS**:
+```bash
+# View logs
+tail -f /tmp/dotfiles-autoupdate.log
+tail -f /tmp/dotfiles-autoupdate.err
+
+# Check if running
+launchctl list | grep dotfiles
+```
+
+**Ubuntu**:
+```bash
+# View logs
+journalctl -u dotfiles-autoupdate -f
+
+# Check timer status
+systemctl status dotfiles-autoupdate.timer
+```
+
+### Disable/Enable
+
+**macOS**:
+```bash
+# Disable
+launchctl unload ~/Library/LaunchAgents/com.dotfiles.autoupdate.plist
+
+# Re-enable
+launchctl load ~/Library/LaunchAgents/com.dotfiles.autoupdate.plist
+```
+
+**Ubuntu**:
+```bash
+# Disable
+sudo systemctl stop dotfiles-autoupdate.timer
+
+# Re-enable
+sudo systemctl start dotfiles-autoupdate.timer
+```
+
 ### Asset Helpers
 
 Copy environment-aware asset helpers to your projects:
