@@ -9,6 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **macOS Setup Guide** - Complete guide for formatting and reinstalling MacBook
+  - `docs/guides/macos-setup-guide.md` - Comprehensive 1,200+ line guide
+  - **Pre-Format Preparation**:
+    - Application audit workflow (`./scripts/apps/audit-apps.sh`)
+    - Machine comparison tool for multi-Mac environments
+    - Backup checklist for Time Machine, iCloud, 1Password, SSH keys
+    - Brewfile generation from current system state
+    - Media library sync to Cloudflare R2
+  - **Fresh macOS Installation**:
+    - Bootable installer creation (optional)
+    - Recovery Mode procedures (Intel and Apple Silicon)
+    - macOS Setup Assistant walkthrough
+  - **Installation Options**:
+    - Option A: Automated installation (recommended) - One-command bootstrap
+    - Option B: Customized installation - Selective package installation
+    - Option C: Manual step-by-step installation
+  - **Application Restoration**:
+    - Brewfile-based application installation (300+ packages)
+    - Mac App Store integration via `mas-cli`
+    - Manual application installation guidance
+  - **System Configuration**:
+    - macOS defaults configuration scripts
+    - Dock, Finder, keyboard, trackpad settings
+    - Screenshot location and format customization
+  - **Development Environment**:
+    - Shell, Git, SSH configuration verification
+    - Python (pyenv), Node.js (nvm) setup
+    - Docker, Tailscale, 1Password integration
+    - VS Code/Cursor extension management
+  - **Verification & Testing**:
+    - Health check procedures
+    - Symlink validation
+    - Development tools testing
+    - Auto-update service verification
+  - **Troubleshooting**:
+    - Homebrew, Stow, shell, Git, Python/Node issues
+    - Application and performance problems
+    - Emergency recovery commands
+
+- **Machine Comparison Tool** - `scripts/apps/compare-apps.sh` (~370 lines)
+  - Compare applications between two machines
+  - Compare current system vs Brewfile
+  - Three-way comparison output (only in A, only in B, in both)
+  - Supports audit files and Brewfile comparison
+  - Usage modes:
+    - `./scripts/apps/compare-apps.sh file1.txt file2.txt` - Compare two audits
+    - `./scripts/apps/compare-apps.sh --brewfile` - Compare system vs Brewfile
+  - Integration with audit workflow for fresh Mac setup
+  - Helps decide which apps to install/remove during reinstall
+
 - **FASE 7.2: Fedora Bootstrap Automation** (Issue #40)
   - Complete automated Fedora development environment bootstrap script
   - `scripts/bootstrap/fedora-bootstrap.sh` (~570 lines)

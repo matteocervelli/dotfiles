@@ -28,39 +28,21 @@ Personal dotfiles and development environment configuration for **macOS** and **
 ```bash
 git clone https://github.com/matteocervelli/dotfiles.git
 cd dotfiles
-./install.sh
+./scripts/bootstrap/install.sh
 ```
+
+**See also:**
+- [macOS Setup Guide](docs/guides/macos-setup-guide.md) - Complete guide for formatting and setting up a fresh MacBook
+- [Application Management](applications/README.md) - Audit and cleanup applications
 
 ### Linux (Ubuntu, Fedora, Arch)
 
-#### Option A: Automated Bootstrap (Recommended)
-
 ```bash
 # Clone repository
 git clone https://github.com/matteocervelli/dotfiles.git
 cd dotfiles
 
-# Ubuntu (automated setup)
-./scripts/bootstrap/ubuntu-bootstrap.sh              # Minimal setup
-./scripts/bootstrap/ubuntu-bootstrap.sh --with-docker  # With Docker
-
-# Fedora (automated setup)
-./scripts/bootstrap/fedora-bootstrap.sh              # Minimal setup
-./scripts/bootstrap/fedora-bootstrap.sh --with-packages  # Full dev environment
-./scripts/bootstrap/fedora-bootstrap.sh --dry-run    # Preview changes
-
-# Arch (manual - see docs)
-./scripts/bootstrap/install-dependencies-arch.sh
-```
-
-#### Option B: Manual Package Installation
-
-```bash
-# Clone repository
-git clone https://github.com/matteocervelli/dotfiles.git
-cd dotfiles
-
-# Generate package lists
+# Generate package lists (optional)
 ./scripts/apps/generate-linux-packages.sh
 
 # Install packages (choose your distro)
@@ -68,20 +50,19 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
 sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
 sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
 
+# Install with Docker (Ubuntu only)
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
+# Or via Makefile: make ubuntu-full
+
 # Setup dotfiles
 make install
 ```
 
 **See also:**
-- [Linux Setup Guide](docs/guides/linux-setup-guide.md)
+- [Linux Setup Guide](docs/guides/linux-setup-guide.md) - Step-by-step Linux installation
 - [Linux Package Management](applications/linux/README.md)
-- [Bootstrap Strategies](docs/os-configurations/BOOTSTRAP-STRATEGIES.md) - Detailed bootstrap documentation
-- **Parallels VM Guides:**
-  - [Guide 1: Ubuntu VM Creation](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
-  - [Guide 2: Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
-  - [Guide 3: Fedora VM Creation](docs/guides/parallels-3-fedora-vm-creation.md) - Create Fedora VM (dev or kids)
-  - [Guide 4: Kids Learning Environment](docs/guides/parallels-4-fedora-kids-setup.md) - **NEW: Automated setup!** 🚀
-  - [Kids Usage Guide](docs/guides/kids-fedora-usage.md) - Parental guide for ongoing management
+- [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
+- [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
 
 ## 🧪 Usage
 
