@@ -1169,7 +1169,10 @@ sudo ss -tlnp | grep :22
 ### Related Documentation
 
 - **Issue #22**: [Docker on Ubuntu Setup](docker-ubuntu-setup.md)
-- **Issue #23**: Parallels Integration & Testing (this document)
+- **Issue #23**: [VM Setup & Integration Testing](../vm-setup.md) - **Start here after VM creation**
+  - Complete guide to testing Parallels shared folders
+  - R2 assets workflow verification
+  - Automated testing script + manual checklist
 - **TASK.md**: [Complete implementation tracking](../TASK.md)
 
 ### Common Next Tasks

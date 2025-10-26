@@ -9,6 +9,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **FASE 4.3: Parallels Integration & Testing** (Issue #23)
+  - Complete Parallels shared folders setup, R2 assets workflow testing, and integration verification
+  - `docs/vm-setup.md` - VM integration testing guide (~600 lines)
+    - **Shared Folders Configuration** - Step-by-step Parallels bind mount setup
+      - Configure custom folders in Parallels Desktop (~/media/cdn, ~/dev)
+      - Verify mount points (`/media/psf/Home/...`)
+      - Create convenient symlinks (`~/cdn`, `~/dev-shared`)
+      - Test read/write access bidirectionally
+      - Set up permanent mounts (optional /etc/fstab)
+    - **R2 Assets Workflow** - Central library strategy implementation
+      - Architecture: R2 → macOS (central library) → VM (via shared folders)
+      - Zero duplication approach (VM reads from macOS)
+      - Central manifest access (`~/cdn/.r2-manifest.yml`)
+      - Asset directory access (logos, projects, shared)
+      - Project-specific asset usage (symlink vs copy strategies)
+    - **Project Setup Testing** - dev-setup.sh template verification
+      - Test workflow with sample project creation
+      - Manifest-based asset management
+      - Asset accessibility from projects
+    - **Docker Integration** - Container workflow with shared folders
+      - Mount CDN in containers (read-only and read-write)
+      - Test volume mounting from Parallels shared folders
+      - Remote Docker context testing from macOS
+      - Build containers with CDN assets
+    - **Automated Testing** - Complete verification script
+      - Test Parallels Tools installation and services
+      - Verify shared folder mounts and permissions
+      - Check CDN and dev directory accessibility
+      - Validate read/write operations
+      - Test symlink creation
+      - Verify R2 manifest parsing
+      - Test Docker integration with shared folders
+    - **Manual Testing Checklist** - 75+ verification points
+      - Prerequisites validation
+      - Parallels Tools verification
+      - Basic shared folders access
+      - CDN directory access
+      - Dev directory access
+      - File operation tests (read, write, delete)
+      - R2 assets workflow validation
+      - Project setup testing
+      - Docker integration testing
+      - Performance benchmarks
+    - **Troubleshooting** - Solutions for common integration issues
+      - Shared folders not visible
+      - Permission denied errors
+      - Broken symlinks
+      - Manifest access issues
+      - Docker mount failures
+      - Performance problems
+  - `scripts/test/test-vm-integration.sh` - Automated integration testing (~200 lines)
+    - 11 automated tests covering full integration stack
+    - Colored output with pass/fail indicators
+    - Verbose mode for debugging
+    - Comprehensive error messages with fix suggestions
+  - `docs/checklists/vm-integration-checklist.md` - Manual verification checklist (~150 lines)
+    - Structured checklist with ~75 verification points
+    - Pre-test setup verification
+    - Step-by-step testing procedures
+    - Expected outputs for each command
+    - Troubleshooting references
+    - Final sign-off criteria
+  - **Bonus: VM Creation Guide** - `docs/guides/parallels-vm-creation.md` (~1000 lines)
+    - Complete step-by-step guide for creating Ubuntu 24.04 LTS VMs from ISO
+    - Not part of Issue #23 but valuable documentation for new VM setup
+    - Cross-referenced from vm-setup.md for users who need to create VMs
+  - **Central Library Strategy Benefits**:
+    - ✅ Single source of truth (macOS central library)
+    - ✅ No data duplication (VM reads directly from macOS)
+    - ✅ Automatic sync (changes instantly visible in VM)
+    - ✅ Efficient workflow (no separate R2 → VM sync)
+  - **Testing Coverage**:
+    - Automated tests: 11 integration tests
+    - Manual checklist: ~75 verification points
+    - Performance benchmarks: Read/write speed tests
+    - End-to-end workflow: Real project simulation
+  - **Integration Points**:
+    - Shared folders: `~/media/cdn/` → `/media/psf/Home/media/cdn/` → `~/cdn/`
+    - Dev directory: `~/dev/` → `/media/psf/Home/dev/` → `~/dev-shared/`
+    - R2 manifest: `~/cdn/.r2-manifest.yml` accessible from VM
+    - Docker volumes: Mount shared folders in containers
+    - Remote Docker: Control VM Docker from macOS
+  - **Acceptance Criteria** (Ready for testing):
+    - ✅ Shared folders setup documented in docs/vm-setup.md
+    - ✅ R2 assets workflow fully documented
+    - ✅ Automated test script created (test-vm-integration.sh)
+    - ✅ Manual testing checklist comprehensive
+    - ⏳ **Pending**: Real VM testing on user's setup
+    - ⏳ **Pending**: dev-setup.sh testing on actual projects
+    - ⏳ **Pending**: Docker workflow verification
+  - **Next Step**: Test on actual VM to verify all workflows
+
 - **FASE 4.2: Ubuntu 24.04 LTS Bootstrap & Docker Setup** (Issue #22)
   - Complete Docker Engine + Compose v2 installation for Ubuntu 24.04 LTS
   - `scripts/bootstrap/install-docker.sh` - Standalone Docker installation script (~370 lines)

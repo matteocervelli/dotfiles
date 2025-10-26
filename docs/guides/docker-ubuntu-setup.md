@@ -4,6 +4,12 @@ Complete guide for setting up Docker Engine + Compose v2 on Ubuntu 24.04 LTS, wi
 
 **Target Environment**: Ubuntu 24.04 LTS (Noble Numbat) on Parallels VM (Apple Silicon/Intel)
 
+**Related Documentation**:
+- **NEW**: [Parallels VM Creation Guide](parallels-vm-creation.md) - Complete step-by-step guide to create Ubuntu VM from ISO
+- [TASK.md](../TASK.md) - Implementation tracking
+
+> **Note**: If you haven't created your Ubuntu VM yet, start with the [Parallels VM Creation Guide](parallels-vm-creation.md) first. This guide assumes Ubuntu is already installed.
+
 ---
 
 ## Table of Contents
@@ -24,6 +30,7 @@ Complete guide for setting up Docker Engine + Compose v2 on Ubuntu 24.04 LTS, wi
 ### Required
 
 - ✅ Ubuntu 24.04 LTS installed (Parallels VM or bare metal)
+  - **Need to create a VM?** See [Parallels VM Creation Guide](parallels-vm-creation.md)
 - ✅ sudo privileges
 - ✅ Internet connection
 - ✅ At least 2GB free disk space (10GB+ recommended)
@@ -33,6 +40,7 @@ Complete guide for setting up Docker Engine + Compose v2 on Ubuntu 24.04 LTS, wi
 - ✅ Dotfiles bootstrap already complete (`make install`)
 - ✅ SSH access via Tailscale configured
 - ✅ Parallels Tools installed (for VM)
+  - **Installation instructions**: See [Part 3](parallels-vm-creation.md#part-3-parallels-tools-installation) of VM Creation Guide
 
 ---
 
