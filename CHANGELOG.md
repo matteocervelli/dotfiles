@@ -7,6 +7,111 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **FASE 7.8: Fedora Kids' Learning Environment** (Issue #46)
+  - Complete Fedora VM setup guides for kids' safe learning environment on MacBook Parallels
+  - `docs/guides/parallels-3-fedora-vm-creation.md` (~650 lines)
+    - Step-by-step Fedora Workstation 40 VM creation in Parallels Desktop
+    - ARM64 (Apple Silicon) optimized configuration
+    - Parallels Tools installation with FUSE-based integration
+    - Parent account setup with administrator privileges
+    - Security-first approach with root password and network verification
+    - Optimized resource allocation for MacBook (4 vCPU, 4-6 GB RAM)
+    - Cross-referenced with Fedora Kids Setup guide
+  - `docs/guides/parallels-4-fedora-kids-setup.md` (~1100 lines)
+    - Comprehensive kids' learning environment configuration
+    - **Kids' User Account** - Restricted account with no sudo access
+    - **Parental Controls** - Malcontent integration (GNOME parental controls)
+      - App installation restrictions
+      - Age-based content filtering (OARS ratings)
+      - Web content filtering
+      - Application access restrictions
+    - **Educational Software** - 40+ packages for learning
+      - Core: GCompris (100+ activities), Tux Paint, Tux Math, Tux Typing
+      - KDE Education: Marble (geography), Stellarium (astronomy), Kalzium (chemistry)
+      - Programming: Scratch, Python with Pygame and Turtle graphics
+      - Creative: Inkscape, GIMP, Audacity, MuseScore
+      - Language: Anki flashcards, Kanagram, KHangman, KWordQuiz
+      - Reading: Calibre e-book manager, Foliate reader
+      - Games: GNOME Chess, Sudoku, logic games
+    - **Safe Browsing** - Multi-layer protection
+      - Firefox with safety extensions (uBlock Origin, LeechBlock, WOT)
+      - DNS-based content filtering (OpenDNS FamilyShield, Cloudflare for Families)
+      - Kid-friendly homepage (PBS Kids)
+      - Disabled private browsing mode
+      - Enhanced tracking protection (strict mode)
+    - **Desktop Simplification** - GNOME customizations for kids
+      - Disabled hot corners and animations for clarity
+      - Larger text scaling (1.15x) for readability
+      - Simplified dock with educational apps pinned
+      - Removed unnecessary desktop icons
+      - Locked critical system settings via polkit rules
+    - **Shared Folders** - Parent-approved content from Mac
+      - Read-only access to `~/Kids-Content/` from macOS
+      - Parallels shared folders via `/media/psf/`
+      - Convenient symlinks for easy access
+      - Structure for videos, books, games, projects
+    - **Time Limits** - Daily usage restrictions
+      - Malcontent-based time limits (2-3 hours/day)
+      - Automated usage logging (5-minute intervals)
+      - Parent dashboard script for monitoring
+      - Automatic logout after daily limit reached
+      - Warning notifications before time's up
+    - **Monitoring** - Parent visibility tools
+      - Usage tracking logs (`/var/log/kids-usage.log`)
+      - Parent dashboard script
+      - Browser history access for review
+      - Cron-based automated checks
+    - **Backup Strategy** - Data protection
+      - Parallels snapshot workflow (weekly, monthly, before changes)
+      - Automated backup script for kids' work to Mac
+      - Restore point creation guidance
+    - **Comprehensive Testing** - 20+ verification points
+      - Basic functionality checks
+      - Restriction enforcement tests
+      - Safe browsing validation
+      - Shared content access verification
+      - Time limit and parental control tests
+    - **Maintenance** - Weekly and monthly tasks
+      - System update procedures
+      - Disk space monitoring
+      - Usage log review
+      - Application management
+    - **Troubleshooting** - Solutions for common issues
+      - Login problems
+      - App visibility issues
+      - Time limit failures
+      - Shared folder access
+      - DNS filtering verification
+  - `system/fedora/educational-packages.txt` - Categorized educational software list (~150 lines)
+    - Core educational suite (ages 4-10)
+    - KDE Education apps (ages 6-12)
+    - Programming and logic (ages 8+)
+    - Creative tools (all ages)
+    - Language learning (ages 6+)
+    - Games with educational value
+    - Accessibility tools
+    - Parental control software
+    - Flatpak educational apps
+    - Optional advanced learning (ages 10+)
+  - **Complete kids' safe learning workflow**:
+    - ✅ Two-account system (parent admin + kids restricted)
+    - ✅ 40+ educational packages across all subjects
+    - ✅ Multi-layer safe browsing (DNS + extensions + parental controls)
+    - ✅ Simplified, kid-friendly GNOME desktop
+    - ✅ Parent-approved shared content from macOS
+    - ✅ Daily time limits with auto-logout
+    - ✅ Comprehensive monitoring and parent dashboard
+    - ✅ Backup and snapshot strategy
+    - ✅ Educational resources and website recommendations
+    - ✅ Complete troubleshooting guide
+  - **Documentation**: 1900+ lines total
+  - **Target**: MacBook Parallels Fedora Workstation 40 ARM64
+  - **Profile**: `kids-safe` (FASE 7.8)
+  - **Age Range**: 4-12 years (customizable per child)
+  - **Safety First**: Multiple layers of protection and supervision
+
 ### Changed
 
 - **FASE 4.3: Documentation Restructuring** - Eliminated all guide overlaps (Issue #23 refinement)

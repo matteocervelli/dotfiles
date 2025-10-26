@@ -151,6 +151,26 @@ make health                                     # via Makefile
 ./scripts/backup-current.sh                     # Save existing dotfiles
 ```
 
+### VM Setup (Parallels)
+
+```bash
+# Ubuntu Development VM (Guides 1-2)
+# See: docs/guides/parallels-1-vm-creation.md
+# See: docs/guides/parallels-2-dev-setup.md
+# Complete Docker development environment with shared folders
+
+# Fedora Kids Learning VM (Guides 3-4) - NEW!
+# See: docs/guides/parallels-3-fedora-vm-creation.md
+# See: docs/guides/parallels-4-fedora-kids-setup.md
+
+# Install educational software (Fedora)
+sudo dnf install $(cat system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
+
+# Test VM integration
+./scripts/test/test-vm-integration.sh          # Automated tests
+cat docs/checklists/vm-integration-checklist.md  # Manual checklist
+```
+
 ## Implementation Status
 
 ### ✅ FASE 1 - Foundation (COMPLETED)
@@ -178,7 +198,12 @@ make health                                     # via Makefile
 - **Current Status**: Implementing application management
 
 ### ⏳ FASE 4-6 - Upcoming
-- VM Ubuntu setup
+- VM Ubuntu setup (Guides 1-2 COMPLETED)
+- **NEW: Fedora Kids VM (Guides 3-4) - COMPLETED** ✅
+  - Complete safe learning environment for kids
+  - Parental controls, educational software, time limits
+  - Safe browsing with multi-layer protection
+  - 40+ educational packages across all subjects
 - Project templates
 - Monitoring & backup automation
 
