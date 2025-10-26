@@ -446,43 +446,9 @@
 
 ## FASE 4: VM Ubuntu Setup
 
-**Obiettivo**: Configure Ubuntu VMs for Docker workloads
-**Duration**: 4-6 hours
-**Priority**: High 🔥
+**Note**: **FASE 4 has been expanded into FASE 7** to accommodate 14+ different OS environments. Original Issue #22 moved to FASE 7.1.
 
-### 4.1 Ubuntu Bootstrap
-
-- [ ] **4.1.1** Test `scripts/bootstrap/ubuntu-bootstrap.sh` on Ubuntu VM
-- [ ] **4.1.2** Verify all dependencies install correctly
-
-### 4.2 Docker Setup
-
-- [ ] **4.2.1** Create script to install Docker + docker-compose on Ubuntu
-- [ ] **4.2.2** Test Docker installation
-- [ ] **4.2.3** Configure Docker to start on boot
-
-### 4.3 VM-Specific Configs
-
-- [ ] **4.3.1** Create Ubuntu-specific stow packages (if needed)
-- [ ] **4.3.2** Test stow packages on Ubuntu VM
-
-### 4.4 Parallels Integration
-
-- [ ] **4.4.1** Document Parallels bind mount setup in `docs/vm-setup.md`
-- [ ] **4.4.2** Test bind mount of `~/r2-assets/` from macOS to VM
-- [ ] **4.4.3** Verify R2 assets accessible in VM
-
-### 4.5 Cross-Platform Testing
-
-- [ ] **4.5.1** Test dotfiles installation on Ubuntu VM
-- [ ] **4.5.2** Test project dev-setup.sh on VM
-- [ ] **4.5.3** Verify Docker workflows
-
-**Acceptance Criteria**:
-- ✅ Ubuntu VM has all dependencies
-- ✅ Docker works natively
-- ✅ Parallels mount functional
-- ✅ Dotfiles work cross-platform
+See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configurations) below for complete implementation plan.
 
 ---
 
@@ -574,6 +540,136 @@
 
 ---
 
+## FASE 7: Multi-Platform OS Configurations
+
+**Obiettivo**: Bootstrap and configure 14+ different OS environments with profile-based deployment
+**Duration**: 12-16 hours
+**Priority**: Medium 🔶
+**Status**: ⚪ PENDING (Documentation complete, implementation planned)
+
+**Documentation**: See [docs/os-configurations/](../docs/os-configurations/) for complete multi-platform architecture.
+
+### 7.1 Ubuntu 24.04 LTS Bootstrap & Docker [Issue #22 → #40]
+
+- [ ] **7.1.1** Test `scripts/bootstrap/ubuntu-bootstrap.sh` on Ubuntu 24.04 VM
+- [ ] **7.1.2** Create Docker installation script
+- [ ] **7.1.3** Test Docker Engine + Compose v2 installation
+- [ ] **7.1.4** Configure Docker to start on boot (systemctl)
+- [ ] **7.1.5** Test dotfiles installation on Parallels Ubuntu VM
+- [ ] **7.1.6** Verify Docker workflows and remote Docker context
+
+**Target**: Parallels Ubuntu 24.04 LTS (ARM64)
+**Profile**: `ubuntu-vm`
+**Roles**: `development`, `infrastructure`
+
+### 7.2 Fedora Bootstrap & DNF Package Management [Issue #41]
+
+- [ ] **7.2.1** Create `scripts/bootstrap/fedora-bootstrap.sh`
+- [ ] **7.2.2** Map Homebrew/APT packages to DNF equivalents
+- [ ] **7.2.3** Create `system/fedora/packages.txt`
+- [ ] **7.2.4** Test on Parallels Fedora VM
+- [ ] **7.2.5** Document Fedora-specific configurations
+
+**Target**: Parallels Fedora Workstation (ARM64)
+**Profile**: `fedora-dev`
+**Roles**: `development`
+
+### 7.3 Linux Mint Cinnamon Desktop Configuration [Issue #42]
+
+- [ ] **7.3.1** Create Mint-specific bootstrap (based on Ubuntu)
+- [ ] **7.3.2** Configure Cinnamon desktop settings
+- [ ] **7.3.3** Test GUI application configurations
+- [ ] **7.3.4** Document Mint vs Ubuntu differences
+
+**Target**: Parallels Linux Mint Cinnamon (ARM64)
+**Profile**: `mint-desktop`
+**Roles**: `development`, `productivity`
+
+### 7.4 Arch Linux Bootstrap & AUR Integration [Issue #43]
+
+- [ ] **7.4.1** Create `scripts/bootstrap/arch-bootstrap.sh`
+- [ ] **7.4.2** Implement Pacman package management
+- [ ] **7.4.3** Configure AUR helper (yay or paru)
+- [ ] **7.4.4** Map package names (APT → Pacman)
+- [ ] **7.4.5** Test on UTM Arch Linux VM
+
+**Target**: UTM Arch Linux (ARM64)
+**Profile**: `arch-dev`
+**Roles**: `development`
+
+### 7.5 Omarchy (DHH Linux) Bootstrap [Issue #44]
+
+- [ ] **7.5.1** Research Omarchy base system and package manager
+- [ ] **7.5.2** Create `scripts/bootstrap/omarchy-bootstrap.sh`
+- [ ] **7.5.3** Respect DHH's opinionated defaults
+- [ ] **7.5.4** Test on UTM Omarchy VM
+- [ ] **7.5.5** Document Omarchy-specific quirks
+
+**Target**: UTM Omarchy (ARM64/x86_64)
+**Profile**: `omarchy-dev`
+**Reference**: https://omarchy.org
+
+### 7.6 Docker Ubuntu Base Image & Minimal Profile [Issue #45]
+
+- [ ] **7.6.1** Create `Dockerfile.dotfiles-ubuntu` base image
+- [ ] **7.6.2** Implement minimal stow packages (shell, git only)
+- [ ] **7.6.3** Create multi-stage builds (dev/production variants)
+- [ ] **7.6.4** Document volume mount strategy
+- [ ] **7.6.5** Test container startup time (< 2 seconds target)
+
+**Target**: Docker containers (multi-arch)
+**Profile**: `container-minimal`
+**Size Goal**: < 500MB with dotfiles
+
+### 7.7 VPS Ubuntu Headless & Security Hardening [Issue #46]
+
+- [ ] **7.7.1** Create VPS-specific bootstrap (minimal, headless)
+- [ ] **7.7.2** Implement security hardening (fail2ban, UFW, SSH)
+- [ ] **7.7.3** Configure monitoring integration (Prometheus node_exporter)
+- [ ] **7.7.4** Setup remote Docker context
+- [ ] **7.7.5** Test on cloud VPS (DigitalOcean/Hetzner)
+
+**Target**: Cloud VPS Ubuntu 24.04 LTS (x86_64/AMD)
+**Profile**: `vps-minimal`
+**Roles**: `security`
+
+### 7.8 Kids' Fedora VM - Educational Profile [Issue #47]
+
+- [ ] **7.8.1** Create restricted user profile configuration
+- [ ] **7.8.2** Create educational software package list
+- [ ] **7.8.3** Implement parental controls and safe browsing
+- [ ] **7.8.4** Create simplified shell environment
+- [ ] **7.8.5** Test on MacBook Fedora VM
+
+**Target**: MacBook Parallels Fedora (ARM64)
+**Profile**: `kids-safe`
+**Roles**: `education` (custom)
+
+### 7.9 Profile System Architecture & Bootstrap Integration [Issue #48]
+
+- [ ] **7.9.1** Design composable profile system (YAML-based)
+- [ ] **7.9.2** Create profile directory structure (`system/profiles/`)
+- [ ] **7.9.3** Create role definitions (`system/roles/`)
+- [ ] **7.9.4** Add `--profile` flag to bootstrap scripts
+- [ ] **7.9.5** Implement role-based package composition
+- [ ] **7.9.6** Create profile selection documentation
+- [ ] **7.9.7** Test profile inheritance model
+
+**Profiles to Create:**
+- `mac-studio`, `macbook`, `ubuntu-vm`, `vps-minimal`, `selfhosting`, `kids-safe`, `container-minimal`, `fedora-dev`, `mint-desktop`, `arch-dev`, `omarchy-dev`
+
+**Acceptance Criteria**:
+- ✅ All 8+ OS environments have bootstrap scripts
+- ✅ Profile system supports composable roles
+- ✅ Tested on respective platforms (VMs, containers, VPS)
+- ✅ Cross-platform compatibility verified
+- ✅ Documentation complete (OVERVIEW, DEVICE-MATRIX, PROFILES, BOOTSTRAP-STRATEGIES)
+- ✅ Placeholder scripts created for all platforms
+
+**Milestone**: [FASE 7: Multi-Platform OS Configurations](https://github.com/matteocervelli/dotfiles/milestone/8)
+
+---
+
 ## Milestone Tracking
 
 ### 🎯 Milestone 0: Documentation Complete ✅
@@ -639,6 +735,17 @@
 - Backup strategy implemented
 - System tested and polished
 
+### 🎯 Milestone 7: Multi-Platform Complete
+
+**Status**: ⚪ PENDING (Documentation ✅ Complete)
+**Target**: FASE 7 completion ([Milestone #8](https://github.com/matteocervelli/dotfiles/milestone/8))
+**Criteria**:
+- Bootstrap scripts for 8+ environments (Ubuntu, Fedora, Mint, Arch, Omarchy, Docker, VPS, Kids)
+- Profile system implemented (composable roles)
+- Cross-platform testing complete
+- Documentation: OVERVIEW.md, DEVICE-MATRIX.md, PROFILES.md, BOOTSTRAP-STRATEGIES.md
+- Placeholder scripts created for all platforms
+
 ---
 
 ## Decision Log
@@ -653,6 +760,13 @@
 | 2025-01-17 | Sync: Auto-update to GitHub | ✅ Approved | ARCHITECTURE-DECISIONS.md |
 | 2025-01-17 | Backup: Multi-layer (GitHub + NAS + Time Machine) | ✅ Approved | ARCHITECTURE-DECISIONS.md |
 | 2025-01-17 | Manifest: YAML format | ✅ Approved | ARCHITECTURE-DECISIONS.md |
+| 2025-10-26 | Multi-Platform: 14+ device support | ✅ Approved | Issue #22 analysis, DEVICE-MATRIX.md |
+| 2025-10-26 | FASE 7: OS-specific configurations | ✅ Approved | New milestone, expanded from FASE 4 |
+| 2025-10-26 | Omarchy: DHH's opinionated Linux | ✅ Research | https://omarchy.org |
+| 2025-10-26 | Ubuntu 24.04 LTS: Primary VM OS | ✅ Approved | vs 22.04 LTS (longer support) |
+| 2025-10-26 | Profile System: Composable roles | ✅ Approved | FASE 7.9, PROFILES.md |
+| 2025-10-26 | Docker: Base image + volume mount | ✅ Approved | FASE 7.6, container-minimal profile |
+| 2025-10-26 | VPS: Headless + security hardening | ✅ Approved | FASE 7.7, vps-minimal profile |
 
 ---
 
