@@ -107,6 +107,25 @@ vim applications/remove-apps.txt                # 2. List apps to remove
 ./scripts/apps/cleanup-apps.sh --execute        # 4. Execute cleanup
 ```
 
+### Brewfile Management
+
+```bash
+# Generate Brewfile from audit
+make brewfile-generate                          # Create from audit data
+./scripts/apps/generate-brewfile.sh             # Direct script call
+
+# Validate and Install
+make brewfile-check                             # Check what's installed
+make brewfile-install                           # Install from Brewfile
+
+# Update from system
+make brewfile-update                            # Regenerate from current state
+
+# VSCode Extensions
+code --list-extensions | sort > applications/vscode-extensions.txt  # Export
+cat applications/vscode-extensions.txt | grep -v '^#' | xargs -L 1 code --install-extension  # Install all
+```
+
 ### Development & Maintenance
 
 ```bash

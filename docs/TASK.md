@@ -381,12 +381,22 @@
 **Tests**: 38 BATS tests covering audit, cleanup, safety features, and error handling
 **Documentation**: README.md, CLAUDE.md, TECH-STACK.md, applications/README.md updated
 
-### 3.2 Brewfile Management
+### 3.2 Brewfile Management ✅
 
-- [ ] **3.2.1** Create `system/macos/Brewfile` from audit
-- [ ] **3.2.2** Organize by categories (dev, apps, fonts)
-- [ ] **3.2.3** Include mas apps
-- [ ] **3.2.4** Test Brewfile installation
+- [x] **3.2.1** Create `system/macos/Brewfile` from audit
+- [x] **3.2.2** Organize by categories (dev, apps, fonts)
+- [x] **3.2.3** Include mas apps
+- [x] **3.2.4** Test Brewfile installation
+- [x] **3.2.5** Create `applications/vscode-extensions.txt`
+
+**Completed**: 2025-10-25
+**Status**: ✅ All tasks completed, Brewfile management system fully functional
+**GitHub Issue**: [#20](https://github.com/matteocervelli/dotfiles/issues/20) ✅ CLOSED
+**Scripts**: generate-brewfile.sh (~450 lines)
+**Output**: system/macos/Brewfile (271 packages), applications/vscode-extensions.txt (92 extensions)
+**Makefile**: 4 new targets (brewfile-generate, brewfile-check, brewfile-install, brewfile-update)
+**Tests**: 40 BATS tests (all passing)
+**Documentation**: system/macos/README.md (new), applications/README.md (updated)
 
 ### 3.3 Application Cleanup
 

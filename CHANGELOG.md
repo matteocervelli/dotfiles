@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Brewfile Management System** (FASE 3.2, Issue #20)
+  - `scripts/apps/generate-brewfile.sh` - Generate organized Brewfile from application audit data (~450 lines)
+  - `system/macos/Brewfile` - Homebrew package manifest with 271 packages (23 casks, 248 formulae, 0 mas apps)
+  - Package categorization: Development Tools, Languages & Runtimes, Databases, Infrastructure, Security, CLI Utilities, Productivity, Media, System Libraries
+  - `applications/vscode-extensions.txt` - VSCode extensions list (92 extensions) with installation commands
+  - Makefile targets: `brewfile-generate`, `brewfile-check`, `brewfile-install`, `brewfile-update`
+  - `system/macos/README.md` - Comprehensive Brewfile documentation (workflows, tips, troubleshooting)
+  - `tests/test-20-brewfile.bats` - Complete test suite (40 tests, all passing)
+  - Updated `applications/README.md` with Brewfile and VSCode extensions management sections
+  - Dry-run mode support for safe preview before generation
+  - Integration with audit-apps.sh for unified workflow
+  - **Serves as baseline** for cross-platform package management (Issues #37, #38, #39)
+
+- **Cross-Platform Package Management Planning** (Meta-issues for future development)
+  - [Issue #37](https://github.com/matteocervelli/dotfiles/issues/37) - Ubuntu/Linux Package Management & Equivalents
+  - [Issue #38](https://github.com/matteocervelli/dotfiles/issues/38) - Windows Package Management & Equivalents
+  - [Issue #39](https://github.com/matteocervelli/dotfiles/issues/39) - Device-Specific Configurations (Mac Studio, MacBook, VM, VPS, self-hosting, NAS)
+
 - **Application Management System** (FASE 3.1, Issue #19)
   - `scripts/apps/audit-apps.sh` - Comprehensive application discovery and listing (~450 lines)
   - `scripts/apps/cleanup-apps.sh` - Safe application removal with dry-run mode (~250 lines)

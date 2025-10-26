@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update
 
 # Default target - show help
 help:
@@ -23,6 +23,12 @@ help:
 	@echo "  make health           Run health checks (dependencies, symlinks, 1Password auth)"
 	@echo "  make backup           Backup current configurations [FASE 2 - Not yet implemented]"
 	@echo "  make clean            Clean temporary files (.DS_Store, *.tmp, *.log)"
+	@echo ""
+	@echo "🍺 Brewfile Management:"
+	@echo "  make brewfile-generate     Generate Brewfile from current audit"
+	@echo "  make brewfile-check        Validate Brewfile (dry-run, no installation)"
+	@echo "  make brewfile-install      Install packages from Brewfile"
+	@echo "  make brewfile-update       Update Brewfile from currently installed packages"
 	@echo ""
 	@echo "🔄 Auto-Update:"
 	@echo "  make autoupdate-install    Install auto-update service (runs every 30 min)"
@@ -197,3 +203,51 @@ autoupdate-enable:
 		sudo systemctl start dotfiles-autoupdate.timer; \
 		echo "✅ systemd timer enabled"; \
 	fi
+
+# Brewfile Management
+brewfile-generate:
+	@echo "🍺 Generating Brewfile from application audit..."
+	@./scripts/apps/generate-brewfile.sh
+	@echo ""
+	@echo "✅ Brewfile generated: system/macos/Brewfile"
+	@echo "💡 Validate with: make brewfile-check"
+
+brewfile-check:
+	@echo "🔍 Validating Brewfile..."
+	@echo ""
+	@if [ ! -f system/macos/Brewfile ]; then \
+		echo "❌ Brewfile not found"; \
+		echo "Generate it first: make brewfile-generate"; \
+		exit 1; \
+	fi
+	@brew bundle check --file=system/macos/Brewfile || \
+		(echo ""; echo "⚠️  Some packages are missing"; \
+		 echo "Install with: make brewfile-install")
+
+brewfile-install:
+	@echo "🍺 Installing packages from Brewfile..."
+	@echo ""
+	@if [ ! -f system/macos/Brewfile ]; then \
+		echo "❌ Brewfile not found"; \
+		echo "Generate it first: make brewfile-generate"; \
+		exit 1; \
+	fi
+	@echo "⚠️  This will install packages. Press Ctrl+C to cancel."
+	@sleep 3
+	@brew bundle install --file=system/macos/Brewfile
+	@echo ""
+	@echo "✅ Brewfile installation complete"
+
+brewfile-update:
+	@echo "🔄 Updating Brewfile from currently installed packages..."
+	@echo ""
+	@echo "⚠️  This will regenerate the Brewfile. Current Brewfile will be backed up."
+	@if [ -f system/macos/Brewfile ]; then \
+		cp system/macos/Brewfile system/macos/Brewfile.backup.$$(date +%Y%m%d-%H%M%S); \
+		echo "✅ Backup created: system/macos/Brewfile.backup.$$(date +%Y%m%d-%H%M%S)"; \
+	fi
+	@./scripts/apps/audit-apps.sh
+	@./scripts/apps/generate-brewfile.sh
+	@echo ""
+	@echo "✅ Brewfile updated from current system state"
+	@echo "💡 Review changes: git diff system/macos/Brewfile"

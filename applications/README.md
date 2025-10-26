@@ -70,6 +70,7 @@ This will:
 | `current-apps.txt` | Complete list of installed applications | ✅ Yes |
 | `keep-apps.txt` | Apps to preserve (user-curated) | ❌ No |
 | `remove-apps.txt` | Apps to remove (user-curated) | ❌ No |
+| `vscode-extensions.txt` | VSCode extensions list with install commands | ✅ Yes |
 | `README.md` | This file | ❌ No |
 
 ## Example Files
@@ -228,16 +229,74 @@ If audit doesn't show all apps:
 6. **Iterative cleanup** - Remove a few apps at a time, test, repeat
 7. **Update Brewfile** - Keep `system/macos/Brewfile` in sync with kept apps
 
-## Integration with Dotfiles
+## Brewfile Management
 
-After cleanup, update your Brewfile:
+After running the audit, you can generate a Brewfile to manage Homebrew packages declaratively:
 
 ```bash
-# Generate Brewfile from current Homebrew state
-brew bundle dump --describe --force --file=system/macos/Brewfile
+# Generate Brewfile from audit data
+make brewfile-generate
 
-# Or manually edit system/macos/Brewfile
-vim system/macos/Brewfile
+# Validate what's installed
+make brewfile-check
+
+# Install packages from Brewfile
+make brewfile-install
+
+# Update Brewfile from current system
+make brewfile-update
+```
+
+The Brewfile is located at [`system/macos/Brewfile`](../system/macos/Brewfile) and contains all:
+- **Formulae**: CLI tools (`brew "git"`, `brew "node"`, etc.)
+- **Casks**: GUI applications (`cask "visual-studio-code"`, etc.)
+- **Taps**: Third-party repositories
+- **Mac App Store**: Apps via mas-cli
+
+See [system/macos/README.md](../system/macos/README.md) for complete Brewfile documentation.
+
+## VSCode Extensions Management
+
+Manage VSCode extensions separately from applications:
+
+### Export Current Extensions
+
+```bash
+# Auto-generated during brewfile-update
+code --list-extensions | sort > applications/vscode-extensions.txt
+```
+
+### Install All Extensions
+
+```bash
+# Install all extensions at once
+cat applications/vscode-extensions.txt | grep -v '^#' | xargs -L 1 code --install-extension
+```
+
+### Backup Extensions
+
+The `vscode-extensions.txt` file contains 92+ extensions and serves as:
+- **Backup** for reinstalling VSCode
+- **Sync** across multiple machines
+- **Documentation** of your development environment
+
+## Integration with Dotfiles
+
+After cleanup, ensure consistency:
+
+```bash
+# 1. Run audit
+./scripts/apps/audit-apps.sh
+
+# 2. Clean up unwanted apps
+./scripts/apps/cleanup-apps.sh --execute
+
+# 3. Update Brewfile
+make brewfile-update
+
+# 4. Commit changes
+git add system/macos/Brewfile applications/
+git commit -m "chore: update package manifests after cleanup"
 ```
 
 This ensures future installations only include apps you want to keep.
@@ -246,7 +305,9 @@ This ensures future installations only include apps you want to keep.
 
 - [scripts/apps/audit-apps.sh](../scripts/apps/audit-apps.sh) - Application discovery
 - [scripts/apps/cleanup-apps.sh](../scripts/apps/cleanup-apps.sh) - Application removal
+- [scripts/apps/generate-brewfile.sh](../scripts/apps/generate-brewfile.sh) - Brewfile generation
 - [system/macos/Brewfile](../system/macos/Brewfile) - Homebrew package manifest
+- [system/macos/README.md](../system/macos/README.md) - Brewfile documentation
 
 ## References
 
@@ -256,5 +317,7 @@ This ensures future installations only include apps you want to keep.
 ---
 
 **Created**: 2025-01-25
-**Last Updated**: 2025-01-25
-**Part of**: FASE 3.1 - Application Audit & Cleanup (Issue #19)
+**Last Updated**: 2025-10-25
+**Part of**:
+- FASE 3.1 - Application Audit & Cleanup ([Issue #19](https://github.com/matteocervelli/dotfiles/issues/19))
+- FASE 3.2 - Brewfile & App Management ([Issue #20](https://github.com/matteocervelli/dotfiles/issues/20))
