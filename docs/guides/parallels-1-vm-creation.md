@@ -358,7 +358,7 @@ ls /mnt/cdrom
 
 **Expected output**:
 ```
-install  install-gui  installer  kmods  tools  version
+install  install-gui  installer  tools  version
 ```
 
 ### Step 5: Run Parallels Tools Installer
@@ -389,20 +389,29 @@ Installation successful!
 ### Step 6: Verify Installation
 
 ```bash
-# Check version
-prltools -v
+# Check Parallels Tools version
+cat /usr/lib/parallels-tools/version
+# Expected: Shows version number (e.g., 26.1.1.57288)
 
 # Check service status
-systemctl status parallels-tools
+systemctl status prltoolsd
+# Expected: active (running)
 
-# List installed packages
-dpkg -l | grep parallels
+# Verify binaries installed
+ls -la /usr/bin/prl*
+# Expected: prltoolsd, prlshprof, prlsrvctl, etc.
+
+# Check kernel modules loaded
+lsmod | grep prl
+# Expected: prl_fs, prl_tg, prl_eth
 ```
 
-**Expected**:
+**Expected output example**:
 ```
-Parallels Tools X.X.X (build XXXXX)
+26.1.1.57288
 ```
+
+**Note**: Parallels Tools does NOT use .deb packages, so `dpkg -l | grep parallels` will show nothing. This is normal! The installer compiles and installs directly.
 
 ### Step 7: Unmount and Reboot
 
@@ -442,7 +451,7 @@ Run these commands to verify VM is ready:
 lsb_release -a
 
 # 2. Check Parallels Tools
-prltools -v
+prltoolsd -v
 
 # 3. Check network
 ping -c 3 google.com
@@ -583,7 +592,7 @@ Your Ubuntu VM is created with Parallels Tools installed. The VM is ready for de
 
 Ensure:
 - [ ] VM boots successfully
-- [ ] Parallels Tools working (`prltools -v`)
+- [ ] Parallels Tools working (`prltoolsd -v`)
 - [ ] SSH access from macOS works
 - [ ] Network connectivity verified
 - [ ] Sufficient disk space available
