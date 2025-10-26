@@ -151,6 +151,45 @@ make health                                     # via Makefile
 ./scripts/backup-current.sh                     # Save existing dotfiles
 ```
 
+### VM Setup (Parallels)
+
+```bash
+# Ubuntu Development VM (Guides 1-2)
+# See: docs/guides/parallels-1-vm-creation.md
+# See: docs/guides/parallels-2-dev-setup.md
+# Complete Docker development environment with shared folders
+
+# Ubuntu Bootstrap (inside VM)
+./scripts/bootstrap/ubuntu-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/ubuntu-bootstrap.sh --with-docker  # With Docker
+
+# Fedora Development VM (automated setup)
+# See: docs/guides/parallels-3-fedora-vm-creation.md
+# Fedora Bootstrap (inside VM)
+./scripts/bootstrap/fedora-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages  # Full dev environment
+./scripts/bootstrap/fedora-bootstrap.sh --dry-run    # Preview changes
+./scripts/bootstrap/fedora-bootstrap.sh --essential-only  # Quick essentials
+
+# Fedora Kids Learning VM (Guides 3-4) - NEW: Automated Setup!
+# See: docs/guides/parallels-4-fedora-kids-setup.md
+# See: docs/guides/kids-fedora-usage.md (parental guide)
+
+# Kids Bootstrap (inside Fedora VM) - RECOMMENDED
+./scripts/bootstrap/kids-fedora-bootstrap.sh                     # Interactive setup
+./scripts/bootstrap/kids-fedora-bootstrap.sh --child-name "Sofia" --child-age 8 --install-all  # Non-interactive
+./scripts/bootstrap/kids-fedora-bootstrap.sh --dry-run           # Preview changes
+./scripts/bootstrap/kids-fedora-bootstrap.sh --core-only         # Core educational apps only
+./scripts/bootstrap/kids-fedora-bootstrap.sh --skip-monitoring   # Skip usage logging
+
+# Manual educational software install (if not using bootstrap)
+sudo dnf install $(cat system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
+
+# Test VM integration
+./scripts/test/test-vm-integration.sh          # Automated tests
+cat docs/checklists/vm-integration-checklist.md  # Manual checklist
+```
+
 ## Implementation Status
 
 ### ✅ FASE 1 - Foundation (COMPLETED)
@@ -178,7 +217,12 @@ make health                                     # via Makefile
 - **Current Status**: Implementing application management
 
 ### ⏳ FASE 4-6 - Upcoming
-- VM Ubuntu setup
+- VM Ubuntu setup (Guides 1-2 COMPLETED)
+- **NEW: Fedora Kids VM (Guides 3-4) - COMPLETED** ✅
+  - Complete safe learning environment for kids
+  - Parental controls, educational software, time limits
+  - Safe browsing with multi-layer protection
+  - 40+ educational packages across all subjects
 - Project templates
 - Monitoring & backup automation
 

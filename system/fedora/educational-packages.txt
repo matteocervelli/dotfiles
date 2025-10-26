@@ -1,0 +1,148 @@
+#
+# Fedora Educational Software Packages
+#
+# Target: Kids' Learning Environment (ages 4-12)
+# Distribution: Fedora Workstation 40+
+# VM Environment: Parallels Desktop on macOS (ARM64)
+#
+# Usage:
+#   sudo dnf install $(cat system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
+#
+# Or install by category:
+#   grep -A 20 "Core Educational" system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | xargs sudo dnf install -y
+#
+# Related Documentation:
+#   - docs/guides/parallels-3-fedora-vm-creation.md
+#   - docs/guides/parallels-4-fedora-kids-setup.md
+#
+# Generated: 2025-10-26
+#
+
+# ============================================================================
+# Core Educational Software (Ages 4-10)
+# ============================================================================
+# Comprehensive educational suite with 100+ activities
+gcompris-qt
+
+# Creative Arts
+tuxpaint                    # Drawing program for children (ages 3-12)
+tuxpaint-stamps             # Additional stamp collections
+
+# Math Learning
+tuxmath                     # Math arcade game
+gbrainy                     # Brain teaser and trainer
+
+# Typing Skills
+tuxtyping                   # Typing tutor for kids
+klavaro                     # Touch typing tutor
+
+# General Learning
+childsplay                  # Educational activities for young children
+
+# ============================================================================
+# KDE Education Suite (Ages 6-12)
+# ============================================================================
+# Note: Some KDE apps work fine on GNOME
+
+# Geography
+marble                      # Virtual globe and atlas
+marble-qt                   # Qt interface for Marble
+
+# Astronomy
+stellarium                  # Planetarium software (realistic sky)
+
+# Language Learning
+kanagram                    # Letter order game
+khangman                    # Hangman game
+kwordquiz                   # Flashcard and vocabulary learning
+
+# Science
+kalzium                     # Periodic table of elements
+step                        # Physics simulation
+
+# Math
+kbruch                      # Practice fractions
+kmplot                      # Mathematical function plotter
+
+# ============================================================================
+# Programming and Logic (Ages 8+)
+# ============================================================================
+scratch                     # Visual programming for kids (MIT)
+python3                     # Python programming language
+python3-pygame              # Game development with Python
+python3-turtle              # Turtle graphics for learning
+
+# ============================================================================
+# Creative Tools (All Ages)
+# ============================================================================
+# Graphics
+inkscape                    # Vector graphics editor
+gimp                        # Image manipulation program
+krita                       # Digital painting
+
+# Music
+audacity                    # Audio editing
+musescore                   # Music notation software
+
+# Video
+kdenlive                    # Video editor (optional - heavier)
+
+# ============================================================================
+# Language Learning (Ages 6+)
+# ============================================================================
+anki                        # Flashcard program (spaced repetition)
+
+# ============================================================================
+# Reading and Literature (Ages 5+)
+# ============================================================================
+calibre                     # E-book management and reader
+foliate                     # Simple e-book reader
+
+# ============================================================================
+# Games with Educational Value
+# ============================================================================
+# Strategy and Logic
+gnome-chess                 # Chess game
+gnome-mahjongg              # Mahjongg solitaire
+gnome-sudoku                # Sudoku puzzle game
+quadrapassel                # Tetris-like game (spatial reasoning)
+
+# Memory and Matching
+gnome-mines                 # Minesweeper (logic)
+
+# ============================================================================
+# Accessibility Tools (If Needed)
+# ============================================================================
+orca                        # Screen reader
+gnome-tweaks                # Desktop customization (text size, etc.)
+
+# ============================================================================
+# Parental Control Software
+# ============================================================================
+malcontent                  # Parental controls framework
+malcontent-ui               # GUI for parental controls
+
+# ============================================================================
+# Safe Browsing (Pre-installed on Fedora)
+# ============================================================================
+# firefox                   # Already installed on Fedora Workstation
+# NOTE: Configure with safety extensions via Firefox Add-ons
+
+# ============================================================================
+# Flatpak Educational Apps (Install Separately)
+# ============================================================================
+# Run these commands separately:
+#
+# sudo flatpak install -y flathub org.kde.gcompris
+# sudo flatpak install -y flathub com.endlessm.encyclopedia.en
+# sudo flatpak install -y flathub org.gnome.Chess
+# sudo flatpak install -y flathub org.kde.ktuberling
+# sudo flatpak install -y flathub org.tuxpaint.Tuxpaint
+
+# ============================================================================
+# Optional: Advanced Learning (Ages 10+)
+# ============================================================================
+# blender                   # 3D modeling (advanced, 1GB+ download)
+# libreoffice               # Office suite (already on Fedora Workstation)
+# octave                    # Scientific programming (MATLAB alternative)
+# maxima                    # Computer algebra system
