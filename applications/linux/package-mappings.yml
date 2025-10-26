@@ -1,0 +1,862 @@
+#
+# Linux Package Mappings
+#
+# Maps macOS Homebrew packages to Linux equivalents across:
+# - Ubuntu/Debian (APT)
+# - Fedora/RHEL (DNF)
+# - Arch Linux (Pacman)
+#
+# See mapping-schema.yml for field definitions
+#
+# Generated for FASE 4.1 (Issue #37)
+# Total Brewfile packages: 271 (23 casks, 248 formulae)
+#
+
+schema_version: "1.0.0"
+generated_date: "2025-10-26"
+source_brewfile: "system/macos/Brewfile"
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+
+packages:
+  autoconf:
+    category: "development"
+    apt: "autoconf"
+    dnf: "autoconf"
+    pacman: "autoconf"
+    opensource: true
+
+  cmake:
+    category: "development"
+    apt: "cmake"
+    dnf: "cmake"
+    pacman: "cmake"
+    opensource: true
+
+  dotnet-sdk:
+    category: "development"
+    apt: "dotnet-sdk-8.0"
+    dnf: "dotnet-sdk-8.0"
+    pacman: "dotnet-sdk"
+    repo_setup:
+      ubuntu: "wget https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb && sudo dpkg -i packages-microsoft-prod.deb"
+      fedora: "sudo dnf install https://packages.microsoft.com/config/fedora/40/packages-microsoft-prod.rpm"
+    opensource: false
+
+  flutter:
+    category: "development"
+    snap: "flutter"
+    aur: "flutter"
+    notes: "Snap recommended for easy updates, AUR for Arch"
+    opensource: true
+
+  gcc:
+    category: "development"
+    apt: "gcc"
+    dnf: "gcc"
+    pacman: "gcc"
+    opensource: true
+
+  gh:
+    category: "development"
+    apt: "gh"
+    dnf: "gh"
+    pacman: "github-cli"
+    repo_setup:
+      ubuntu: "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list"
+      fedora: "sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo"
+    opensource: true
+
+  git:
+    category: "development"
+    apt: "git"
+    dnf: "git"
+    pacman: "git"
+    opensource: true
+
+  git-credential-manager:
+    category: "development"
+    apt: "git-credential-manager"
+    dnf: "git-credential-manager"
+    aur: "git-credential-manager"
+    repo_setup:
+      ubuntu: "curl -L https://aka.ms/gcm/linux-install-source.sh | sh"
+      fedora: "curl -L https://aka.ms/gcm/linux-install-source.sh | sh"
+    opensource: true
+
+  lazygit:
+    category: "development"
+    apt: "lazygit"
+    dnf: "lazygit"
+    pacman: "lazygit"
+    repo_setup:
+      ubuntu: "sudo add-apt-repository ppa:lazygit-team/release"
+    opensource: true
+
+  llvm:
+    category: "development"
+    apt: "llvm"
+    dnf: "llvm"
+    pacman: "llvm"
+    opensource: true
+
+  neovim:
+    category: "development"
+    apt: "neovim"
+    dnf: "neovim"
+    pacman: "neovim"
+    opensource: true
+
+  pgadmin4:
+    category: "development"
+    apt: "pgadmin4"
+    dnf: "pgadmin4"
+    flatpak: "org.pgadmin.pgAdmin4"
+    opensource: true
+    notes: "Flatpak recommended for GUI version"
+
+  vim:
+    category: "development"
+    apt: "vim"
+    dnf: "vim-enhanced"
+    pacman: "vim"
+    opensource: true
+
+  visual-studio-code:
+    category: "development"
+    snap: "code"
+    flatpak: "com.visualstudio.code"
+    aur: "visual-studio-code-bin"
+    alternatives:
+      - "vscodium"  # FOSS build without telemetry
+    opensource: false
+    notes: "VSCodium available as open-source alternative"
+
+# ============================================================================
+# Languages & Runtimes
+# ============================================================================
+
+  deno:
+    category: "languages"
+    apt: "deno"
+    dnf: "deno"
+    pacman: "deno"
+    snap: "deno"
+    opensource: true
+
+  go:
+    category: "languages"
+    apt: "golang-go"
+    dnf: "golang"
+    pacman: "go"
+    opensource: true
+
+  groovy:
+    category: "languages"
+    apt: "groovy"
+    dnf: "groovy"
+    aur: "groovy"
+    opensource: true
+
+  lua:
+    category: "languages"
+    apt: "lua5.4"
+    dnf: "lua"
+    pacman: "lua"
+    opensource: true
+
+  luajit:
+    category: "languages"
+    apt: "luajit"
+    dnf: "luajit"
+    pacman: "luajit"
+    opensource: true
+
+  node:
+    category: "languages"
+    apt: "nodejs"
+    dnf: "nodejs"
+    pacman: "nodejs"
+    opensource: true
+    notes: "Consider using nvm for version management"
+
+  openjdk:
+    category: "languages"
+    apt: "openjdk-21-jdk"
+    dnf: "java-21-openjdk-devel"
+    pacman: "jdk-openjdk"
+    opensource: true
+
+  perl:
+    category: "languages"
+    apt: "perl"
+    dnf: "perl"
+    pacman: "perl"
+    opensource: true
+
+  php:
+    category: "languages"
+    apt: "php"
+    dnf: "php"
+    pacman: "php"
+    opensource: true
+
+  "python@3.12":
+    category: "languages"
+    apt: "python3.12"
+    dnf: "python3.12"
+    pacman: "python"
+    opensource: true
+    notes: "Use pyenv for version management"
+
+  "python@3.13":
+    category: "languages"
+    apt: "python3.13"
+    dnf: "python3.13"
+    pacman: "python"
+    opensource: true
+    notes: "Use pyenv for version management"
+
+  "python@3.14":
+    category: "languages"
+    apt: "python3.14"
+    dnf: "python3.14"
+    pacman: "python"
+    opensource: true
+    notes: "Use pyenv for version management, may need PPA on Ubuntu"
+
+  ruby:
+    category: "languages"
+    apt: "ruby-full"
+    dnf: "ruby"
+    pacman: "ruby"
+    opensource: true
+    notes: "Consider using rbenv for version management"
+
+  rust:
+    category: "languages"
+    apt: "rustc"
+    dnf: "rust"
+    pacman: "rust"
+    opensource: true
+    notes: "Rustup recommended for toolchain management"
+
+# ============================================================================
+# Databases & Data Tools
+# ============================================================================
+
+  pgcli:
+    category: "databases"
+    apt: "pgcli"
+    dnf: "pgcli"
+    pacman: "pgcli"
+    opensource: true
+
+  pgvector:
+    category: "databases"
+    apt: "postgresql-17-pgvector"
+    dnf: "pgvector"
+    aur: "pgvector"
+    opensource: true
+
+  "postgresql@17":
+    category: "databases"
+    apt: "postgresql-17"
+    dnf: "postgresql17-server"
+    pacman: "postgresql"
+    opensource: true
+
+  sqlite:
+    category: "databases"
+    apt: "sqlite3"
+    dnf: "sqlite"
+    pacman: "sqlite"
+    opensource: true
+
+# ============================================================================
+# Infrastructure & DevOps
+# ============================================================================
+
+  caddy:
+    category: "infrastructure"
+    apt: "caddy"
+    dnf: "caddy"
+    pacman: "caddy"
+    repo_setup:
+      ubuntu: "sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg"
+      fedora: "dnf install 'dnf-command(copr)' && dnf copr enable @caddy/caddy"
+    opensource: true
+
+  container:
+    category: "infrastructure"
+    notes: "Generic container runtime - use Docker or Podman on Linux"
+    alternatives:
+      - "docker.io"
+      - "podman"
+
+  gcloud-cli:
+    category: "infrastructure"
+    apt: "google-cloud-cli"
+    dnf: "google-cloud-cli"
+    aur: "google-cloud-cli"
+    repo_setup:
+      ubuntu: "echo \"deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main\" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
+      fedora: "sudo tee /etc/yum.repos.d/google-cloud-sdk.repo << EOM\n[google-cloud-cli]\nname=Google Cloud CLI\nbaseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0\ngpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg\nEOM"
+    opensource: false
+
+  ollama:
+    category: "infrastructure"
+    apt: "ollama"
+    dnf: "ollama"
+    pacman: "ollama"
+    repo_setup:
+      ubuntu: "curl -fsSL https://ollama.com/install.sh | sh"
+      fedora: "curl -fsSL https://ollama.com/install.sh | sh"
+    opensource: true
+
+  qemu:
+    category: "infrastructure"
+    apt: "qemu-system"
+    dnf: "qemu"
+    pacman: "qemu-full"
+    opensource: true
+
+  socat:
+    category: "infrastructure"
+    apt: "socat"
+    dnf: "socat"
+    pacman: "socat"
+    opensource: true
+
+  tailscale:
+    category: "infrastructure"
+    apt: "tailscale"
+    dnf: "tailscale"
+    pacman: "tailscale"
+    repo_setup:
+      ubuntu: "curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list"
+      fedora: "sudo dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo"
+    opensource: true
+
+  tailscale-app:
+    category: "infrastructure"
+    notes: "GUI for Tailscale - integrated into system tray on Linux"
+    apt: "tailscale"
+    dnf: "tailscale"
+    pacman: "tailscale"
+
+# ============================================================================
+# Security Tools
+# ============================================================================
+
+  certifi:
+    category: "security"
+    apt: "ca-certificates"
+    dnf: "ca-certificates"
+    pacman: "ca-certificates"
+    opensource: true
+
+  gnupg:
+    category: "security"
+    apt: "gnupg"
+    dnf: "gnupg2"
+    pacman: "gnupg"
+    opensource: true
+
+  gpgme:
+    category: "security"
+    apt: "libgpgme11"
+    dnf: "gpgme"
+    pacman: "gpgme"
+    opensource: true
+
+  gpgmepp:
+    category: "security"
+    notes: "C++ bindings for gpgme - usually included with gpgme package"
+    apt: "libgpgme11"
+    dnf: "gpgme"
+    pacman: "gpgme"
+
+  mkcert:
+    category: "security"
+    apt: "mkcert"
+    dnf: "mkcert"
+    pacman: "mkcert"
+    opensource: true
+
+  "openssl@3":
+    category: "security"
+    apt: "openssl"
+    dnf: "openssl"
+    pacman: "openssl"
+    opensource: true
+
+  pinentry:
+    category: "security"
+    apt: "pinentry-curses"
+    dnf: "pinentry"
+    pacman: "pinentry"
+    opensource: true
+
+# ============================================================================
+# CLI Utilities & Tools (Essential)
+# ============================================================================
+
+  asdf:
+    category: "cli-utilities"
+    apt: "asdf"
+    dnf: "asdf"
+    aur: "asdf-vm"
+    notes: "Version manager for multiple languages"
+    opensource: true
+
+  bat:
+    category: "cli-utilities"
+    apt: "bat"
+    dnf: "bat"
+    pacman: "bat"
+    opensource: true
+    notes: "cat clone with syntax highlighting"
+
+  bats-core:
+    category: "cli-utilities"
+    apt: "bats"
+    dnf: "bats"
+    pacman: "bats"
+    opensource: true
+
+  btop:
+    category: "cli-utilities"
+    apt: "btop"
+    dnf: "btop"
+    pacman: "btop"
+    opensource: true
+    notes: "Modern resource monitor"
+
+  coreutils:
+    category: "cli-utilities"
+    apt: "coreutils"
+    dnf: "coreutils"
+    pacman: "coreutils"
+    opensource: true
+
+  curl:
+    category: "cli-utilities"
+    apt: "curl"
+    dnf: "curl"
+    pacman: "curl"
+    opensource: true
+
+  eza:
+    category: "cli-utilities"
+    apt: "eza"
+    dnf: "eza"
+    pacman: "eza"
+    opensource: true
+    notes: "Modern ls replacement (fork of exa)"
+
+  findutils:
+    category: "cli-utilities"
+    apt: "findutils"
+    dnf: "findutils"
+    pacman: "findutils"
+    opensource: true
+
+  fzf:
+    category: "cli-utilities"
+    apt: "fzf"
+    dnf: "fzf"
+    pacman: "fzf"
+    opensource: true
+    notes: "Fuzzy finder for command line"
+
+  glances:
+    category: "cli-utilities"
+    apt: "glances"
+    dnf: "glances"
+    pacman: "glances"
+    opensource: true
+
+  htop:
+    category: "cli-utilities"
+    apt: "htop"
+    dnf: "htop"
+    pacman: "htop"
+    opensource: true
+
+  httpie:
+    category: "cli-utilities"
+    apt: "httpie"
+    dnf: "httpie"
+    pacman: "httpie"
+    opensource: true
+    notes: "User-friendly HTTP client"
+
+  hugo:
+    category: "cli-utilities"
+    apt: "hugo"
+    dnf: "hugo"
+    pacman: "hugo"
+    opensource: true
+
+  iperf3:
+    category: "cli-utilities"
+    apt: "iperf3"
+    dnf: "iperf3"
+    pacman: "iperf3"
+    opensource: true
+
+  jupyterlab:
+    category: "cli-utilities"
+    apt: "jupyterlab"
+    dnf: "jupyterlab"
+    pacman: "jupyterlab"
+    opensource: true
+    notes: "Install via pip recommended: pip install jupyterlab"
+
+  lazydocker:
+    category: "cli-utilities"
+    apt: "lazydocker"
+    dnf: "lazydocker"
+    aur: "lazydocker"
+    notes: "TUI for Docker management"
+    opensource: true
+
+  lazyjournal:
+    category: "cli-utilities"
+    aur: "lazyjournal"
+    notes: "Journaling tool - primarily available via cargo install or AUR"
+    opensource: true
+
+  moreutils:
+    category: "cli-utilities"
+    apt: "moreutils"
+    dnf: "moreutils"
+    pacman: "moreutils"
+    opensource: true
+
+  pandoc:
+    category: "cli-utilities"
+    apt: "pandoc"
+    dnf: "pandoc"
+    pacman: "pandoc"
+    opensource: true
+
+  pipx:
+    category: "cli-utilities"
+    apt: "pipx"
+    dnf: "pipx"
+    pacman: "python-pipx"
+    opensource: true
+
+  pv:
+    category: "cli-utilities"
+    apt: "pv"
+    dnf: "pv"
+    pacman: "pv"
+    opensource: true
+    notes: "Pipe viewer - monitor data progress"
+
+  pwgen:
+    category: "cli-utilities"
+    apt: "pwgen"
+    dnf: "pwgen"
+    pacman: "pwgen"
+    opensource: true
+
+  pyenv:
+    category: "cli-utilities"
+    notes: "Install via git clone recommended across all platforms"
+    opensource: true
+
+  r:
+    category: "cli-utilities"
+    apt: "r-base"
+    dnf: "R"
+    pacman: "r"
+    opensource: true
+
+  rclone:
+    category: "cli-utilities"
+    apt: "rclone"
+    dnf: "rclone"
+    pacman: "rclone"
+    opensource: true
+
+  stow:
+    category: "cli-utilities"
+    apt: "stow"
+    dnf: "stow"
+    pacman: "stow"
+    opensource: true
+    notes: "GNU Stow - symlink farm manager (CRITICAL for dotfiles)"
+
+  supabase:
+    category: "cli-utilities"
+    apt: "supabase"
+    dnf: "supabase"
+    aur: "supabase-cli"
+    notes: "Supabase CLI - install via npm recommended"
+    opensource: true
+
+  tesseract:
+    category: "cli-utilities"
+    apt: "tesseract-ocr"
+    dnf: "tesseract"
+    pacman: "tesseract"
+    opensource: true
+
+  texlive:
+    category: "cli-utilities"
+    apt: "texlive-full"
+    dnf: "texlive-scheme-full"
+    pacman: "texlive-most"
+    opensource: true
+    notes: "Large package - consider texlive-basic for minimal install"
+
+  tmux:
+    category: "cli-utilities"
+    apt: "tmux"
+    dnf: "tmux"
+    pacman: "tmux"
+    opensource: true
+
+  tree:
+    category: "cli-utilities"
+    apt: "tree"
+    dnf: "tree"
+    pacman: "tree"
+    opensource: true
+
+  uv:
+    category: "cli-utilities"
+    notes: "Extremely fast Python package installer - install via pip or cargo"
+    opensource: true
+
+  wget:
+    category: "cli-utilities"
+    apt: "wget"
+    dnf: "wget"
+    pacman: "wget"
+    opensource: true
+
+  yq:
+    category: "cli-utilities"
+    apt: "yq"
+    dnf: "yq"
+    pacman: "yq"
+    opensource: true
+    notes: "YAML processor (CRITICAL for package mapping scripts)"
+
+# ============================================================================
+# Productivity Applications
+# ============================================================================
+
+  1password-cli:
+    category: "productivity"
+    apt: "1password-cli"
+    dnf: "1password-cli"
+    aur: "1password-cli"
+    repo_setup:
+      ubuntu: "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main' | sudo tee /etc/apt/sources.list.d/1password.list"
+      fedora: "sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc && sudo sh -c 'echo -e \"[1password]\\nname=1Password Stable Channel\\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\\$basearch\\nenabled=1\\ngpgcheck=1\\nrepo_gpgcheck=1\\ngpgkey=https://downloads.1password.com/linux/keys/1password.asc\" > /etc/yum.repos.d/1password.repo'"
+    alternatives:
+      - "bitwarden-cli"
+    opensource: false
+    notes: "Bitwarden is open-source alternative"
+
+  firefox:
+    category: "productivity"
+    apt: "firefox"
+    dnf: "firefox"
+    pacman: "firefox"
+    opensource: true
+
+  google-chrome:
+    category: "productivity"
+    apt: "google-chrome-stable"
+    dnf: "google-chrome-stable"
+    aur: "google-chrome"
+    repo_setup:
+      ubuntu: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list"
+      fedora: "sudo dnf install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
+    alternatives:
+      - "chromium"
+    opensource: false
+
+  libreoffice:
+    category: "productivity"
+    apt: "libreoffice"
+    dnf: "libreoffice"
+    pacman: "libreoffice-fresh"
+    flatpak: "org.libreoffice.LibreOffice"
+    opensource: true
+
+  microsoft-edge:
+    category: "productivity"
+    apt: "microsoft-edge-stable"
+    dnf: "microsoft-edge-stable"
+    aur: "microsoft-edge-stable-bin"
+    repo_setup:
+      ubuntu: "curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && echo 'deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main' | sudo tee /etc/apt/sources.list.d/microsoft-edge.list"
+      fedora: "sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge"
+    alternatives:
+      - "chromium"
+    opensource: false
+
+  nook:
+    category: "productivity"
+    notes: "Nook browser - check official website for Linux availability"
+    opensource: false
+
+  rstudio:
+    category: "productivity"
+    apt: "rstudio"
+    dnf: "rstudio"
+    flatpak: "org.rstudio.RStudio"
+    notes: "Download from rstudio.com or use Flatpak"
+    opensource: true
+
+  ungoogled-chromium:
+    category: "productivity"
+    flatpak: "com.github.Eloston.UngoogledChromium"
+    aur: "ungoogled-chromium"
+    opensource: true
+    notes: "Privacy-focused Chromium variant"
+
+  voiceink:
+    category: "productivity"
+    notes: "Check official website for Linux availability"
+    opensource: false
+
+  zotero:
+    category: "productivity"
+    apt: "zotero"
+    flatpak: "org.zotero.Zotero"
+    aur: "zotero"
+    opensource: true
+
+# ============================================================================
+# Media & Creative Tools
+# ============================================================================
+
+  audacity:
+    category: "media"
+    apt: "audacity"
+    dnf: "audacity"
+    pacman: "audacity"
+    flatpak: "org.audacityteam.Audacity"
+    opensource: true
+
+  ffmpeg:
+    category: "media"
+    apt: "ffmpeg"
+    dnf: "ffmpeg"
+    pacman: "ffmpeg"
+    opensource: true
+
+  imagemagick:
+    category: "media"
+    apt: "imagemagick"
+    dnf: "ImageMagick"
+    pacman: "imagemagick"
+    opensource: true
+
+  inkscape:
+    category: "media"
+    apt: "inkscape"
+    dnf: "inkscape"
+    pacman: "inkscape"
+    flatpak: "org.inkscape.Inkscape"
+    opensource: true
+
+  "jpeg-turbo":
+    category: "media"
+    apt: "libjpeg-turbo8"
+    dnf: "libjpeg-turbo"
+    pacman: "libjpeg-turbo"
+    opensource: true
+
+  "jpeg-xl":
+    category: "media"
+    apt: "libjxl-tools"
+    dnf: "libjxl"
+    pacman: "libjxl"
+    opensource: true
+
+  obs:
+    category: "media"
+    apt: "obs-studio"
+    dnf: "obs-studio"
+    pacman: "obs-studio"
+    flatpak: "com.obsproject.Studio"
+    opensource: true
+
+  vlc:
+    category: "media"
+    apt: "vlc"
+    dnf: "vlc"
+    pacman: "vlc"
+    flatpak: "org.videolan.VLC"
+    opensource: true
+
+# ============================================================================
+# System Libraries (only most critical - most are dependencies)
+# ============================================================================
+
+  ca-certificates:
+    category: "system"
+    apt: "ca-certificates"
+    dnf: "ca-certificates"
+    pacman: "ca-certificates"
+    opensource: true
+
+  gettext:
+    category: "system"
+    apt: "gettext"
+    dnf: "gettext"
+    pacman: "gettext"
+    opensource: true
+
+  glib:
+    category: "system"
+    apt: "libglib2.0-0"
+    dnf: "glib2"
+    pacman: "glib2"
+    opensource: true
+
+  ncurses:
+    category: "system"
+    apt: "libncurses5"
+    dnf: "ncurses"
+    pacman: "ncurses"
+    opensource: true
+
+  readline:
+    category: "system"
+    apt: "libreadline8"
+    dnf: "readline"
+    pacman: "readline"
+    opensource: true
+
+# ============================================================================
+# Special Cases & Notes
+# ============================================================================
+
+# The following are typically auto-installed as dependencies:
+# - Most lib* packages (libpng, libtiff, libssl, etc.)
+# - Codec libraries (x264, x265, opus, etc.)
+# - System utilities already in base (find, grep, sed)
+
+# macOS-specific packages without Linux equivalents:
+# - mas-cli (Mac App Store - N/A on Linux)
+# - Some GUI apps may have different installation methods
+
+# Recommended installation order:
+# 1. Essential dev tools (git, gcc, make, cmake)
+# 2. Language runtimes (python, node, rust, go)
+# 3. CLI utilities (bat, eza, fzf, stow, yq)
+# 4. Infrastructure (docker, tailscale)
+# 5. Applications (browsers, VSCode, etc.)

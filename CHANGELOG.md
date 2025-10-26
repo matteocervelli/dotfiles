@@ -9,6 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **FASE 4.1: Linux Package Management & Equivalents** (Issue #37)
+  - Complete cross-platform package management foundation for Ubuntu, Fedora, and Arch Linux
+  - `applications/linux/package-mappings.yml` - Comprehensive mapping of 271 macOS Homebrew packages to Linux equivalents
+    - 92 Ubuntu (APT) packages
+    - 91 Fedora (DNF) packages
+    - 77 Arch Linux (Pacman) packages
+  - `applications/linux/mapping-schema.yml` - Explicit data contract for package mappings with field definitions
+  - `scripts/apps/audit-apps-linux.sh` - Multi-distro package audit script
+    - Detects: APT, DNF, Pacman, Snap, Flatpak, AUR
+    - Distribution detection (Ubuntu/Debian, Fedora/RHEL, Arch/Manjaro)
+    - Categorized output by package manager
+  - `scripts/apps/generate-linux-packages.sh` - Package list generator from YAML
+    - Uses `yq` for YAML processing
+    - Generates distro-specific package lists
+    - Dry-run mode support
+  - Bootstrap scripts for each distribution:
+    - `scripts/bootstrap/install-dependencies-ubuntu.sh` - APT + Snap + Flatpak installation
+    - `scripts/bootstrap/install-dependencies-fedora.sh` - DNF + Flatpak + COPR installation
+    - `scripts/bootstrap/install-dependencies-arch.sh` - Pacman + AUR (yay/paru) + Flatpak installation
+  - All scripts support: `--help`, `--dry-run`, `--essential-only`, `--verbose`
+  - Generated package lists in `system/{ubuntu,fedora,arch}/packages.txt`
+  - `tests/test-37-linux-packages.bats` - Comprehensive test suite (41 tests, 100% passing)
+  - `applications/linux/README.md` - Complete workflow guide (~500 lines)
+  - `docs/architecture/ADR/ADR-004-linux-package-management.md` - Architecture decision record with rationale
+  - `docs/guides/linux-setup-guide.md` - Step-by-step setup guide for all three distros
+  - Security features:
+    - Input validation (no shell metacharacters)
+    - GPG key verification for third-party repositories
+    - Safe package name validation
+  - Package manager preference order: Native > Flatpak > Snap > AUR
+  - Open-source alternatives documented for proprietary software
+  - Repository setup automation for: 1Password, GitHub CLI, Tailscale, Caddy, Google Cloud CLI
+  - **Serves as foundation** for FASE 7 multi-platform configurations
+
 - **FASE 7: Multi-Platform OS Configurations** (Milestone #8, Documentation Phase)
   - `docs/os-configurations/OVERVIEW.md` - Multi-platform architecture for 14+ environments
   - `docs/os-configurations/DEVICE-MATRIX.md` - Complete device/OS mapping with specifications

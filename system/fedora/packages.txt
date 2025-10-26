@@ -1,0 +1,114 @@
+#
+# Fedora/RHEL Package List
+#
+# Generated from: applications/linux/package-mappings.yml
+# Package Manager: DNF (Dandified YUM)
+# Target Distribution: Fedora Workstation 40+
+#
+# Usage:
+#   cat system/fedora/packages.txt | xargs sudo dnf install
+#   xargs -a system/fedora/packages.txt sudo dnf install
+#
+# Notes:
+#   - Some packages require repository setup before installation
+#   - See applications/linux/package-mappings.yml for repo_setup instructions
+#   - RPM Fusion repositories recommended for multimedia packages
+#   - Enable COPR repositories for additional software
+#
+# Generated: $(date '+%Y-%m-%d %H:%M:%S')
+#
+
+# ============================================================================
+# Native DNF Packages
+# ============================================================================
+1password-cli
+asdf
+audacity
+autoconf
+bat
+bats
+btop
+ca-certificates
+caddy
+cmake
+coreutils
+curl
+deno
+dotnet-sdk-8.0
+eza
+ffmpeg
+findutils
+firefox
+fzf
+gcc
+gettext
+gh
+git
+git-credential-manager
+glances
+glib2
+gnupg2
+golang
+google-chrome-stable
+google-cloud-cli
+gpgme
+groovy
+htop
+httpie
+hugo
+ImageMagick
+inkscape
+iperf3
+java-21-openjdk-devel
+jupyterlab
+lazydocker
+lazygit
+libjpeg-turbo
+libjxl
+libreoffice
+llvm
+lua
+luajit
+microsoft-edge-stable
+mkcert
+moreutils
+ncurses
+neovim
+nodejs
+obs-studio
+ollama
+openssl
+pandoc
+perl
+pgadmin4
+pgcli
+pgvector
+php
+pinentry
+pipx
+postgresql17-server
+pv
+pwgen
+python3.12
+python3.13
+python3.14
+qemu
+R
+rclone
+readline
+rstudio
+ruby
+rust
+socat
+sqlite
+stow
+supabase
+tailscale
+tesseract
+texlive-scheme-full
+tmux
+tree
+vim-enhanced
+vlc
+wget
+yq

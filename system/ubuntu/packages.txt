@@ -1,0 +1,115 @@
+#
+# Ubuntu/Debian Package List
+#
+# Generated from: applications/linux/package-mappings.yml
+# Package Manager: APT (Advanced Package Tool)
+# Target Distribution: Ubuntu 24.04 LTS (Noble Numbat)
+#
+# Usage:
+#   xargs -a system/ubuntu/packages.txt sudo apt install
+#   cat system/ubuntu/packages.txt | xargs sudo apt install
+#
+# Notes:
+#   - Some packages require repository setup before installation
+#   - See applications/linux/package-mappings.yml for repo_setup instructions
+#   - Packages marked with (snap) should be installed via Snap
+#   - Packages marked with (flatpak) should be installed via Flatpak
+#
+# Generated: $(date '+%Y-%m-%d %H:%M:%S')
+#
+
+# ============================================================================
+# Native APT Packages
+# ============================================================================
+1password-cli
+asdf
+audacity
+autoconf
+bat
+bats
+btop
+ca-certificates
+caddy
+cmake
+coreutils
+curl
+deno
+dotnet-sdk-8.0
+eza
+ffmpeg
+findutils
+firefox
+fzf
+gcc
+gettext
+gh
+git
+git-credential-manager
+glances
+gnupg
+golang-go
+google-chrome-stable
+google-cloud-cli
+groovy
+htop
+httpie
+hugo
+imagemagick
+inkscape
+iperf3
+jupyterlab
+lazydocker
+lazygit
+libglib2.0-0
+libgpgme11
+libjpeg-turbo8
+libjxl-tools
+libncurses5
+libreadline8
+libreoffice
+llvm
+lua5.4
+luajit
+microsoft-edge-stable
+mkcert
+moreutils
+neovim
+nodejs
+obs-studio
+ollama
+openjdk-21-jdk
+openssl
+pandoc
+perl
+pgadmin4
+pgcli
+php
+pinentry-curses
+pipx
+postgresql-17
+postgresql-17-pgvector
+pv
+pwgen
+python3.12
+python3.13
+python3.14
+qemu-system
+r-base
+rclone
+rstudio
+ruby-full
+rustc
+socat
+sqlite3
+stow
+supabase
+tailscale
+tesseract-ocr
+texlive-full
+tmux
+tree
+vim
+vlc
+wget
+yq
+zotero

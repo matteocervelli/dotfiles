@@ -1,0 +1,100 @@
+#
+# Arch Linux Package List
+#
+# Generated from: applications/linux/package-mappings.yml
+# Package Manager: Pacman
+# Target Distribution: Arch Linux (rolling release)
+#
+# Usage:
+#   cat system/arch/packages.txt | xargs sudo pacman -S
+#   xargs -a system/arch/packages.txt sudo pacman -S --needed
+#
+# Notes:
+#   - AUR packages require an AUR helper (yay or paru)
+#   - See applications/linux/package-mappings.yml for AUR packages
+#   - Use --needed flag to skip already installed packages
+#   - Pacman supports parallel downloads with ParallelDownloads option
+#
+# Generated: $(date '+%Y-%m-%d %H:%M:%S')
+#
+
+# ============================================================================
+# Native Pacman Packages
+# ============================================================================
+audacity
+autoconf
+bat
+bats
+btop
+ca-certificates
+caddy
+cmake
+coreutils
+curl
+deno
+dotnet-sdk
+eza
+ffmpeg
+findutils
+firefox
+fzf
+gcc
+gettext
+git
+github-cli
+glances
+glib2
+gnupg
+go
+gpgme
+htop
+httpie
+hugo
+imagemagick
+inkscape
+iperf3
+jdk-openjdk
+jupyterlab
+lazygit
+libjpeg-turbo
+libjxl
+libreoffice-fresh
+llvm
+lua
+luajit
+mkcert
+moreutils
+ncurses
+neovim
+nodejs
+obs-studio
+ollama
+openssl
+pandoc
+perl
+pgcli
+php
+pinentry
+postgresql
+pv
+pwgen
+python
+python-pipx
+qemu-full
+r
+rclone
+readline
+ruby
+rust
+socat
+sqlite
+stow
+tailscale
+tesseract
+texlive-most
+tmux
+tree
+vim
+vlc
+wget
+yq

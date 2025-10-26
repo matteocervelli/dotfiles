@@ -335,3 +335,47 @@ vscode-extensions-export:
 	@echo ""
 	@echo "✅ Extensions exported to: applications/vscode-extensions.txt"
 	@echo "💡 Commit changes: git add applications/vscode-extensions.txt"
+
+# ============================================================================
+# Linux Package Management
+# ============================================================================
+
+# Generate Linux package lists from YAML mappings
+linux-generate-packages:
+	@echo "📦 Generating Linux package lists..."
+	@./scripts/apps/generate-linux-packages.sh
+
+# Audit installed packages on Linux
+linux-audit:
+	@echo "🔍 Auditing installed Linux packages..."
+	@./scripts/apps/audit-apps-linux.sh
+
+# Install Ubuntu dependencies
+linux-install-ubuntu:
+	@echo "🐧 Installing Ubuntu packages..."
+	@sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh
+
+# Install Fedora dependencies
+linux-install-fedora:
+	@echo "🎩 Installing Fedora packages..."
+	@sudo ./scripts/bootstrap/install-dependencies-fedora.sh
+
+# Install Arch Linux dependencies
+linux-install-arch:
+	@echo "🏔️  Installing Arch Linux packages..."
+	@sudo ./scripts/bootstrap/install-dependencies-arch.sh
+
+# Dry-run Ubuntu installation
+linux-install-ubuntu-dry:
+	@echo "🔍 Ubuntu dry-run..."
+	@sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --dry-run
+
+# Dry-run Fedora installation
+linux-install-fedora-dry:
+	@echo "🔍 Fedora dry-run..."
+	@sudo ./scripts/bootstrap/install-dependencies-fedora.sh --dry-run
+
+# Dry-run Arch installation
+linux-install-arch-dry:
+	@echo "🔍 Arch dry-run..."
+	@sudo ./scripts/bootstrap/install-dependencies-arch.sh --dry-run

@@ -1,12 +1,13 @@
 # Dotfiles
 
-Personal dotfiles and development environment configuration for macOS.
+Personal dotfiles and development environment configuration for **macOS** and **Linux** (Ubuntu, Fedora, Arch).
 
 ## 🚀 Features
 
 - ✅ ZSH configuration with custom aliases and functions
 - ✅ Git configuration and aliases
 - ✅ Development tools setup
+- ✅ **Cross-Platform Package Management** - Linux package mappings for Ubuntu, Fedora, Arch
 - ✅ **Application Management** - Audit and cleanup macOS applications
 - ✅ **Asset Management System** - Central library with auto-update propagation
 - ✅ **Environment-Aware Helpers** - TypeScript & Python asset URL resolution
@@ -17,15 +18,39 @@ Personal dotfiles and development environment configuration for macOS.
 
 - [ZSH](https://www.zsh.org/) - Shell
 - [Git](https://git-scm.com/) - Version control
-- [Homebrew](https://brew.sh/) - Package manager
+- **macOS**: [Homebrew](https://brew.sh/) - Package manager
+- **Linux**: APT (Ubuntu), DNF (Fedora), Pacman (Arch) + Snap/Flatpak
 
 ## 📦 Installation
+
+### macOS
 
 ```bash
 git clone https://github.com/matteocervelli/dotfiles.git
 cd dotfiles
 ./install.sh
 ```
+
+### Linux (Ubuntu, Fedora, Arch)
+
+```bash
+# Clone repository
+git clone https://github.com/matteocervelli/dotfiles.git
+cd dotfiles
+
+# Generate package lists
+./scripts/apps/generate-linux-packages.sh
+
+# Install packages (choose your distro)
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
+sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
+sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
+
+# Setup dotfiles
+make install
+```
+
+**See also:** [Linux Setup Guide](docs/guides/linux-setup-guide.md) | [Linux Package Management](applications/linux/README.md)
 
 ## 🧪 Usage
 
