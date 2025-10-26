@@ -388,30 +388,74 @@ Installation successful!
 
 ### Step 6: Verify Installation
 
-```bash
-# Check Parallels Tools version
-cat /usr/lib/parallels-tools/version
-# Expected: Shows version number (e.g., 26.1.1.57288)
+#### For ARM64 (Apple Silicon) - FUSE-based Integration
 
-# Check service status
+**IMPORTANT**: On ARM64 Macs, Parallels Tools uses **FUSE userspace filesystem** instead of traditional kernel modules. This is normal and correct!
+
+```bash
+# 1. Check Parallels Tools version
+cat /usr/lib/parallels-tools/version
+# Expected: 26.1.1.57288 (or newer)
+
+# 2. Check service status
 systemctl status prltoolsd
 # Expected: active (running)
 
-# Verify binaries installed
+# 3. Verify binaries installed
 ls -la /usr/bin/prl*
 # Expected: prltoolsd, prlshprof, prlsrvctl, etc.
 
-# Check kernel modules loaded
-lsmod | grep prl
-# Expected: prl_fs, prl_tg, prl_eth
+# 4. Check shared folders mount (KEY TEST!)
+ls -la /media/psf/
+# Expected: Shared folder directories visible
+
+# 5. Verify FUSE mount type
+mount | grep psf
+# Expected: type fuse.prl_fsd
 ```
 
-**Expected output example**:
+**Expected output examples**:
+
+**Version check**:
 ```
 26.1.1.57288
 ```
 
-**Note**: Parallels Tools does NOT use .deb packages, so `dpkg -l | grep parallels` will show nothing. This is normal! The installer compiles and installs directly.
+**Service status**:
+```
+● prltoolsd.service - Parallels Tools Daemon
+     Loaded: loaded (/etc/systemd/system/prltoolsd.service)
+     Active: active (running)
+```
+
+**Shared folders** (after configuration in Guide 2):
+```
+drwx------ 1 matteocervelli  224 Oct  1 06:19 iCloud
+drwxrwxrwx 1 root           150 Oct 26 16:24 'Seagate Desktop Drive'
+```
+
+**Mount type**:
+```
+iCloud on /media/psf/iCloud type fuse.prl_fsd (rw,nosuid,nodev,noatime,user_id=0,group_id=0,default_permissions,allow_other)
+```
+
+#### ⚠️ Important: ARM64 vs x86_64 Differences
+
+**ARM64 (Apple Silicon)**:
+- ✅ Uses FUSE userspace filesystem (`fuse.prl_fsd`)
+- ❌ NO kernel modules (`lsmod | grep prl` will be EMPTY - this is NORMAL!)
+- ✅ Shared folders work via FUSE instead of kernel drivers
+- ✅ Full functionality maintained
+
+**x86_64 (Intel Macs)** - NOT applicable to this setup:
+- Uses kernel modules: `prl_fs`, `prl_tg`, `prl_eth`
+- Different architecture, different implementation
+
+**Notes**:
+- Parallels Tools does NOT use .deb packages
+- `dpkg -l | grep parallels` shows nothing - this is expected
+- The installer compiles and installs directly
+- Check the official log for details: `cat /var/log/parallels-tools-install.log`
 
 ### Step 7: Unmount and Reboot
 

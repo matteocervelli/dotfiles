@@ -51,11 +51,6 @@ Desktop.ini
 # EDITORS & IDEs (Essential only)
 # ====================================================================
 
-# VS Code / Cursor
-.vscode/
-.cursor/
-.claude/
-
 # JetBrains IDEs
 .idea/
 *.iml
