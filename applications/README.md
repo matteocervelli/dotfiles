@@ -262,16 +262,28 @@ Manage VSCode extensions separately from applications:
 ### Export Current Extensions
 
 ```bash
-# Auto-generated during brewfile-update
+# Using Makefile (recommended)
+make vscode-extensions-export
+
+# Or manually
 code --list-extensions | sort > applications/vscode-extensions.txt
 ```
 
 ### Install All Extensions
 
 ```bash
-# Install all extensions at once
+# Using Makefile (recommended)
+make vscode-extensions-install
+
+# Or manually
 cat applications/vscode-extensions.txt | grep -v '^#' | xargs -L 1 code --install-extension
 ```
+
+The Makefile targets provide:
+- ✅ VSCode CLI detection and installation instructions
+- ✅ Automatic backup of existing extensions list
+- ✅ Progress tracking (skipped/installed/failed)
+- ✅ Proper error handling
 
 ### Backup Extensions
 

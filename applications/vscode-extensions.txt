@@ -3,11 +3,10 @@
 # Total Extensions: 92
 #
 # To install all extensions:
-#   cat applications/vscode-extensions.txt | grep -v '^#' | xargs -L 1 code --install-extension
+#   make vscode-extensions-install
 #
 # To export current extensions:
-#   code --list-extensions | sort > applications/vscode-extensions.txt.tmp
-#   (then merge with this file manually)
+#   make vscode-extensions-export
 #
 
 1password.op-vscode

@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install
 
 # Default target - show help
 help:
@@ -25,10 +25,14 @@ help:
 	@echo "  make clean            Clean temporary files (.DS_Store, *.tmp, *.log)"
 	@echo ""
 	@echo "🍺 Brewfile Management:"
-	@echo "  make brewfile-generate     Generate Brewfile from current audit"
-	@echo "  make brewfile-check        Validate Brewfile (dry-run, no installation)"
-	@echo "  make brewfile-install      Install packages from Brewfile"
-	@echo "  make brewfile-update       Update Brewfile from currently installed packages"
+	@echo "  make brewfile-generate          Generate Brewfile from current audit"
+	@echo "  make brewfile-check             Validate Brewfile (dry-run, no installation)"
+	@echo "  make brewfile-install           Install packages from Brewfile"
+	@echo "  make brewfile-update            Update Brewfile from currently installed packages"
+	@echo ""
+	@echo "🔌 VSCode Extensions:"
+	@echo "  make vscode-extensions-install  Install all VSCode extensions from list"
+	@echo "  make vscode-extensions-export   Export currently installed extensions to list"
 	@echo ""
 	@echo "🔄 Auto-Update:"
 	@echo "  make autoupdate-install    Install auto-update service (runs every 30 min)"
@@ -251,3 +255,83 @@ brewfile-update:
 	@echo ""
 	@echo "✅ Brewfile updated from current system state"
 	@echo "💡 Review changes: git diff system/macos/Brewfile"
+
+# VSCode Extensions Management
+vscode-extensions-install:
+	@echo "🔌 Installing VSCode extensions from list..."
+	@echo ""
+	@if [ ! -f applications/vscode-extensions.txt ]; then \
+		echo "❌ Extensions list not found: applications/vscode-extensions.txt"; \
+		echo "Generate it first: make vscode-extensions-export"; \
+		exit 1; \
+	fi
+	@if ! command -v code >/dev/null 2>&1; then \
+		echo "❌ VSCode CLI not found"; \
+		echo ""; \
+		echo "To install VSCode CLI:"; \
+		echo "  1. Open VSCode"; \
+		echo "  2. Press Cmd+Shift+P"; \
+		echo "  3. Type 'Shell Command: Install code command in PATH'"; \
+		echo "  4. Press Enter"; \
+		exit 1; \
+	fi
+	@extension_count=$$(grep -v '^#' applications/vscode-extensions.txt | grep -v '^$$' | wc -l | tr -d ' '); \
+	echo "📦 Found $$extension_count extensions to install"; \
+	echo ""; \
+	installed=0; \
+	skipped=0; \
+	failed=0; \
+	grep -v '^#' applications/vscode-extensions.txt | grep -v '^$$' | while read -r ext; do \
+		if code --list-extensions | grep -q "^$$ext$$"; then \
+			echo "⏭️  Skipped: $$ext (already installed)"; \
+			skipped=$$((skipped + 1)); \
+		else \
+			echo "📥 Installing: $$ext"; \
+			if code --install-extension "$$ext" --force >/dev/null 2>&1; then \
+				installed=$$((installed + 1)); \
+			else \
+				echo "❌ Failed: $$ext"; \
+				failed=$$((failed + 1)); \
+			fi; \
+		fi; \
+	done
+	@echo ""
+	@echo "✅ VSCode extensions installation complete"
+
+vscode-extensions-export:
+	@echo "📤 Exporting currently installed VSCode extensions..."
+	@echo ""
+	@if ! command -v code >/dev/null 2>&1; then \
+		echo "❌ VSCode CLI not found"; \
+		echo ""; \
+		echo "To install VSCode CLI:"; \
+		echo "  1. Open VSCode"; \
+		echo "  2. Press Cmd+Shift+P"; \
+		echo "  3. Type 'Shell Command: Install code command in PATH'"; \
+		echo "  4. Press Enter"; \
+		exit 1; \
+	fi
+	@extension_count=$$(code --list-extensions 2>/dev/null | wc -l | tr -d ' '); \
+	echo "📦 Found $$extension_count installed extensions"; \
+	echo ""; \
+	if [ -f applications/vscode-extensions.txt ]; then \
+		cp applications/vscode-extensions.txt applications/vscode-extensions.txt.backup.$$(date +%Y%m%d-%H%M%S); \
+		echo "✅ Backup created: applications/vscode-extensions.txt.backup.$$(date +%Y%m%d-%H%M%S)"; \
+	fi
+	@{ \
+		echo "# VSCode Extensions"; \
+		echo "# Generated: $$(date +%Y-%m-%d)"; \
+		echo "# Total Extensions: $$extension_count"; \
+		echo "#"; \
+		echo "# To install all extensions:"; \
+		echo "#   make vscode-extensions-install"; \
+		echo "#"; \
+		echo "# To export current extensions:"; \
+		echo "#   make vscode-extensions-export"; \
+		echo "#"; \
+		echo ""; \
+		code --list-extensions 2>/dev/null | sort; \
+	} > applications/vscode-extensions.txt
+	@echo ""
+	@echo "✅ Extensions exported to: applications/vscode-extensions.txt"
+	@echo "💡 Commit changes: git add applications/vscode-extensions.txt"
