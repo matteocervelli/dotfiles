@@ -171,9 +171,18 @@ make health                                     # via Makefile
 ./scripts/bootstrap/fedora-bootstrap.sh --dry-run    # Preview changes
 ./scripts/bootstrap/fedora-bootstrap.sh --essential-only  # Quick essentials
 
-# Fedora Kids Learning VM (Guides 3-4) - Manual Setup
+# Fedora Kids Learning VM (Guides 3-4) - NEW: Automated Setup!
 # See: docs/guides/parallels-4-fedora-kids-setup.md
-# Install educational software (Fedora)
+# See: docs/guides/kids-fedora-usage.md (parental guide)
+
+# Kids Bootstrap (inside Fedora VM) - RECOMMENDED
+./scripts/bootstrap/kids-fedora-bootstrap.sh                     # Interactive setup
+./scripts/bootstrap/kids-fedora-bootstrap.sh --child-name "Sofia" --child-age 8 --install-all  # Non-interactive
+./scripts/bootstrap/kids-fedora-bootstrap.sh --dry-run           # Preview changes
+./scripts/bootstrap/kids-fedora-bootstrap.sh --core-only         # Core educational apps only
+./scripts/bootstrap/kids-fedora-bootstrap.sh --skip-monitoring   # Skip usage logging
+
+# Manual educational software install (if not using bootstrap)
 sudo dnf install $(cat system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
 
 # Test VM integration

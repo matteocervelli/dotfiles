@@ -80,7 +80,8 @@ make install
   - [Guide 1: Ubuntu VM Creation](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
   - [Guide 2: Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
   - [Guide 3: Fedora VM Creation](docs/guides/parallels-3-fedora-vm-creation.md) - Create Fedora VM (dev or kids)
-  - [Guide 4: Kids Learning Environment](docs/guides/parallels-4-fedora-kids-setup.md) - Safe learning with parental controls
+  - [Guide 4: Kids Learning Environment](docs/guides/parallels-4-fedora-kids-setup.md) - **NEW: Automated setup!** 🚀
+  - [Kids Usage Guide](docs/guides/kids-fedora-usage.md) - Parental guide for ongoing management
 
 ## 🧪 Usage
 
