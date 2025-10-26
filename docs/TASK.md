@@ -562,7 +562,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `ubuntu-vm`
 **Roles**: `development`, `infrastructure`
 
-### 7.2 Fedora Bootstrap & DNF Package Management [Issue #41]
+### 7.2 Fedora Bootstrap & DNF Package Management [Issue #40]
 
 - [ ] **7.2.1** Create `scripts/bootstrap/fedora-bootstrap.sh`
 - [ ] **7.2.2** Map Homebrew/APT packages to DNF equivalents
@@ -574,7 +574,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `fedora-dev`
 **Roles**: `development`
 
-### 7.3 Linux Mint Cinnamon Desktop Configuration [Issue #42]
+### 7.3 Linux Mint Cinnamon Desktop Configuration [Issue #41]
 
 - [ ] **7.3.1** Create Mint-specific bootstrap (based on Ubuntu)
 - [ ] **7.3.2** Configure Cinnamon desktop settings
@@ -585,7 +585,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `mint-desktop`
 **Roles**: `development`, `productivity`
 
-### 7.4 Arch Linux Bootstrap & AUR Integration [Issue #43]
+### 7.4 Arch Linux Bootstrap & AUR Integration [Issue #42]
 
 - [ ] **7.4.1** Create `scripts/bootstrap/arch-bootstrap.sh`
 - [ ] **7.4.2** Implement Pacman package management
@@ -597,7 +597,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `arch-dev`
 **Roles**: `development`
 
-### 7.5 Omarchy (DHH Linux) Bootstrap [Issue #44]
+### 7.5 Omarchy (DHH Linux) Bootstrap [Issue #43]
 
 - [ ] **7.5.1** Research Omarchy base system and package manager
 - [ ] **7.5.2** Create `scripts/bootstrap/omarchy-bootstrap.sh`
@@ -609,7 +609,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `omarchy-dev`
 **Reference**: https://omarchy.org
 
-### 7.6 Docker Ubuntu Base Image & Minimal Profile [Issue #45]
+### 7.6 Docker Ubuntu Base Image & Minimal Profile [Issue #44]
 
 - [ ] **7.6.1** Create `Dockerfile.dotfiles-ubuntu` base image
 - [ ] **7.6.2** Implement minimal stow packages (shell, git only)
@@ -621,7 +621,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `container-minimal`
 **Size Goal**: < 500MB with dotfiles
 
-### 7.7 VPS Ubuntu Headless & Security Hardening [Issue #46]
+### 7.7 VPS Ubuntu Headless & Security Hardening [Issue #45]
 
 - [ ] **7.7.1** Create VPS-specific bootstrap (minimal, headless)
 - [ ] **7.7.2** Implement security hardening (fail2ban, UFW, SSH)
@@ -633,7 +633,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `vps-minimal`
 **Roles**: `security`
 
-### 7.8 Kids' Fedora VM - Educational Profile [Issue #47]
+### 7.8 Kids' Fedora VM - Educational Profile [Issue #46]
 
 - [ ] **7.8.1** Create restricted user profile configuration
 - [ ] **7.8.2** Create educational software package list
@@ -645,7 +645,7 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `kids-safe`
 **Roles**: `education` (custom)
 
-### 7.9 Profile System Architecture & Bootstrap Integration [Issue #48]
+### 7.9 Profile System Architecture & Bootstrap Integration [Issue #39]
 
 - [ ] **7.9.1** Design composable profile system (YAML-based)
 - [ ] **7.9.2** Create profile directory structure (`system/profiles/`)

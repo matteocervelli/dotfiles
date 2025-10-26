@@ -16,7 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `docs/os-configurations/BOOTSTRAP-STRATEGIES.md` - OS-specific installation approaches
   - Expanded FASE 4 into comprehensive multi-platform strategy
   - Issue #22 scope expanded and moved to FASE 7.1 (Ubuntu 24.04 LTS Bootstrap & Docker)
-  - 9 new planned issues (#40-#48) for platform-specific implementations
+  - Issue reorganization: Moved #37, #38, #39 from FASE 3 to FASE 7 (OS-specific scope)
+  - 7 new platform-specific issues created: #40 (Fedora), #41 (Mint), #42 (Arch), #43 (Omarchy), #44 (Docker), #45 (VPS), #46 (Kids Fedora)
+  - Issue #39 assigned to FASE 7.9 (Profile System Architecture)
   - Supported environments:
     - **macOS**: Mac Studio, MacBook (primary platforms)
     - **Parallels VMs**: Ubuntu 24.04, Fedora, Linux Mint Cinnamon, Windows 11, Fedora Kids

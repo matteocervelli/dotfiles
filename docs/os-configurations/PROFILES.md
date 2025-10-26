@@ -2,7 +2,8 @@
 
 **Project**: Dotfiles Multi-Platform Support
 **Created**: 2025-10-26
-**Status**: FASE 7.8 (Design Phase)
+**Status**: FASE 7.9 (Design Phase)
+**Implementation**: [Issue #39](https://github.com/matteocervelli/dotfiles/issues/39)
 
 ---
 

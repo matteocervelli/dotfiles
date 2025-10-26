@@ -8,23 +8,23 @@
 
 ## Complete Device Matrix
 
-| # | Device Name | OS/Distribution | VM Platform | Architecture | Primary Purpose | Resources | Bootstrap Script | Profile | Status |
-|---|------------|----------------|-------------|--------------|----------------|-----------|------------------|---------|--------|
-| 1 | Mac Studio | macOS Sequoia 15.x | Native | Apple Silicon (M2) | Primary development hub | 32GB RAM, 1TB SSD | `macos-bootstrap.sh` | `mac-studio` | ✅ Active |
-| 2 | MacBook | macOS Sequoia 15.x | Native | Apple Silicon (M1/M2) | Portable development | 16-32GB RAM | `macos-bootstrap.sh` | `macbook` | ✅ Active |
-| 3 | Parallels Ubuntu | Ubuntu 24.04 LTS | Parallels | ARM64 | Docker workloads, dev testing | 8GB RAM, 50GB | `ubuntu-bootstrap.sh` | `ubuntu-vm` | 🟡 FASE 7 |
-| 4 | Parallels Fedora | Fedora Workstation | Parallels | ARM64 | RHEL ecosystem testing | 8GB RAM, 30GB | `fedora-bootstrap.sh` | `fedora-dev` | 🟡 FASE 7 |
-| 5 | Parallels Mint | Linux Mint Cinnamon | Parallels | ARM64 | Desktop GUI alternative | 12GB RAM, 100GB | `ubuntu-bootstrap.sh` | `mint-desktop` | 🟡 FASE 7 |
-| 6 | Parallels Windows | Windows 11 | Parallels | ARM64 | Cross-platform dev, testing | 12GB RAM, 80GB | `windows-bootstrap.ps1` | `windows-dev` | ⚪ Future |
-| 7 | MacBook Fedora (Kids) | Fedora Workstation | Parallels | ARM64 | Kids' educational environment | 4GB RAM, 30GB | `fedora-bootstrap.sh` | `kids-safe` | 🟡 FASE 7 |
-| 8 | UTM Arch | Arch Linux | UTM | ARM64 | Bleeding edge, rolling release | 4GB RAM, 20GB | `arch-bootstrap.sh` | `arch-dev` | 🟡 FASE 7 |
-| 9 | UTM Omarchy | Omarchy (DHH Linux) | UTM | ARM64 | Opinionated Linux testing | 4GB RAM, 30GB | `omarchy-bootstrap.sh` | `omarchy-dev` | 🟡 FASE 7 |
-| 10 | Docker Ubuntu | Ubuntu 22.04/24.04 | Docker | Multi-arch | Containerized apps | Varies | `docker-ubuntu.sh` | `container-minimal` | 🟡 FASE 7 |
-| 11 | VPS Ubuntu (Headless) | Ubuntu 24.04 LTS | Cloud (DigitalOcean/Hetzner) | x86_64 (AMD) | Production web server | 2-4GB RAM | `ubuntu-bootstrap.sh` | `vps-minimal` | 🟡 FASE 7 |
-| 12 | VPS Ubuntu (GUI) | Ubuntu 24.04 LTS + XFCE | Cloud | x86_64 (AMD) | Visual app hosting | 4-8GB RAM | `ubuntu-bootstrap.sh` | `vps-gui` | ⚪ Optional |
-| 13 | Minisforum | Ubuntu 24.04 LTS Server | Native | x86_64 (Intel/AMD) | Self-hosting: Nextcloud, Jellyfin | 16GB RAM, 1TB SSD | `ubuntu-bootstrap.sh` | `selfhosting` | ⚪ Future |
-| 14 | Synology NAS | DSM (Linux-based) | Native | x86_64 | Backup, storage, sync | 8GB RAM, Multi-TB | N/A (Appliance) | N/A | ✅ Active |
-| 15 | CWWK OpnSense | FreeBSD (OpnSense) | Native | x86_64 | Router, firewall, VPN | 8GB RAM, 128GB SSD | N/A (Appliance) | N/A | ✅ Active |
+| # | Device Name | OS/Distribution | VM Platform | Architecture | Primary Purpose | Resources | Bootstrap Script | Profile | Issue | Status |
+|---|------------|----------------|-------------|--------------|----------------|-----------|------------------|---------|-------|--------|
+| 1 | Mac Studio | macOS Sequoia 15.x | Native | Apple Silicon (M2) | Primary development hub | 32GB RAM, 1TB SSD | `macos-bootstrap.sh` | `mac-studio` | - | ✅ Active |
+| 2 | MacBook | macOS Sequoia 15.x | Native | Apple Silicon (M1/M2) | Portable development | 16-32GB RAM | `macos-bootstrap.sh` | `macbook` | - | ✅ Active |
+| 3 | Parallels Ubuntu | Ubuntu 24.04 LTS | Parallels | ARM64 | Docker workloads, dev testing | 8GB RAM, 50GB | `ubuntu-bootstrap.sh` | `ubuntu-vm` | [#22](https://github.com/matteocervelli/dotfiles/issues/22) | 🟡 FASE 7.1 |
+| 4 | Parallels Fedora | Fedora Workstation | Parallels | ARM64 | RHEL ecosystem testing | 8GB RAM, 30GB | `fedora-bootstrap.sh` | `fedora-dev` | [#40](https://github.com/matteocervelli/dotfiles/issues/40) | 🟡 FASE 7.2 |
+| 5 | Parallels Mint | Linux Mint Cinnamon | Parallels | ARM64 | Desktop GUI alternative | 12GB RAM, 100GB | `mint-bootstrap.sh` | `mint-desktop` | [#41](https://github.com/matteocervelli/dotfiles/issues/41) | 🟡 FASE 7.3 |
+| 6 | Parallels Windows | Windows 11 | Parallels | ARM64 | Cross-platform dev, testing | 12GB RAM, 80GB | `windows-bootstrap.ps1` | `windows-dev` | [#38](https://github.com/matteocervelli/dotfiles/issues/38) | ⚪ Future |
+| 7 | MacBook Fedora (Kids) | Fedora Workstation | Parallels | ARM64 | Kids' educational environment | 4GB RAM, 30GB | `kids-fedora-bootstrap.sh` | `kids-safe` | [#46](https://github.com/matteocervelli/dotfiles/issues/46) | 🟡 FASE 7.8 |
+| 8 | UTM Arch | Arch Linux | UTM | ARM64 | Bleeding edge, rolling release | 4GB RAM, 20GB | `arch-bootstrap.sh` | `arch-dev` | [#42](https://github.com/matteocervelli/dotfiles/issues/42) | 🟡 FASE 7.4 |
+| 9 | UTM Omarchy | Omarchy (DHH Linux) | UTM | ARM64 | Opinionated Linux testing | 4GB RAM, 30GB | `omarchy-bootstrap.sh` | `omarchy-dev` | [#43](https://github.com/matteocervelli/dotfiles/issues/43) | 🟡 FASE 7.5 |
+| 10 | Docker Ubuntu | Ubuntu 22.04/24.04 | Docker | Multi-arch | Containerized apps | Varies | `Dockerfile.ubuntu-minimal` | `container-minimal` | [#44](https://github.com/matteocervelli/dotfiles/issues/44) | 🟡 FASE 7.6 |
+| 11 | VPS Ubuntu (Headless) | Ubuntu 24.04 LTS | Cloud (DigitalOcean/Hetzner) | x86_64 (AMD) | Production web server | 2-4GB RAM | `vps-ubuntu-bootstrap.sh` | `vps-minimal` | [#45](https://github.com/matteocervelli/dotfiles/issues/45) | 🟡 FASE 7.7 |
+| 12 | VPS Ubuntu (GUI) | Ubuntu 24.04 LTS + XFCE | Cloud | x86_64 (AMD) | Visual app hosting | 4-8GB RAM | `ubuntu-bootstrap.sh` | `vps-gui` | - | ⚪ Optional |
+| 13 | Minisforum | Ubuntu 24.04 LTS Server | Native | x86_64 (Intel/AMD) | Self-hosting: Nextcloud, Jellyfin | 16GB RAM, 1TB SSD | `ubuntu-bootstrap.sh` | `selfhosting` | - | ⚪ Future |
+| 14 | Synology NAS | DSM (Linux-based) | Native | x86_64 | Backup, storage, sync | 8GB RAM, Multi-TB | N/A (Appliance) | N/A | - | ✅ Active |
+| 15 | CWWK OpnSense | FreeBSD (OpnSense) | Native | x86_64 | Router, firewall, VPN | 8GB RAM, 128GB SSD | N/A (Appliance) | N/A | - | ✅ Active |
 
 ---
 
