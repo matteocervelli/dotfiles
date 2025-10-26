@@ -1,0 +1,12 @@
+# Stow ignore patterns for iterm2 package
+# Files and directories that should NOT be symlinked
+
+# Documentation
+^README\.md$
+
+# Backup directory (backup files should not be symlinked)
+^backups
+
+# Git files
+^\.git
+^\.gitignore$

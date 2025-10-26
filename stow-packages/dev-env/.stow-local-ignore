@@ -1,0 +1,9 @@
+# Stow ignore patterns for dev-env package
+# Files and directories that should NOT be symlinked
+
+# Documentation
+^README\.md$
+
+# Git files
+^\.git
+^\.gitignore$

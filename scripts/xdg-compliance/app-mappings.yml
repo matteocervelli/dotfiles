@@ -1,0 +1,311 @@
+# XDG Base Directory Compliance - Application Mapping
+#
+# This file documents the XDG compliance status and implementation approach
+# for all applications managed by this dotfiles repository.
+#
+# Status categories:
+#   - supported: Native XDG support via environment variables or config
+#   - partial: Limited XDG support (e.g., history only, not config)
+#   - hardcoded: No XDG support, must stay in default location
+#   - complex: Technically possible but not recommended due to complexity/breakage
+#   - not_applicable: Not installed or not relevant
+#
+# Last updated: 2025-10-26
+
+---
+# Development Tools
+
+vscode:
+  name: "Visual Studio Code"
+  status: hardcoded
+  platforms:
+    macos:
+      default_location: "~/Library/Application Support/Code/User/"
+      xdg_support: false
+      downsides:
+        - "Hardcoded by Microsoft, cannot be changed without breaking hacks"
+        - "Conflicts with VS Code Settings Sync feature (cloud-based)"
+        - "macOS updates may overwrite custom symlink configurations"
+        - "Not designed for XDG on macOS platform"
+    linux:
+      default_location: "~/.config/Code/User/"
+      xdg_support: true
+      downsides:
+        - "Already XDG compliant, no migration needed"
+        - "Settings Sync may conflict with manual config management"
+  recommendation: "Use VS Code Settings Sync (cloud) instead of dotfiles management"
+  implementation: "None - documented as hardcoded"
+  stow_package: null
+  references:
+    - "https://code.visualstudio.com/docs/getstarted/settings"
+
+iterm2:
+  name: "iTerm2"
+  status: hardcoded
+  platforms:
+    macos:
+      default_location: "~/Library/Preferences/com.googlecode.iterm2.plist"
+      secondary_location: "~/.config/iterm2/"
+      xdg_support: false
+      downsides:
+        - "Binary plist format unsuitable for version control"
+        - "Custom location preference stored in default location (chicken-and-egg)"
+        - "Partial XDG support creates split configuration"
+        - "Export/import workflow more reliable than symlinks"
+    linux:
+      default_location: "N/A (macOS only)"
+      xdg_support: false
+  recommendation: "Use export/import workflow with backup scripts"
+  implementation: "Backup/restore scripts in stow-packages/iterm2/"
+  stow_package: "iterm2"
+  references:
+    - "https://iterm2.com/documentation-preferences.html"
+
+neovim:
+  name: "Neovim"
+  status: supported
+  platforms:
+    macos:
+      default_location: "~/.config/nvim/"
+      xdg_support: true
+      downsides: []
+    linux:
+      default_location: "~/.config/nvim/"
+      xdg_support: true
+      downsides: []
+  recommendation: "Native XDG support, no changes needed"
+  implementation: "Already XDG compliant via NVIM_APPNAME"
+  stow_package: null
+  references:
+    - "https://github.com/neovim/neovim/issues/78"
+    - "https://neovim.io/doc/user/starting.html"
+
+vim:
+  name: "Vim (classic)"
+  status: complex
+  platforms:
+    macos:
+      default_location: "~/.vimrc, ~/.vim/"
+      xdg_support: false
+      downsides:
+        - "No native XDG support"
+        - "Requires complex VIMINIT environment variable workaround"
+        - "Breaks plugins expecting ~/.vim/ location"
+        - "Must manually set: runtimepath, backupdir, directory, undodir, viewdir"
+        - "Setup prone to breakage and compatibility issues"
+    linux:
+      default_location: "~/.vimrc, ~/.vim/"
+      xdg_support: false
+      downsides:
+        - "Same issues as macOS"
+        - "May break system-wide Vim configurations"
+        - "Plugin ecosystem assumes legacy paths"
+  recommendation: "Migrate to Neovim for native XDG support, or keep Vim in legacy location"
+  implementation: "None - too complex and fragile"
+  stow_package: null
+  references:
+    - "https://jorenar.com/blog/vim-xdg"
+
+# Shell & CLI Tools
+
+bash:
+  name: "Bash"
+  status: partial
+  platforms:
+    macos:
+      default_location: "~/.bashrc, ~/.bash_profile, ~/.bash_history"
+      xdg_support: false
+      downsides:
+        - "Config files (~/.bashrc, ~/.bash_profile) have NO XDG support"
+        - "macOS uses ~/.bash_profile for login shells (must stay in ~/)"
+        - "Cannot symlink config to XDG without breaking initialization order"
+        - "Only HISTFILE can be moved via environment variable"
+    linux:
+      default_location: "~/.bashrc, ~/.bash_profile, ~/.bash_history"
+      xdg_support: false
+      downsides:
+        - "Same config file limitations as macOS"
+        - "Different initialization order (uses ~/.bashrc for interactive shells)"
+        - "Cannot achieve full XDG compliance"
+  recommendation: "Move HISTFILE only to XDG_STATE_HOME, keep configs in ~/"
+  implementation: "Export HISTFILE in stow-packages/dev-env/"
+  env_vars:
+    - "HISTFILE=$XDG_STATE_HOME/bash/history"
+  stow_package: "dev-env"
+  references:
+    - "https://hiphish.github.io/blog/2020/12/27/making-bash-xdg-compliant/"
+
+zsh:
+  name: "ZSH"
+  status: partial
+  platforms:
+    macos:
+      default_location: "~/.zshrc, ~/.zprofile, ~/.zsh_history"
+      xdg_support: false
+      downsides:
+        - "Similar to Bash - config files must stay in ~/"
+        - "HISTFILE and ZDOTDIR can be moved"
+        - "Oh My Zsh assumes ~/.oh-my-zsh location"
+    linux:
+      default_location: "~/.zshrc, ~/.zprofile, ~/.zsh_history"
+      xdg_support: false
+      downsides:
+        - "Same as macOS"
+  recommendation: "Already configured in stow-packages/shell/"
+  implementation: "HISTFILE set in .zshrc"
+  stow_package: "shell"
+  references:
+    - "https://wiki.archlinux.org/title/XDG_Base_Directory#zsh"
+
+# Development Languages
+
+postgresql:
+  name: "PostgreSQL (psql client)"
+  status: supported
+  platforms:
+    macos:
+      default_location: "~/.psqlrc, ~/.psql_history"
+      xdg_support: true
+      downsides:
+        - "Must ensure env vars set before psql runs"
+        - "Minimal issues"
+    linux:
+      default_location: "~/.psqlrc, ~/.psql_history"
+      xdg_support: true
+      downsides:
+        - "Same as macOS - minimal issues"
+  recommendation: "Implement XDG compliance via environment variables"
+  implementation: "Export PSQLRC and PSQL_HISTORY in stow-packages/dev-env/"
+  env_vars:
+    - "PSQLRC=$XDG_CONFIG_HOME/postgresql/psqlrc"
+    - "PSQL_HISTORY=$XDG_STATE_HOME/postgresql/history"
+  stow_package: "dev-env"
+  references:
+    - "https://www.postgresql.org/docs/current/app-psql.html"
+
+python:
+  name: "Python (interactive)"
+  status: complex
+  platforms:
+    macos:
+      default_location: "~/.python_history"
+      xdg_support: false
+      downsides:
+        - "Requires PYTHONSTARTUP script to redirect history"
+        - "Risk of creating dual history files (~/.python_history AND XDG location)"
+        - "PYTHONSTARTUP affects ALL Python sessions (could interfere with scripts)"
+        - "Complex readline setup required"
+        - "Must disable default history file explicitly"
+    linux:
+      default_location: "~/.python_history"
+      xdg_support: false
+      downsides:
+        - "Same issues as macOS"
+        - "System Python vs user Python confusion"
+        - "Virtual environments might bypass PYTHONSTARTUP"
+  recommendation: "Optional - implement with caution and thorough testing"
+  implementation: "PYTHONSTARTUP script in stow-packages/dev-env/ (optional)"
+  env_vars:
+    - "PYTHONSTARTUP=$XDG_CONFIG_HOME/python/pythonrc"
+  stow_package: "dev-env"
+  references:
+    - "https://unix.stackexchange.com/questions/630642/change-location-of-python-history"
+    - "https://gist.github.com/viliampucik/8713b09ff7e4d984b29bfcd7804dc1f4"
+
+r:
+  name: "R"
+  status: supported
+  platforms:
+    macos:
+      default_location: "~/.Rprofile, ~/.Rhistory, ~/.RData"
+      xdg_support: true
+      downsides:
+        - "RStudio might not respect custom locations"
+        - "Multiple R installations could have conflicting configs"
+    linux:
+      default_location: "~/.Rprofile, ~/.Rhistory, ~/.RData"
+      xdg_support: true
+      downsides:
+        - "Same as macOS"
+        - "System-wide R vs user R configuration complexity"
+  recommendation: "Implement if R is actively used"
+  implementation: "Export R_* env vars in stow-packages/dev-env/"
+  env_vars:
+    - "R_PROFILE_USER=$XDG_CONFIG_HOME/R/Rprofile"
+    - "R_HISTFILE=$XDG_STATE_HOME/R/history"
+    - "R_ENVIRON_USER=$XDG_CONFIG_HOME/R/Renviron"
+  stow_package: "dev-env"
+  references:
+    - "https://stackoverflow.com/questions/60608254/change-default-location-of-r"
+    - "https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html"
+
+# Utilities
+
+less:
+  name: "less"
+  status: supported
+  platforms:
+    macos:
+      default_location: "~/.lesshst"
+      xdg_support: true
+      downsides: []
+    linux:
+      default_location: "~/.lesshst"
+      xdg_support: true
+      downsides: []
+  recommendation: "Implement XDG compliance via environment variable"
+  implementation: "Export LESSHISTFILE in stow-packages/dev-env/"
+  env_vars:
+    - "LESSHISTFILE=$XDG_STATE_HOME/less/history"
+  stow_package: "dev-env"
+  references:
+    - "https://wiki.archlinux.org/title/XDG_Base_Directory#less"
+
+git:
+  name: "Git"
+  status: supported
+  platforms:
+    macos:
+      default_location: "~/.gitconfig"
+      xdg_support: true
+      downsides: []
+    linux:
+      default_location: "~/.gitconfig"
+      xdg_support: true
+      downsides: []
+  recommendation: "Already implemented in stow-packages/git/"
+  implementation: "Uses ~/.config/git/config"
+  stow_package: "git"
+  references:
+    - "https://git-scm.com/docs/git-config#FILES"
+
+# Summary Statistics
+summary:
+  total_apps: 12
+  supported: 5  # git, neovim, postgresql, r, less
+  partial: 2     # bash, zsh
+  hardcoded: 2   # vscode, iterm2
+  complex: 2     # vim, python
+  not_applicable: 1  # cursor (removed)
+
+  stow_packages_created:
+    - "dev-env (new)"
+    - "iterm2 (new)"
+    - "git (existing)"
+    - "shell (existing)"
+
+  xdg_directories_used:
+    config:
+      - "$XDG_CONFIG_HOME/git/"
+      - "$XDG_CONFIG_HOME/postgresql/"
+      - "$XDG_CONFIG_HOME/R/"
+      - "$XDG_CONFIG_HOME/python/"
+      - "$XDG_CONFIG_HOME/shell/"
+    state:
+      - "$XDG_STATE_HOME/bash/history"
+      - "$XDG_STATE_HOME/postgresql/history"
+      - "$XDG_STATE_HOME/R/history"
+      - "$XDG_STATE_HOME/python/history"
+      - "$XDG_STATE_HOME/less/history"
+    cache: []
+    data: []

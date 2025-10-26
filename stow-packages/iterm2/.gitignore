@@ -1,0 +1,6 @@
+# iTerm2 backup files
+backups/*.xml
+backups/*.json
+
+# Keep directory structure
+!backups/.gitkeep

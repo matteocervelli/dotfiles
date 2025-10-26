@@ -9,6 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **XDG Base Directory Compliance** (FASE 3.4, Issue #21)
+  - `scripts/xdg-compliance/app-mappings.yml` - Comprehensive application XDG compliance inventory (12 applications analyzed)
+  - `docs/xdg-compliance.md` - Complete XDG compliance strategy and trade-offs documentation (~500 lines)
+  - `stow-packages/dev-env/` - New stow package for XDG environment configuration
+    - `.config/shell/dev-tools.sh` - XDG environment variables for PostgreSQL, Bash, Less, R (optional), Python (optional)
+    - `.config/python/pythonrc` - Optional Python history redirection (complex setup, documented warnings)
+    - Auto-migration functionality for legacy dotfiles to XDG locations
+  - `stow-packages/iterm2/` - iTerm2 backup/restore workflow (macOS only)
+    - `.local/bin/iterm2-backup` - Export iTerm2 preferences to XML/JSON for version control
+    - `.local/bin/iterm2-restore` - Import iTerm2 preferences from backup
+    - Backup directory structure with .gitignore for versioning
+  - Updated `stow-packages/shell/` to source dev-tools.sh in .zshrc and .bashrc
+  - `tests/test-21-xdg-compliance.bats` - Comprehensive BATS test suite (38 tests, all passing)
+  - Hybrid XDG compliance approach:
+    - ✅ **Supported** (5 apps): Git, PostgreSQL (psql), R, Less, Neovim - native XDG support
+    - 🟡 **Partial** (2 apps): Bash, ZSH - history only (configs must stay in ~/)
+    - ❌ **Hardcoded** (2 apps): VS Code (use Settings Sync), iTerm2 (backup/restore workflow)
+    - ⚠️ **Complex** (2 apps): Vim (use Neovim instead), Python (optional, requires careful setup)
+  - Documentation:
+    - Per-application analysis with official sources and platform-specific downsides
+    - Clear explanations of why certain apps should NOT be XDG compliant
+    - Migration guides, rollback procedures, and troubleshooting
+  - **Philosophy**: Pragmatism over purity - implement XDG where beneficial without breaking applications
+
 - **Brewfile Management System** (FASE 3.2, Issue #20)
   - `scripts/apps/generate-brewfile.sh` - Generate organized Brewfile from application audit data (~450 lines)
   - `system/macos/Brewfile` - Homebrew package manifest with 271 packages (23 casks, 248 formulae, 0 mas apps)

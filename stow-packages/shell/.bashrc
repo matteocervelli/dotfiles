@@ -48,6 +48,9 @@ PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 # Load Modular Configurations
 # =============================================================================
 
+# Source XDG environment configuration first (sets XDG_* variables and HISTFILE)
+[[ -f "$HOME/.config/shell/dev-tools.sh" ]] && source "$HOME/.config/shell/dev-tools.sh"
+
 # Source modular shell configs (shared with ZSH)
 [[ -f "$HOME/.config/shell/exports.sh" ]] && source "$HOME/.config/shell/exports.sh"
 [[ -f "$HOME/.config/shell/aliases.sh" ]] && source "$HOME/.config/shell/aliases.sh"

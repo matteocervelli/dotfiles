@@ -1,0 +1,199 @@
+#!/usr/bin/env bash
+#
+# iterm2-backup - Export iTerm2 preferences for version control
+#
+# Usage:
+#   iterm2-backup [--format xml|json] [--output FILE]
+#
+# Description:
+#   Exports iTerm2 preferences from the binary plist to a human-readable format
+#   suitable for version control. Saves to stow-packages/iterm2/backups/ by default.
+#
+# Options:
+#   --format FORMAT  Output format: xml (default) or json
+#   --output FILE    Custom output file path
+#   -h, --help       Show this help message
+#
+# Examples:
+#   iterm2-backup                          # Export to XML (default)
+#   iterm2-backup --format json            # Export to JSON
+#   iterm2-backup --output ~/my-prefs.xml  # Custom output location
+#
+
+set -euo pipefail
+
+# =============================================================================
+# Configuration
+# =============================================================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+BACKUPS_DIR="$PACKAGE_DIR/backups"
+
+ITERM2_PLIST="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+DEFAULT_FORMAT="xml"
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+show_help() {
+    sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+    exit 0
+}
+
+log_info() {
+    echo "ℹ️  $*"
+}
+
+log_success() {
+    echo "✅ $*"
+}
+
+log_error() {
+    echo "❌ Error: $*" >&2
+}
+
+log_warning() {
+    echo "⚠️  Warning: $*" >&2
+}
+
+check_macos() {
+    if [[ "$(uname)" != "Darwin" ]]; then
+        log_error "This script only works on macOS"
+        exit 1
+    fi
+}
+
+check_iterm2_installed() {
+    if [[ ! -d "/Applications/iTerm.app" ]]; then
+        log_error "iTerm2 is not installed in /Applications/"
+        exit 1
+    fi
+}
+
+check_preferences_exist() {
+    if [[ ! -f "$ITERM2_PLIST" ]]; then
+        log_error "iTerm2 preferences not found at: $ITERM2_PLIST"
+        log_info "Have you launched iTerm2 at least once?"
+        exit 1
+    fi
+}
+
+create_backup_dir() {
+    if [[ ! -d "$BACKUPS_DIR" ]]; then
+        mkdir -p "$BACKUPS_DIR"
+        log_info "Created backups directory: $BACKUPS_DIR"
+    fi
+}
+
+export_to_xml() {
+    local output_file="$1"
+
+    log_info "Exporting iTerm2 preferences to XML..."
+
+    # Convert binary plist to XML
+    plutil -convert xml1 -o "$output_file" "$ITERM2_PLIST"
+
+    log_success "Exported to: $output_file"
+}
+
+export_to_json() {
+    local output_file="$1"
+
+    log_info "Exporting iTerm2 preferences to JSON..."
+
+    # Convert binary plist to JSON
+    # Note: plutil -convert json requires macOS 10.13+
+    if plutil -help 2>&1 | grep -q "json"; then
+        plutil -convert json -o "$output_file" "$ITERM2_PLIST"
+        log_success "Exported to: $output_file"
+    else
+        log_error "JSON export requires macOS 10.13 or later"
+        log_info "Falling back to XML format..."
+        export_to_xml "${output_file%.json}.xml"
+    fi
+}
+
+# =============================================================================
+# Main
+# =============================================================================
+
+main() {
+    local format="$DEFAULT_FORMAT"
+    local output_file=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; then
+        case $1 in
+            -h|--help)
+                show_help
+                ;;
+            --format)
+                format="$2"
+                shift 2
+                ;;
+            --output)
+                output_file="$2"
+                shift 2
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                echo "Use --help for usage information"
+                exit 1
+                ;;
+        esac
+    done
+
+    # Validate format
+    if [[ "$format" != "xml" ]] && [[ "$format" != "json" ]]; then
+        log_error "Invalid format: $format (must be 'xml' or 'json')"
+        exit 1
+    fi
+
+    # Pre-flight checks
+    check_macos
+    check_iterm2_installed
+    check_preferences_exist
+    create_backup_dir
+
+    # Determine output file
+    if [[ -z "$output_file" ]]; then
+        output_file="$BACKUPS_DIR/iterm2-preferences-$TIMESTAMP.$format"
+    fi
+
+    # Export preferences
+    case $format in
+        xml)
+            export_to_xml "$output_file"
+            ;;
+        json)
+            export_to_json "$output_file"
+            ;;
+    esac
+
+    # Show file size
+    local file_size
+    file_size=$(du -h "$output_file" | cut -f1)
+    log_info "Backup size: $file_size"
+
+    # Create/update 'latest' symlink
+    local latest_link="$BACKUPS_DIR/iterm2-preferences-latest.$format"
+    if [[ -L "$latest_link" ]]; then
+        rm "$latest_link"
+    fi
+    ln -s "$(basename "$output_file")" "$latest_link"
+    log_info "Updated symlink: $(basename "$latest_link")"
+
+    echo ""
+    log_success "iTerm2 preferences backed up successfully!"
+    echo ""
+    echo "📁 Location: $output_file"
+    echo "🔗 Latest:   $latest_link"
+    echo ""
+    echo "To restore these preferences:"
+    echo "  iterm2-restore --input $output_file"
+}
+
+main "$@"

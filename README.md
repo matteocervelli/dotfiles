@@ -319,6 +319,109 @@ brew bundle dump --describe --force --file=system/macos/Brewfile
 - **Script Source**: [scripts/apps/](scripts/apps/)
 - **Tests**: [tests/test-19-app-audit.bats](tests/test-19-app-audit.bats)
 
+## 🏠 XDG Base Directory Compliance
+
+Pragmatic hybrid approach to XDG compliance - cleaner home directory without breaking applications.
+
+### Philosophy
+
+**Pragmatism over purity**: We implement XDG compliance where it provides clear benefits without breaking application functionality or creating excessive complexity.
+
+### Compliance Status
+
+| Status | Count | Applications |
+|--------|-------|--------------|
+| ✅ Supported | 5 | Git, PostgreSQL, R, Less, Neovim |
+| 🟡 Partial | 2 | Bash (history only), ZSH (history only) |
+| ❌ Hardcoded | 2 | VS Code (use Settings Sync), iTerm2 (backup/restore) |
+| ⚠️ Complex | 2 | Vim (use Neovim), Python (optional) |
+
+### Quick Start
+
+**Deploy XDG environment**:
+```bash
+# Install dev-env package
+stow -t ~ dev-env
+
+# Reload shell
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+**Verify**:
+```bash
+# Check XDG variables
+echo $XDG_CONFIG_HOME  # ~/.config
+echo $XDG_STATE_HOME   # ~/.local/state
+
+# Check application configs
+echo $PSQLRC           # ~/.config/postgresql/psqlrc
+echo $HISTFILE         # ~/.local/state/bash/history
+```
+
+### What's XDG Compliant
+
+**Fully Migrated** (native support):
+- PostgreSQL: Config + history → `~/.config/postgresql/`, `~/.local/state/postgresql/`
+- Less: History → `~/.local/state/less/`
+- Git: Already at `~/.config/git/` ✅
+- Neovim: Already at `~/.config/nvim/` ✅
+
+**Partially Migrated**:
+- Bash: History → `~/.local/state/bash/` (config files stay in `~/`)
+- ZSH: History already managed by shell package
+
+**NOT Migrated** (by design):
+- **VS Code**: Use [Settings Sync](https://code.visualstudio.com/docs/editor/settings-sync) instead (cloud-based, more reliable)
+- **iTerm2**: Use backup/restore scripts (`iterm2-backup`, `iterm2-restore`)
+
+### iTerm2 Backup/Restore
+
+```bash
+# Backup preferences (version control)
+iterm2-backup
+# Creates: stow-packages/iterm2/backups/iterm2-preferences-TIMESTAMP.xml
+
+# Restore on new machine
+iterm2-restore
+# Uses latest backup from stow-packages/iterm2/backups/
+```
+
+### Optional Features
+
+**R Language** (if you use R):
+```bash
+# Edit: stow-packages/dev-env/.config/shell/dev-tools.sh
+# Uncomment R environment variables
+source ~/.zshrc
+```
+
+**Python History** (⚠️ complex, requires testing):
+```bash
+# Edit: stow-packages/dev-env/.config/shell/dev-tools.sh
+# Uncomment PYTHONSTARTUP export
+source ~/.zshrc
+
+# Test thoroughly (see docs/xdg-compliance.md#python-history)
+```
+
+### Documentation
+
+- **Strategy & Trade-offs**: [docs/xdg-compliance.md](docs/xdg-compliance.md) - Comprehensive guide with per-app analysis
+- **Application Inventory**: [scripts/xdg-compliance/app-mappings.yml](scripts/xdg-compliance/app-mappings.yml) - Full compliance status
+- **dev-env Package**: [stow-packages/dev-env/README.md](stow-packages/dev-env/README.md) - Installation and usage
+- **iTerm2 Package**: [stow-packages/iterm2/README.md](stow-packages/iterm2/README.md) - Backup/restore workflow
+
+### Why Some Apps Aren't XDG Compliant
+
+We **intentionally exclude** some applications from XDG migration because:
+
+- **VS Code (macOS)**: Hardcoded location, conflicts with cloud Settings Sync
+- **iTerm2**: Binary plist format, export/import workflow more reliable than symlinks
+- **Vim**: Complex workarounds prone to breakage (use Neovim instead)
+- **Python history**: Risk of dual history files, affects all Python sessions
+
+See [docs/xdg-compliance.md](docs/xdg-compliance.md) for detailed analysis and platform-specific downsides.
+
 ## 📁 Project Structure
 
 ```text

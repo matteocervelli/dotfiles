@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+#
+# iterm2-restore - Import iTerm2 preferences from backup
+#
+# Usage:
+#   iterm2-restore [--input FILE] [--no-backup]
+#
+# Description:
+#   Restores iTerm2 preferences from a previously exported XML or JSON backup.
+#   Creates a safety backup of current preferences before restoring.
+#
+# Options:
+#   --input FILE    Input file to restore from (XML or JSON)
+#   --no-backup     Skip creating safety backup of current preferences
+#   -h, --help      Show this help message
+#
+# Examples:
+#   iterm2-restore                                    # Restore from latest backup
+#   iterm2-restore --input backups/myprefs.xml        # Restore specific file
+#   iterm2-restore --input myprefs.json --no-backup   # Restore without safety backup
+#
+# WARNING:
+#   This will overwrite your current iTerm2 preferences.
+#   iTerm2 must be restarted for changes to take effect.
+#
+
+set -euo pipefail
+
+# =============================================================================
+# Configuration
+# =============================================================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+BACKUPS_DIR="$PACKAGE_DIR/backups"
+
+ITERM2_PLIST="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+# =============================================================================
+# Functions
+# =============================================================================
+
+show_help() {
+    sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+    exit 0
+}
+
+log_info() {
+    echo "ℹ️  $*"
+}
+
+log_success() {
+    echo "✅ $*"
+}
+
+log_error() {
+    echo "❌ Error: $*" >&2
+}
+
+log_warning() {
+    echo "⚠️  Warning: $*" >&2
+}
+
+check_macos() {
+    if [[ "$(uname)" != "Darwin" ]]; then
+        log_error "This script only works on macOS"
+        exit 1
+    fi
+}
+
+check_iterm2_running() {
+    if pgrep -x "iTerm2" > /dev/null; then
+        log_warning "iTerm2 is currently running"
+        log_info "For best results, quit iTerm2 before restoring preferences"
+        read -rp "Continue anyway? (y/N): " response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            log_info "Restore cancelled"
+            exit 0
+        fi
+    fi
+}
+
+find_latest_backup() {
+    # Look for latest symlink first
+    if [[ -L "$BACKUPS_DIR/iterm2-preferences-latest.xml" ]]; then
+        echo "$BACKUPS_DIR/iterm2-preferences-latest.xml"
+        return 0
+    fi
+
+    if [[ -L "$BACKUPS_DIR/iterm2-preferences-latest.json" ]]; then
+        echo "$BACKUPS_DIR/iterm2-preferences-latest.json"
+        return 0
+    fi
+
+    # Find most recent backup file
+    local latest
+    latest=$(find "$BACKUPS_DIR" -name "iterm2-preferences-*.xml" -o -name "iterm2-preferences-*.json" 2>/dev/null | sort -r | head -n 1)
+
+    if [[ -z "$latest" ]]; then
+        log_error "No backup files found in $BACKUPS_DIR"
+        log_info "Create a backup first with: iterm2-backup"
+        exit 1
+    fi
+
+    echo "$latest"
+}
+
+create_safety_backup() {
+    if [[ ! -f "$ITERM2_PLIST" ]]; then
+        log_info "No existing preferences to backup"
+        return 0
+    fi
+
+    local safety_backup="$BACKUPS_DIR/iterm2-preferences-pre-restore-$TIMESTAMP.xml"
+
+    log_info "Creating safety backup of current preferences..."
+    plutil -convert xml1 -o "$safety_backup" "$ITERM2_PLIST"
+
+    log_success "Safety backup: $safety_backup"
+}
+
+detect_format() {
+    local input_file="$1"
+
+    if [[ "$input_file" =~ \.xml$ ]]; then
+        echo "xml"
+    elif [[ "$input_file" =~ \.json$ ]]; then
+        echo "json"
+    else
+        # Try to detect by content
+        if head -n 1 "$input_file" | grep -q "^<"; then
+            echo "xml"
+        elif head -n 1 "$input_file" | grep -q "^{"; then
+            echo "json"
+        else
+            log_error "Cannot detect format of: $input_file"
+            log_info "File must be XML or JSON"
+            exit 1
+        fi
+    fi
+}
+
+restore_from_backup() {
+    local input_file="$1"
+    local format
+
+    format=$(detect_format "$input_file")
+
+    log_info "Restoring iTerm2 preferences from $format backup..."
+
+    # Convert input file to binary plist format
+    # plutil can read both XML and JSON, and convert to binary
+    plutil -convert binary1 -o "$ITERM2_PLIST" "$input_file"
+
+    log_success "Preferences restored from: $input_file"
+}
+
+reload_preferences() {
+    # Send SIGHUP to iTerm2 to reload preferences (if running)
+    if pgrep -x "iTerm2" > /dev/null; then
+        log_info "Reloading iTerm2 preferences..."
+        killall -HUP iTerm2 2>/dev/null || true
+        log_success "Preferences reloaded"
+    else
+        log_info "iTerm2 is not running - preferences will load on next launch"
+    fi
+}
+
+# =============================================================================
+# Main
+# =============================================================================
+
+main() {
+    local input_file=""
+    local skip_backup=false
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; then
+        case $1 in
+            -h|--help)
+                show_help
+                ;;
+            --input)
+                input_file="$2"
+                shift 2
+                ;;
+            --no-backup)
+                skip_backup=true
+                shift
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                echo "Use --help for usage information"
+                exit 1
+                ;;
+        esac
+    done
+
+    # Pre-flight checks
+    check_macos
+    check_iterm2_running
+
+    # Determine input file
+    if [[ -z "$input_file" ]]; then
+        log_info "No input file specified, using latest backup..."
+        input_file=$(find_latest_backup)
+        log_info "Found: $input_file"
+    fi
+
+    # Validate input file
+    if [[ ! -f "$input_file" ]]; then
+        log_error "Input file not found: $input_file"
+        exit 1
+    fi
+
+    # Create safety backup
+    if [[ "$skip_backup" == false ]]; then
+        create_safety_backup
+    else
+        log_warning "Skipping safety backup (--no-backup)"
+    fi
+
+    # Restore preferences
+    restore_from_backup "$input_file"
+
+    # Reload if iTerm2 is running
+    reload_preferences
+
+    echo ""
+    log_success "iTerm2 preferences restored successfully!"
+    echo ""
+    echo "📁 Restored from: $input_file"
+    echo ""
+    echo "⚠️  Note: You may need to restart iTerm2 for all changes to take effect"
+}
+
+main "$@"

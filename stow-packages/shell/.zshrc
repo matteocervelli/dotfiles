@@ -190,6 +190,10 @@ source ~/.vim/plugins/powerlevel10k/powerlevel10k.zsh-theme
 # =============================================================================
 
 # Load modular shell configurations
+# Source XDG environment configuration first (sets XDG_* variables)
+[[ -f "$HOME/.config/shell/dev-tools.sh" ]] && source "$HOME/.config/shell/dev-tools.sh"
+
+# Source other shell configurations
 [[ -f "$HOME/.config/shell/exports.sh" ]] && source "$HOME/.config/shell/exports.sh"
 [[ -f "$HOME/.config/shell/aliases.sh" ]] && source "$HOME/.config/shell/aliases.sh"
 [[ -f "$HOME/.config/shell/functions.sh" ]] && source "$HOME/.config/shell/functions.sh"
