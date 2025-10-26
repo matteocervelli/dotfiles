@@ -114,13 +114,13 @@ This document outlines the complete technology stack used in the dotfiles projec
 
 ### Secondary Platform: Ubuntu Linux
 
-- **Ubuntu 22.04 LTS** (Jammy Jellyfish)
-- **Architecture**: x86_64, ARM64
+- **Ubuntu 24.04 LTS** (Noble Numbat)
+- **Architecture**: x86_64, ARM64 (Parallels VMs on Apple Silicon)
 - **Shell**: Bash (default)
 - **Services**:
   - systemd units (services and timers)
   - cron jobs
-  - Docker containerization
+  - Docker Engine + Compose v2 (native containerization)
 
 ### Future Platform: Windows (Planned)
 
@@ -137,12 +137,22 @@ This document outlines the complete technology stack used in the dotfiles projec
   - Secure remote access
   - Cross-device syncing
 
-### Virtualization
+### Virtualization & Containerization
 
 - **Parallels Desktop** (macOS)
-  - Ubuntu VM for Docker workloads
-  - Bind mounts for asset sharing
-  - Development environment isolation
+  - Ubuntu 24.04 LTS VMs (Apple Silicon/Intel)
+  - Shared folders: `/Users/matteo/dev` → `/mnt/dev`
+  - Parallels Tools for optimal performance
+  - 4-8 vCPU, 8GB RAM, 50GB disk (typical configuration)
+
+- **Docker Engine** (Ubuntu)
+  - Version: 24.0+ from official Docker repository
+  - Docker Compose v2 (plugin, not standalone)
+  - Docker BuildKit for advanced builds
+  - Storage driver: overlay2 (default)
+  - systemd service management
+  - Remote Docker context accessible from macOS via SSH
+  - User-level access via docker group
 
 ### Monitoring & Logging
 

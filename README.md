@@ -46,11 +46,18 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
 sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
 sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
 
+# Install with Docker (Ubuntu only)
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
+# Or via Makefile: make ubuntu-full
+
 # Setup dotfiles
 make install
 ```
 
-**See also:** [Linux Setup Guide](docs/guides/linux-setup-guide.md) | [Linux Package Management](applications/linux/README.md)
+**See also:**
+- [Linux Setup Guide](docs/guides/linux-setup-guide.md)
+- [Linux Package Management](applications/linux/README.md)
+- [Docker Ubuntu Setup Guide](docs/guides/docker-ubuntu-setup.md)
 
 ## 🧪 Usage
 
@@ -180,6 +187,54 @@ journalctl -u dotfiles-autoupdate -f
 # Check timer status
 systemctl status dotfiles-autoupdate.timer
 ```
+
+## 🐳 Docker on Ubuntu
+
+Complete Docker Engine + Compose v2 setup for Ubuntu 24.04 LTS with Parallels VM optimization and remote Docker context from macOS.
+
+### Quick Start
+
+```bash
+# Ubuntu only - Install Docker Engine + Compose v2
+sudo ./scripts/bootstrap/install-docker.sh
+
+# Or install Ubuntu packages + Docker together
+make ubuntu-full
+
+# Verify installation
+docker --version
+docker compose version
+docker run hello-world
+```
+
+### Remote Docker Context (macOS → Ubuntu VM)
+
+Access Ubuntu Docker from macOS without SSH every time:
+
+```bash
+# Create Docker context (from macOS)
+docker context create ubuntu-vm --docker "host=ssh://ubuntu-vm"
+
+# Use Ubuntu Docker from macOS
+docker context use ubuntu-vm
+docker ps
+docker compose up -d
+
+# Switch back to macOS Docker
+docker context use default
+```
+
+### Features
+
+- ✅ Official Docker repository (24.0+, not Ubuntu's docker.io)
+- ✅ Docker Compose v2 plugin (integrated, faster)
+- ✅ systemd service (enabled on boot)
+- ✅ User permissions (docker group, no sudo required)
+- ✅ Parallels shared folders (`/Users/matteo/dev` → `/mnt/dev`)
+- ✅ Remote context via SSH (work from macOS, run on Ubuntu)
+- ✅ Comprehensive troubleshooting guide
+
+**Complete Guide**: [Docker Ubuntu Setup](docs/guides/docker-ubuntu-setup.md)
 
 ### Disable/Enable
 
