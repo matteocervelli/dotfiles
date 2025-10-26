@@ -57,7 +57,8 @@ make install
 **See also:**
 - [Linux Setup Guide](docs/guides/linux-setup-guide.md)
 - [Linux Package Management](applications/linux/README.md)
-- [Docker Ubuntu Setup Guide](docs/guides/docker-ubuntu-setup.md)
+- [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
+- [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
 
 ## 🧪 Usage
 
@@ -234,7 +235,9 @@ docker context use default
 - ✅ Remote context via SSH (work from macOS, run on Ubuntu)
 - ✅ Comprehensive troubleshooting guide
 
-**Complete Guide**: [Docker Ubuntu Setup](docs/guides/docker-ubuntu-setup.md)
+**Complete Guides**:
+- [Guide 1: VM Creation](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM from ISO
+- [Guide 2: Development Setup](docs/guides/parallels-2-dev-setup.md) - Docker, dotfiles, and full dev environment
 
 ### Disable/Enable
 

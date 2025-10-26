@@ -6,6 +6,11 @@
 # Tests Parallels shared folders, R2 assets access, and Docker integration
 # Run this script in the VM to verify complete setup
 #
+# Documentation:
+#   - Guide 1: docs/guides/parallels-1-vm-creation.md (VM creation)
+#   - Guide 2: docs/guides/parallels-2-dev-setup.md (dev environment setup)
+#   - Checklist: docs/checklists/vm-integration-checklist.md (manual testing)
+#
 # Usage:
 #   ./scripts/test/test-vm-integration.sh
 #   ./scripts/test/test-vm-integration.sh --verbose

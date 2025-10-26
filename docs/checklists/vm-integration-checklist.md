@@ -8,7 +8,9 @@ Complete checklist per verificare che l'integrazione tra macOS e VM Ubuntu trami
 3. Dopo aggiornamenti di Parallels Tools
 4. Come parte del troubleshooting
 
-**Related Documentation**: [VM Setup Guide](../vm-setup.md)
+**Related Documentation**:
+- [Guide 1: VM Creation](../guides/parallels-1-vm-creation.md) - If VM doesn't exist yet
+- [Guide 2: Development VM Setup](../guides/parallels-2-dev-setup.md) - Complete dev environment setup
 
 ---
 
@@ -52,7 +54,7 @@ ssh ubuntu-vm 'uname -a'
   # Should show prlcp process
   ```
 
-**Troubleshooting**: If not working, see [VM Setup Guide - Troubleshooting](../vm-setup.md#troubleshooting)
+**Troubleshooting**: If not working, see [Guide 2 - Troubleshooting](../guides/parallels-2-dev-setup.md#troubleshooting)
 
 ---
 
@@ -458,8 +460,8 @@ ssh ubuntu-vm 'uname -a'
 ## Troubleshooting Reference
 
 If any test fails, refer to:
-- [VM Setup Guide - Troubleshooting](../vm-setup.md#troubleshooting)
-- [Parallels VM Creation Guide](../guides/parallels-vm-creation.md#troubleshooting)
+- [Guide 1: VM Creation - Troubleshooting](../guides/parallels-1-vm-creation.md#troubleshooting)
+- [Guide 2: Development Setup - Troubleshooting](../guides/parallels-2-dev-setup.md#troubleshooting)
 
 **Common Issues**:
 1. **Shared folders not visible** → Restart Parallels Tools

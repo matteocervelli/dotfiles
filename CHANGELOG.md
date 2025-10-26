@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **FASE 4.3: Documentation Restructuring** - Eliminated all guide overlaps (Issue #23 refinement)
+  - **Restructured documentation** from 4 overlapping guides to 2 clear, sequential guides
+  - **Created**: `docs/guides/parallels-1-vm-creation.md` (~420 lines)
+    - Clean VM creation guide with ONLY VM setup, Ubuntu install, and Parallels Tools
+    - Removed all dev setup content (Docker, dotfiles, projects) for clarity
+    - Sequential workflow: Start here → Get empty VM ready
+  - **Created**: `docs/guides/parallels-2-dev-setup.md` (~600 lines)
+    - Comprehensive dev environment setup guide
+    - Consolidated content from: vm-setup.md + docker-ubuntu-setup.md + parallels-vm-creation.md extras
+    - Complete workflow: Shared folders → Docker → Dotfiles → R2 assets → Projects → Remote context → Testing
+    - 10-part structure covering full development environment
+    - Mac Studio project bindings via Parallels shared folders
+  - **Deleted**: `docs/guides/parallels-vm-creation.md` (replaced by Guide 1)
+  - **Deleted**: `docs/vm-setup.md` (consolidated into Guide 2)
+  - **Deleted**: `docs/guides/docker-ubuntu-setup.md` (consolidated into Guide 2)
+  - **Kept**: `docs/guides/linux-setup-guide.md` (different scope - multi-distro)
+  - **Result**: Zero content overlap between guides
+  - **Workflow**: Guide 1 (empty VM) → Guide 2 (full dev environment)
+
 ### Added
 
 - **FASE 4.3: Parallels Integration & Testing** (Issue #23)
