@@ -226,7 +226,7 @@ Storage summary shows:
 
 - **Your name**: Your full name
 - **Server's name**: `ubuntu-dev4change` (hostname)
-- **Username**: `matteo` (or your username)
+- **Username**: `matteocervelli` (or your username)
 - **Password**: Strong password
 - **Confirm password**: Re-enter
 
@@ -279,13 +279,13 @@ Wait 5-15 minutes for:
 Ubuntu login prompt appears:
 
 ```
-ubuntu-vm login: matteo
+ubuntu-vm login: matteocervelli
 Password: ********
 ```
 
 Expected prompt:
 ```
-matteo@ubuntu-vm:~$
+matteocervelli@ubuntu-vm:~$
 ```
 
 **You're in!** 🎉
@@ -467,10 +467,10 @@ nproc
 hostname -I
 
 # From macOS terminal, test SSH
-ssh matteo@ubuntu-vm
+ssh matteocervelli@ubuntu-vm
 
 # Or via IP
-ssh matteo@10.211.55.XXX
+ssh matteocervelli@10.211.55.XXX
 ```
 
 **If SSH works, VM is ready for development setup!**
