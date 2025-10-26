@@ -236,7 +236,9 @@ sudo systemctl start docker
 
 ### Script: `scripts/bootstrap/fedora-bootstrap.sh`
 
-### Package Manager: DNF
+### Package Manager: DNF (Dandified YUM)
+
+**Target**: Fedora Workstation 40+ (ARM64/x86_64)
 
 **Update First:**
 ```bash
@@ -245,49 +247,186 @@ sudo dnf update -y
 
 ### Bootstrap Sequence
 
-1. **Install Core Tools**:
-   ```bash
-   sudo dnf install -y stow git curl wget
-   sudo dnf groupinstall -y "Development Tools"  # Equivalent to build-essential
-   ```
+**Phase 1: OS Verification**
+- Detect Fedora via `/etc/fedora-release`
+- Verify DNF package manager availability
+- Check SELinux status (inform, don't disable)
+- Check firewalld status
 
-2. **Install 1Password CLI**:
+**Phase 2: System Update**
+```bash
+sudo dnf check-update
+sudo dnf upgrade -y
+```
+
+**Phase 3: Essential Development Tools**
+```bash
+# Install Development Tools group (gcc, make, etc.)
+sudo dnf group install -y "Development Tools"
+
+# Install essential packages
+sudo dnf install -y stow git curl wget ca-certificates gnupg2
+```
+
+**Phase 4: Dotfiles Core Dependencies**
+
+1. **1Password CLI**:
    ```bash
    sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
-   sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
+   sudo sh -c 'cat > /etc/yum.repos.d/1password.repo << EOF
+   [1password]
+   name=1Password Stable Channel
+   baseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch
+   enabled=1
+   gpgcheck=1
+   repo_gpgcheck=1
+   gpgkey=https://downloads.1password.com/linux/keys/1password.asc
+   EOF'
    sudo dnf install -y 1password-cli
    ```
 
-3. **Install Rclone**:
+2. **Rclone**:
    ```bash
    sudo dnf install -y rclone
    ```
 
-4. **Install yq**:
+3. **yq (YAML processor)**:
    ```bash
-   sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+   # Detect architecture (amd64 or arm64)
+   YQ_ARCH=$([ "$(uname -m)" = "aarch64" ] && echo "arm64" || echo "amd64")
+   sudo wget -qO /usr/local/bin/yq \
+     https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${YQ_ARCH}
    sudo chmod +x /usr/local/bin/yq
    ```
 
-5. **Install ImageMagick**:
+4. **ImageMagick**:
    ```bash
    sudo dnf install -y ImageMagick
    ```
 
+**Phase 5: Stow Package Deployment**
+```bash
+cd dotfiles/packages
+stow -t ~ zsh git ssh
+```
+
+**Phase 6: ZSH Setup**
+```bash
+sudo dnf install -y zsh
+sudo chsh -s $(command -v zsh) $(whoami)
+```
+
+**Phase 7: Optional Full Package Installation**
+```bash
+# Install all packages from system/fedora/packages.txt
+./scripts/bootstrap/install-dependencies-fedora.sh
+```
+
+### Script Usage
+
+```bash
+# Minimal setup (essential tools only)
+./scripts/bootstrap/fedora-bootstrap.sh
+
+# Full development environment
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages
+
+# Preview actions (dry-run)
+./scripts/bootstrap/fedora-bootstrap.sh --dry-run
+
+# Quick essential-only setup
+./scripts/bootstrap/fedora-bootstrap.sh --essential-only
+
+# Skip repository setup (use default repos)
+./scripts/bootstrap/fedora-bootstrap.sh --skip-repos
+```
+
 ### Fedora-Specific Considerations
 
-- **DNF vs YUM**: DNF is the modern package manager (Fedora 22+)
-- **SELinux**: May block some operations, requires context-aware commands
-- **Firewalld**: Default firewall (vs UFW on Ubuntu)
+**DNF Package Manager:**
+- Modern replacement for YUM (Fedora 22+)
+- Faster dependency resolution
+- Group install: `dnf group install "Development Tools"`
+- Case-sensitive package names: `ImageMagick` not `imagemagick`
+
+**SELinux (Security-Enhanced Linux):**
+```bash
+# Check status
+getenforce  # Enforcing, Permissive, or Disabled
+
+# Bootstrap script checks but doesn't disable
+# Some operations may require SELinux context changes:
+sudo chcon -R -t user_home_t ~/.ssh  # Example
+```
+
+**Firewalld (Default Firewall):**
+```bash
+# Check status
+sudo firewall-cmd --state
+
+# List active zones
+sudo firewall-cmd --get-active-zones
+
+# Allow service through firewall
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --reload
+```
+
+**RPM Fusion Repositories (Optional):**
+```bash
+# Free repository (open-source)
+sudo dnf install -y \
+  https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+
+# Non-free repository (proprietary)
+sudo dnf install -y \
+  https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+# Multimedia codecs
+sudo dnf install -y ffmpeg gstreamer1-plugins-{bad-*,good-*,base} \
+  gstreamer1-plugin-openh264 mozilla-openh264
+```
 
 ### Package Name Differences
 
-| Tool | Ubuntu (APT) | Fedora (DNF) |
-|------|-------------|--------------|
-| Build tools | `build-essential` | `@development-tools` |
-| Python | `python3` | `python3` |
-| Node.js | `nodejs npm` | `nodejs npm` |
-| Docker | `docker.io` | `docker` |
+| Tool | Ubuntu (APT) | Fedora (DNF) | Notes |
+|------|-------------|--------------|-------|
+| Build tools | `build-essential` | `@development-tools` | Group install |
+| Python 3 | `python3` | `python3` | Same |
+| Python dev | `python3-dev` | `python3-devel` | Different suffix |
+| Node.js | `nodejs npm` | `nodejs npm` | Same |
+| Docker | `docker.io` | `docker` | No `.io` suffix |
+| ImageMagick | `imagemagick` | `ImageMagick` | Case-sensitive! |
+| C compiler | `gcc` (in build-essential) | `gcc gcc-c++` | Separate C++ |
+| OpenSSL dev | `libssl-dev` | `openssl-devel` | Different naming |
+
+### Architecture Support
+
+**ARM64 (Apple Silicon via Parallels):**
+- Full support in Fedora Workstation 40+
+- Native ARM64 packages via DNF
+- yq binary: `yq_linux_arm64`
+- Most development tools available natively
+
+**x86_64 (Intel/AMD):**
+- Standard architecture
+- Complete package ecosystem
+- yq binary: `yq_linux_amd64`
+
+### Profiles
+
+**`fedora-dev` (Issue #40):**
+- Full development environment
+- All packages from `system/fedora/packages.txt`
+- Docker, databases, development tools
+- Target: Parallels VM on Mac Studio/MacBook
+
+**`kids-safe` (Issue #46):**
+- Educational software focus
+- Parental controls (malcontent)
+- Restricted user setup
+- Safe browsing configuration
+- Builds on top of base Fedora bootstrap
 
 ---
 

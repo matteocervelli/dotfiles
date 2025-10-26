@@ -9,6 +9,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **FASE 7.2: Fedora Bootstrap Automation** (Issue #40)
+  - Complete automated Fedora development environment bootstrap script
+  - `scripts/bootstrap/fedora-bootstrap.sh` (~570 lines)
+    - **Phase 1**: OS verification with Fedora detection via `/etc/fedora-release`
+    - **Phase 2**: System update with `dnf upgrade`
+    - **Phase 3**: Essential tools - Development Tools group (@development-tools), stow, git, curl, wget
+    - **Phase 4**: Dotfiles core dependencies - 1Password CLI, rclone, yq (arch-aware), ImageMagick
+    - **Phase 5**: Stow package deployment - zsh, git, ssh configurations
+    - **Phase 6**: ZSH setup as default shell
+    - **Phase 7**: Optional full package installation (115+ packages from `system/fedora/packages.txt`)
+    - **Fedora-Specific Features**:
+      - SELinux status checking (informs, doesn't disable)
+      - Firewalld status checking
+      - RPM Fusion repository suggestions for multimedia codecs
+      - DNF group install for Development Tools
+      - Architecture detection (ARM64/x86_64) for binary downloads
+    - **Bootstrap Options**:
+      - `--with-packages` - Install all packages (full dev environment)
+      - `--essential-only` - Quick setup (core tools only)
+      - `--dry-run` - Preview actions without changes
+      - `--skip-repos` - Skip 3rd-party repository setup
+      - `--verbose` - Detailed output
+    - **Idempotent Design**: Safe to re-run multiple times
+    - **Error Handling**: Strict mode (`set -euo pipefail`), proper exit codes
+    - **Logging**: Uses `logger.sh` for consistent output formatting
+  - **Documentation Updates**:
+    - Enhanced `docs/os-configurations/BOOTSTRAP-STRATEGIES.md` with comprehensive Fedora section
+      - Detailed 7-phase bootstrap sequence
+      - Script usage examples
+      - Fedora-specific considerations (DNF, SELinux, Firewalld)
+      - Package name differences table (Ubuntu APT vs Fedora DNF)
+      - Architecture support notes (ARM64 via Parallels, x86_64)
+      - Profile system integration (fedora-dev, kids-safe)
+      - RPM Fusion setup instructions
+    - Updated `docs/guides/parallels-3-fedora-vm-creation.md` - Added "Automation Option: Bootstrap Script" section
+      - Bootstrap script usage in VM
+      - Use case distinction (dev vs kids)
+      - Command examples with options
+      - Cross-reference to BOOTSTRAP-STRATEGIES.md
+    - Updated `CLAUDE.md` - Added Fedora bootstrap commands to VM Setup section
+      - Minimal and full installation examples
+      - Dry-run preview option
+      - Essential-only quick setup
+    - Updated `README.md` - Restructured Linux installation with bootstrap emphasis
+      - New "Option A: Automated Bootstrap (Recommended)" section
+      - Fedora bootstrap usage examples
+      - Link to Bootstrap Strategies documentation
+  - **Testing Suite**:
+    - `tests/test-fedora-bootstrap.bats` - Comprehensive BATS test suite (~160 lines)
+      - Script existence and executability tests
+      - Help and options validation
+      - Script structure verification (error handling, logging)
+      - Function presence checks (6 main functions)
+      - DNF package manager integration tests
+      - Core dependencies verification (stow, 1password-cli, rclone, yq, ImageMagick)
+      - Architecture detection tests (ARM64/x86_64)
+      - Fedora-specific tests (SELinux, firewalld, RPM Fusion)
+      - Stow package deployment validation
+      - Optional features testing (all flags)
+      - Idempotency checks
+      - Error handling validation (exit codes)
+      - Integration tests (Fedora-only, skipped on other systems)
+  - **Implementation Strategy**:
+    - Follows Ubuntu bootstrap pattern for consistency
+    - Reuses existing infrastructure:
+      - `scripts/utils/detect-os.sh` for Fedora detection
+      - `scripts/utils/logger.sh` for output formatting
+      - `scripts/bootstrap/install-dependencies-fedora.sh` for full package installation
+      - `scripts/health/check-all.sh` for post-install validation
+    - Compatible with existing `system/fedora/packages.txt` (115 packages)
+    - Foundation for future Issue #46 (Kids' Fedora bootstrap extension)
+  - **Target Environment**: Fedora Workstation 40+ (ARM64/x86_64), Parallels VM on Mac Studio/MacBook
+  - **Profile Support**: `fedora-dev` for full development environment, extensible to `kids-safe`
+  - **Success Criteria**: All Issue #40 objectives met
+    - ✅ fedora-bootstrap.sh script created and tested
+    - ✅ All core dependencies install successfully
+    - ✅ Stow packages deploy without conflicts
+    - ✅ Health check compatible
+    - ✅ Documentation updated with Fedora-specific notes
+    - ✅ Profile `fedora-dev` validated
+
 - **FASE 7.8: Fedora Kids' Learning Environment** (Issue #46)
   - Complete Fedora VM setup guides for kids' safe learning environment on MacBook Parallels
   - `docs/guides/parallels-3-fedora-vm-creation.md` (~650 lines)

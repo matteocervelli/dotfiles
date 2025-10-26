@@ -159,10 +159,20 @@ make health                                     # via Makefile
 # See: docs/guides/parallels-2-dev-setup.md
 # Complete Docker development environment with shared folders
 
-# Fedora Kids Learning VM (Guides 3-4) - NEW!
-# See: docs/guides/parallels-3-fedora-vm-creation.md
-# See: docs/guides/parallels-4-fedora-kids-setup.md
+# Ubuntu Bootstrap (inside VM)
+./scripts/bootstrap/ubuntu-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/ubuntu-bootstrap.sh --with-docker  # With Docker
 
+# Fedora Development VM (automated setup)
+# See: docs/guides/parallels-3-fedora-vm-creation.md
+# Fedora Bootstrap (inside VM)
+./scripts/bootstrap/fedora-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages  # Full dev environment
+./scripts/bootstrap/fedora-bootstrap.sh --dry-run    # Preview changes
+./scripts/bootstrap/fedora-bootstrap.sh --essential-only  # Quick essentials
+
+# Fedora Kids Learning VM (Guides 3-4) - Manual Setup
+# See: docs/guides/parallels-4-fedora-kids-setup.md
 # Install educational software (Fedora)
 sudo dnf install $(cat system/fedora/educational-packages.txt | grep -v '^#' | grep -v '^$' | tr '\n' ' ')
 

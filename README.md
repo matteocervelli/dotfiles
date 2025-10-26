@@ -33,6 +33,28 @@ cd dotfiles
 
 ### Linux (Ubuntu, Fedora, Arch)
 
+#### Option A: Automated Bootstrap (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/matteocervelli/dotfiles.git
+cd dotfiles
+
+# Ubuntu (automated setup)
+./scripts/bootstrap/ubuntu-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/ubuntu-bootstrap.sh --with-docker  # With Docker
+
+# Fedora (automated setup)
+./scripts/bootstrap/fedora-bootstrap.sh              # Minimal setup
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages  # Full dev environment
+./scripts/bootstrap/fedora-bootstrap.sh --dry-run    # Preview changes
+
+# Arch (manual - see docs)
+./scripts/bootstrap/install-dependencies-arch.sh
+```
+
+#### Option B: Manual Package Installation
+
 ```bash
 # Clone repository
 git clone https://github.com/matteocervelli/dotfiles.git
@@ -46,10 +68,6 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
 sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
 sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
 
-# Install with Docker (Ubuntu only)
-sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
-# Or via Makefile: make ubuntu-full
-
 # Setup dotfiles
 make install
 ```
@@ -57,10 +75,11 @@ make install
 **See also:**
 - [Linux Setup Guide](docs/guides/linux-setup-guide.md)
 - [Linux Package Management](applications/linux/README.md)
+- [Bootstrap Strategies](docs/os-configurations/BOOTSTRAP-STRATEGIES.md) - Detailed bootstrap documentation
 - **Parallels VM Guides:**
   - [Guide 1: Ubuntu VM Creation](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
   - [Guide 2: Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
-  - [Guide 3: Fedora VM Creation](docs/guides/parallels-3-fedora-vm-creation.md) - Create Fedora VM for kids
+  - [Guide 3: Fedora VM Creation](docs/guides/parallels-3-fedora-vm-creation.md) - Create Fedora VM (dev or kids)
   - [Guide 4: Kids Learning Environment](docs/guides/parallels-4-fedora-kids-setup.md) - Safe learning with parental controls
 
 ## 🧪 Usage

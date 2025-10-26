@@ -598,6 +598,52 @@ systemctl status prltools.service
 
 ## Next Steps
 
+### Automation Option: Bootstrap Script
+
+For **automated development environment setup** (not kids' learning), you can use the Fedora bootstrap script:
+
+```bash
+# Clone dotfiles (if not already present)
+git clone https://github.com/matteocervelli/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+
+# Run bootstrap script (automated setup)
+./scripts/bootstrap/fedora-bootstrap.sh
+
+# Or with full package installation
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages
+
+# Preview without changes
+./scripts/bootstrap/fedora-bootstrap.sh --dry-run
+```
+
+**The bootstrap script automates:**
+- ✅ System updates (dnf upgrade)
+- ✅ Development tools installation (@development-tools group)
+- ✅ Dotfiles core dependencies (1Password CLI, rclone, yq, ImageMagick)
+- ✅ GNU Stow package deployment (zsh, git, ssh)
+- ✅ ZSH setup as default shell
+- ✅ Optional: Full package installation (115+ packages)
+- ✅ SELinux and firewalld checks
+
+**Use Cases:**
+- **`fedora-dev` profile**: Full development environment (Python, Node, Docker, PostgreSQL, etc.)
+- **`kids-safe` profile**: See Guide 4 for manual educational setup
+
+**Bootstrap Options:**
+```bash
+--with-packages      # Install all packages from system/fedora/packages.txt
+--essential-only     # Quick setup (stow, git, 1password, rclone only)
+--dry-run            # Preview what would be installed
+--skip-repos         # Use default repos only (no 3rd-party)
+```
+
+**See also:**
+- [BOOTSTRAP-STRATEGIES.md](../os-configurations/BOOTSTRAP-STRATEGIES.md#fedorarhel-bootstrap-strategy) - Detailed Fedora bootstrap documentation
+- [Issue #40](https://github.com/matteocervelli/dotfiles/issues/40) - Fedora Bootstrap implementation
+
+---
+
 ### VM is Ready! Now What?
 
 Your Fedora VM is created with Parallels Tools installed. The VM is ready for educational software and kids' learning environment setup.
