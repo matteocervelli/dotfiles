@@ -43,6 +43,8 @@
 - File: `ubuntu-24.04.3-live-server-arm64.iso` (~2.5 GB)
 - Verify SHA256 checksum after download
 
+TO verify the checksum [check this guide](https://ubuntu.com/tutorials/how-to-verify-ubuntu#1-overview).
+
 ### Pre-Installation Checklist
 
 - [ ] Parallels Desktop installed and licensed
@@ -141,17 +143,44 @@ If prompted:
 
 ### Step 4: Keyboard Configuration
 
-1. **Layout**: English (US) - or your layout
-2. **Variant**: English (US)
+1. **Layout**: English (US)
+2. **Variant**: English (US, intl., with dead keys)
 3. **Done** → Enter
 
 ### Step 5: Installation Type
 
-1. Choose: **Ubuntu Server (minimized)**
-   - Minimal server without GUI
-   - Perfect for Docker and development
-2. **Done** → Enter
+**Choose based on your needs:**
 
+#### Option A: Ubuntu Server (base, NOT minimized)
+
+- Headless server (no GUI initially)
+- Can add desktop environment later if needed
+- Lighter resource usage (~2-4 GB RAM)
+- Good for: Docker-only, remote development
+
+#### Option B: Ubuntu Server (minimized)
+
+- Most minimal installation
+- Cannot add GUI later without reinstalling
+- Only for pure server workloads
+
+#### Recommendation for Development with Mac Studio
+
+- Choose **"Ubuntu Server"** (base, not minimized)
+- Add desktop environment in Guide 2 if you want:
+  - VS Code GUI on Linux for compatibility testing
+  - Browser testing on actual Linux
+  - Visual debugging on Linux
+  - Full Linux desktop experience
+
+#### Resource Impact of GUI
+
+- RAM: +2 GB (negligible on Mac Studio)
+- Disk: +2 GB
+- Performance: Minimal impact
+
+Select your choice and press **Done** → Enter
+      
 ### Step 6: Network Configuration
 
 Parallels Shared Network auto-configures:
@@ -196,7 +225,7 @@ Storage summary shows:
 ### Step 10: Profile Setup
 
 - **Your name**: Your full name
-- **Server's name**: `ubuntu-vm` (hostname)
+- **Server's name**: `ubuntu-dev4change` (hostname)
 - **Username**: `matteo` (or your username)
 - **Password**: Strong password
 - **Confirm password**: Re-enter
