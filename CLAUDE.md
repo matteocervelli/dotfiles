@@ -120,10 +120,14 @@ make brewfile-install                           # Install from Brewfile
 
 # Update from system
 make brewfile-update                            # Regenerate from current state
+```
 
-# VSCode Extensions
-code --list-extensions | sort > applications/vscode-extensions.txt  # Export
-cat applications/vscode-extensions.txt | grep -v '^#' | xargs -L 1 code --install-extension  # Install all
+### VSCode Extensions
+
+```bash
+# Export and Install
+make vscode-extensions-export                   # Export current extensions
+make vscode-extensions-install                  # Install all extensions from list
 ```
 
 ### Development & Maintenance
