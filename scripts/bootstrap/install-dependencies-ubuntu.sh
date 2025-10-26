@@ -11,6 +11,7 @@
 #   --dry-run          Show what would be installed without installing
 #   --skip-repos       Skip repository setup (only install from default repos)
 #   --essential-only   Install only essential packages (dev tools, git, stow)
+#   --with-docker      Install Docker Engine + Compose v2 after package installation
 #
 # Example:
 #   ./scripts/bootstrap/install-dependencies-ubuntu.sh
@@ -32,6 +33,7 @@ VERBOSE=0
 DRY_RUN=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
+WITH_DOCKER=0
 PACKAGE_FILE="$PROJECT_ROOT/system/ubuntu/packages.txt"
 
 # Essential packages (always install these first)
@@ -66,6 +68,7 @@ OPTIONS:
     --dry-run          Preview installation without making changes
     --skip-repos       Skip repository setup (use default repos only)
     --essential-only   Install only essential packages (git, stow, build tools)
+    --with-docker      Install Docker Engine + Compose v2 after package installation
 
 EXAMPLES:
     $0                      # Full installation
@@ -113,6 +116,10 @@ parse_args() {
                 ;;
             --essential-only)
                 ESSENTIAL_ONLY=1
+                shift
+                ;;
+            --with-docker)
+                WITH_DOCKER=1
                 shift
                 ;;
             *)
@@ -466,6 +473,21 @@ main() {
     # Post-installation
     post_install
 
+    # Install Docker if requested
+    if [[ $WITH_DOCKER -eq 1 ]]; then
+        log_step "Installing Docker Engine + Compose v2..."
+        if [[ -x "$PROJECT_ROOT/scripts/bootstrap/install-docker.sh" ]]; then
+            if [[ $DRY_RUN -eq 1 ]]; then
+                log_info "[DRY RUN] Would run: $PROJECT_ROOT/scripts/bootstrap/install-docker.sh --dry-run"
+            else
+                "$PROJECT_ROOT/scripts/bootstrap/install-docker.sh" || log_warning "Docker installation encountered issues"
+            fi
+        else
+            log_error "Docker installation script not found or not executable"
+            log_info "Expected location: $PROJECT_ROOT/scripts/bootstrap/install-docker.sh"
+        fi
+    fi
+
     # Final summary
     log_success "Ubuntu package installation completed successfully!"
     echo ""
@@ -475,6 +497,7 @@ main() {
     echo "  3. Install Snap apps: snap install code --classic"
     echo "  4. Install Flatpak apps: flatpak install flathub org.libreoffice.LibreOffice"
     echo "  5. Setup dotfiles: make install"
+    [[ $WITH_DOCKER -eq 1 ]] && echo "  6. Log out/in for Docker group to take effect" || true
     echo ""
     log_info "Recommended: Reboot system to ensure all changes take effect"
 }

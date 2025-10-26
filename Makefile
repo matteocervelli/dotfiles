@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install docker-install ubuntu-full
 
 # Default target - show help
 help:
@@ -40,6 +40,10 @@ help:
 	@echo "  make autoupdate-logs       View auto-update logs"
 	@echo "  make autoupdate-disable    Disable auto-update service"
 	@echo "  make autoupdate-enable     Enable auto-update service"
+	@echo ""
+	@echo "🐳 Ubuntu/Docker (Linux only):"
+	@echo "  make docker-install         Install Docker Engine + Compose v2 (Ubuntu)"
+	@echo "  make ubuntu-full            Install Ubuntu packages + Docker"
 	@echo ""
 	@echo "💡 Examples:"
 	@echo "  make install                      # Complete setup on fresh machine"
@@ -379,3 +383,26 @@ linux-install-fedora-dry:
 linux-install-arch-dry:
 	@echo "🔍 Arch dry-run..."
 	@sudo ./scripts/bootstrap/install-dependencies-arch.sh --dry-run
+
+# ============================================================================
+# Docker Installation (Ubuntu)
+# ============================================================================
+
+# Install Docker Engine + Compose v2 on Ubuntu
+docker-install:
+	@echo "🐳 Installing Docker Engine + Compose v2..."
+	@if [ ! -f /etc/os-release ] || ! grep -q "ubuntu" /etc/os-release; then \
+		echo "❌ This command is for Ubuntu only"; \
+		echo "For other distributions, see docs/guides/docker-ubuntu-setup.md"; \
+		exit 1; \
+	fi
+	@sudo ./scripts/bootstrap/install-docker.sh
+
+# Full Ubuntu installation with Docker
+ubuntu-full:
+	@echo "🐧 Installing Ubuntu packages + Docker..."
+	@if [ ! -f /etc/os-release ] || ! grep -q "ubuntu" /etc/os-release; then \
+		echo "❌ This command is for Ubuntu only"; \
+		exit 1; \
+	fi
+	@sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
