@@ -1,0 +1,263 @@
+#
+# Package Mapping Schema
+#
+# Defines the structure for mapping macOS Homebrew packages to Linux equivalents
+# across Ubuntu (APT), Fedora (DNF), and Arch Linux (Pacman).
+#
+# This schema serves as the contract for package-mappings.yml
+#
+
+# Schema Version
+schema_version: "1.0.0"
+
+# Field Definitions
+fields:
+  brew_package:
+    type: string
+    required: true
+    description: "Homebrew package name (formula or cask)"
+    examples:
+      - "git"
+      - "1password-cli"
+      - "visual-studio-code"
+
+  category:
+    type: string
+    required: true
+    description: "Package category for organization"
+    enum:
+      - "development"        # Git, GH CLI, build tools
+      - "languages"          # Node, Python, Ruby, Go, Rust
+      - "databases"          # PostgreSQL, SQLite, Redis
+      - "infrastructure"     # Docker, Tailscale, Caddy
+      - "security"           # GPG, 1Password, OpenSSL
+      - "cli-utilities"      # bat, eza, fzf, htop, wget
+      - "productivity"       # VS Code, browsers, LibreOffice
+      - "media"              # ffmpeg, ImageMagick
+      - "system"             # Core libraries and dependencies
+
+  apt:
+    type: string|null
+    required: false
+    description: "Ubuntu/Debian package name (null if not available)"
+    examples:
+      - "git"
+      - "nodejs"
+      - null  # for macOS-only packages
+
+  dnf:
+    type: string|null
+    required: false
+    description: "Fedora/RHEL package name (null if not available)"
+    examples:
+      - "git"
+      - "nodejs"
+      - null
+
+  pacman:
+    type: string|null
+    required: false
+    description: "Arch Linux package name (null if not available)"
+    examples:
+      - "git"
+      - "nodejs"
+      - null
+
+  snap:
+    type: string|null
+    required: false
+    description: "Snap package name (if preferred over native)"
+    examples:
+      - "code"  # for VS Code
+      - null
+
+  flatpak:
+    type: string|null
+    required: false
+    description: "Flatpak application ID (if preferred over native)"
+    examples:
+      - "com.visualstudio.code"
+      - null
+
+  aur:
+    type: string|null
+    required: false
+    description: "AUR package name for Arch (requires yay/paru)"
+    examples:
+      - "visual-studio-code-bin"
+      - null
+
+  alternatives:
+    type: array[string]
+    required: false
+    description: "Open-source or alternative packages"
+    examples:
+      - ["bitwarden-cli"]  # alternative to 1password-cli
+      - ["alacritty", "kitty"]  # alternatives to iTerm2
+      - []
+
+  repo_setup:
+    type: object|null
+    required: false
+    description: "Repository setup required before installation"
+    fields:
+      ubuntu:
+        type: string
+        description: "Commands to add repository on Ubuntu"
+      fedora:
+        type: string
+        description: "Commands to add repository on Fedora"
+      arch:
+        type: string
+        description: "AUR helper command or repository setup"
+    examples:
+      ubuntu: "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg"
+      fedora: "sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc"
+      arch: "yay -S 1password-cli"
+
+  notes:
+    type: string
+    required: false
+    description: "Additional information or platform-specific details"
+    examples:
+      - "macOS-only application, use Alacritty on Linux"
+      - "Requires official repository setup"
+      - "Available in AUR only"
+
+  opensource:
+    type: boolean
+    required: false
+    default: true
+    description: "Whether this is an open-source package"
+    examples:
+      - true
+      - false
+
+# Example Package Mappings
+
+examples:
+  # Example 1: Simple cross-platform tool (same name everywhere)
+  - brew_package: "git"
+    category: "development"
+    apt: "git"
+    dnf: "git"
+    pacman: "git"
+    opensource: true
+    notes: "Same package name across all distributions"
+
+  # Example 2: Different names across distros
+  - brew_package: "node"
+    category: "languages"
+    apt: "nodejs"
+    dnf: "nodejs"
+    pacman: "nodejs"
+    opensource: true
+    notes: "Use nvm for version management"
+
+  # Example 3: Requires repository setup
+  - brew_package: "1password-cli"
+    category: "security"
+    apt: "1password-cli"
+    dnf: "1password-cli"
+    aur: "1password-cli"
+    repo_setup:
+      ubuntu: "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main' | sudo tee /etc/apt/sources.list.d/1password.list"
+      fedora: "sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc && sudo sh -c 'echo -e \"[1password]\\nname=1Password Stable Channel\\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\\$basearch\\nenabled=1\\ngpgcheck=1\\nrepo_gpgcheck=1\\ngpgkey=https://downloads.1password.com/linux/keys/1password.asc\" > /etc/yum.repos.d/1password.repo'"
+      arch: "Available in AUR"
+    alternatives:
+      - "bitwarden-cli"
+    opensource: false
+    notes: "Proprietary but has open-source alternative (Bitwarden)"
+
+  # Example 4: macOS-only with Linux alternatives
+  - brew_package: "iterm2"
+    category: "productivity"
+    apt: null
+    dnf: null
+    pacman: null
+    alternatives:
+      - "alacritty"
+      - "kitty"
+      - "gnome-terminal"
+    notes: "macOS-only terminal, use Alacritty (GPU-accelerated, cross-platform) on Linux"
+
+  # Example 5: GUI app via Snap/Flatpak
+  - brew_package: "visual-studio-code"
+    category: "productivity"
+    snap: "code"
+    flatpak: "com.visualstudio.code"
+    aur: "visual-studio-code-bin"
+    alternatives:
+      - "vscodium"  # open-source build without telemetry
+    opensource: false
+    notes: "Snap/Flatpak recommended for GUI apps, VSCodium available as FOSS alternative"
+
+  # Example 6: Complex package with version specifics
+  - brew_package: "python@3.13"
+    category: "languages"
+    apt: "python3.13"
+    dnf: "python3.13"
+    pacman: "python"
+    notes: "Use pyenv for version management across all platforms"
+
+# Package Manager Preferences
+# When multiple options exist, prefer in this order:
+package_manager_preference:
+  priority:
+    1: "native"     # apt/dnf/pacman (fastest, best integration)
+    2: "flatpak"    # sandboxed, good for GUI apps
+    3: "snap"       # universal but slower startup
+    4: "aur"        # Arch only, community packages
+
+# Repository Setup Requirements
+# Packages that require external repositories before installation
+repository_setup_needed:
+  - "1password-cli"
+  - "docker-ce"
+  - "tailscale"
+  - "google-chrome-stable"
+  - "microsoft-edge-stable"
+
+# macOS-Only Packages (No Linux Equivalent)
+macos_only:
+  - "mas"           # Mac App Store CLI
+  - "iterm2"        # Terminal (use alternatives)
+  - "parallels"     # Virtualization (use VirtualBox/QEMU)
+  - "rectangle"     # Window manager (use i3/sway on Linux)
+
+# Open-Source Alternatives Priority
+# When proprietary macOS app exists, prefer open-source on Linux
+opensource_alternatives:
+  "1password-cli": "bitwarden-cli"
+  "chrome": "chromium"
+  "edge": "chromium"
+  "parallels": "virt-manager"
+  "rectangle": "i3"
+  "alfred": "rofi"
+  "bartender": "polybar"
+
+# Distribution-Specific Notes
+distribution_notes:
+  ubuntu:
+    - "Ubuntu 24.04 LTS recommended (FASE 7.1)"
+    - "Use official PPAs when available"
+    - "Snap pre-installed, prefer native packages"
+
+  fedora:
+    - "Fedora Workstation for desktop (FASE 7.2)"
+    - "DNF faster than old YUM"
+    - "RPM Fusion for multimedia codecs"
+
+  arch:
+    - "Arch Linux or Manjaro (FASE 7.4)"
+    - "AUR provides extensive package coverage"
+    - "Requires AUR helper (yay or paru)"
+    - "Rolling release: always latest versions"
+
+# Validation Rules
+validation:
+  - "Every package must have category"
+  - "At least one of: apt, dnf, pacman, snap, flatpak, or alternatives"
+  - "If null across all distros, alternatives must be provided"
+  - "repo_setup only needed if not in default repos"
+  - "opensource field helps prioritize open-source alternatives"
