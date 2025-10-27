@@ -71,6 +71,58 @@ alias initproject=~/dev/scripts/launch-project.sh
 alias ollama-sync=~/dev/scripts/add-llm-to-ollama.sh
 
 # =============================================================================
+# Backup & Sync
+# =============================================================================
+
+# Smart rsync backup excluding build artifacts, dependencies, and caches
+# Usage: smartsync /source/folder /destination/folder
+alias smartsync='rsync -avh --progress \
+  --exclude="node_modules" \
+  --exclude="node_modules/" \
+  --exclude=".git/objects" \
+  --exclude="__pycache__" \
+  --exclude="__pycache__/" \
+  --exclude="*.pyc" \
+  --exclude=".venv" \
+  --exclude=".venv/" \
+  --exclude="venv" \
+  --exclude="venv/" \
+  --exclude="dist" \
+  --exclude="dist/" \
+  --exclude="build" \
+  --exclude="build/" \
+  --exclude=".next" \
+  --exclude=".next/" \
+  --exclude=".nuxt" \
+  --exclude=".cache" \
+  --exclude=".cache/" \
+  --exclude=".pytest_cache" \
+  --exclude=".mypy_cache" \
+  --exclude=".ruff_cache" \
+  --exclude="target/" \
+  --exclude=".DS_Store"'
+
+# Smart tar archive excluding build artifacts, dependencies, and caches
+# Usage: smartarchive /source/folder /destination/archive.tar.gz
+alias smartarchive='tar -czf "$2" \
+  --exclude="node_modules" \
+  --exclude="venv" \
+  --exclude=".venv" \
+  --exclude="__pycache__" \
+  --exclude=".git/objects" \
+  --exclude="dist" \
+  --exclude="build" \
+  --exclude=".next" \
+  --exclude=".nuxt" \
+  --exclude=".cache" \
+  --exclude=".pytest_cache" \
+  --exclude=".mypy_cache" \
+  --exclude=".ruff_cache" \
+  --exclude="target" \
+  --exclude=".DS_Store" \
+  "$1"'
+
+# =============================================================================
 # Automation
 # =============================================================================
 
