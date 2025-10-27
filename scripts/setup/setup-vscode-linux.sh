@@ -148,7 +148,8 @@ log_section "Syncing VS Code Settings"
 
 log_info "Stowing VS Code settings from dotfiles..."
 
-cd "$HOME/dev/projects/dotfiles"
+DOTFILES_DIR="$HOME/dev/projects/dotfiles"
+cd "$DOTFILES_DIR"
 
 # Check if vscode package exists
 if [[ ! -d "stow-packages/vscode" ]]; then
@@ -156,6 +157,10 @@ if [[ ! -d "stow-packages/vscode" ]]; then
     log_error "Make sure dotfiles repository is up to date"
     exit 1
 fi
+
+# Resolve actual path (in case of symlinks/mounts)
+DOTFILES_REAL=$(readlink -f "$DOTFILES_DIR" || realpath "$DOTFILES_DIR" || pwd)
+log_info "Using dotfiles at: $DOTFILES_REAL"
 
 # Backup existing settings if they exist and are not symlinks
 VSCODE_CONFIG="$HOME/.config/Code/User"
@@ -168,8 +173,9 @@ if [[ -d "$VSCODE_CONFIG" ]] && [[ ! -L "$VSCODE_CONFIG/settings.json" ]]; then
     log_success "Backup created"
 fi
 
-# Stow vscode package
-stow -t ~ vscode
+# Stow vscode package with explicit directory
+cd "$DOTFILES_REAL/stow-packages"
+stow -t ~ -d . vscode
 
 log_success "VS Code settings stowed (symlinked)"
 
