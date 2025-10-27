@@ -19,7 +19,10 @@
       "Read(//Users/matteocervelli/Library/**)",
       "Read(//Users/matteocervelli/Library/Preferences/**)",
       "Bash(chmod:*)",
-      "Bash(bats:*)"
+      "Bash(bats:*)",
+      "Read(//Users/matteocervelli/.local/**)",
+      "Bash(mdfind:*)",
+      "Read(//Users/matteocervelli/Documents/Hookmark/**)"
     ],
     "deny": []
   }
