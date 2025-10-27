@@ -1,0 +1,348 @@
+Application Audit Report
+Generated: 2025-10-26 22:34:09
+Total Applications: 312
+
+========================================================================
+
+=== Homebrew Casks (9) ===
+
+1password-cli
+github
+iterm2
+libreoffice
+macfuse
+rstudio
+utm
+visual-studio-code
+wezterm
+
+========================================================================
+
+=== Homebrew Formulae (174) ===
+
+aom
+apr
+apr-util
+argon2
+aribb24
+autoconf
+brotli
+c-ares
+ca-certificates
+cairo
+cjson
+cmake
+curl
+cyrus-sasl
+dav1d
+ffmpeg
+flac
+fontconfig
+freetds
+freetype
+frei0r
+fribidi
+gcc
+gd
+gettext
+gh
+giflib
+glib
+gmp
+gnutls
+graphite2
+harfbuzz
+highway
+hugo
+icu4c@77
+imagemagick
+imath
+isl
+jasper
+jpeg-turbo
+jpeg-xl
+krb5
+lame
+leptonica
+libarchive
+libass
+libavif
+libb2
+libbluray
+libde265
+libdeflate
+libevent
+libheif
+libidn2
+liblqr
+libmicrohttpd
+libmpc
+libnghttp2
+libnghttp3
+libngtcp2
+libogg
+libomp
+libpng
+libpq
+libraw
+librist
+libsamplerate
+libsndfile
+libsodium
+libsoxr
+libssh
+libssh2
+libtasn1
+libtiff
+libtommath
+libtool
+libudfread
+libunibreak
+libunistring
+libuv
+libvidstab
+libvmaf
+libvorbis
+libvpx
+libx11
+libxau
+libxcb
+libxdmcp
+libxext
+libxrender
+libzip
+little-cms2
+lpeg
+luajit
+luv
+lz4
+lzo
+m4
+mas
+mbedtls
+mlx
+mpdecimal
+mpfr
+mpg123
+multimarkdown
+neovim
+net-snmp
+nettle
+nginx
+node
+oniguruma
+openblas
+opencore-amr
+openexr
+openjdk
+openjpeg
+openjph
+openldap
+openssl@3
+opus
+p11-kit
+pandoc
+pango
+pcre2
+php
+pipx
+pixman
+pkgconf
+portaudio
+postgresql@17
+pyenv
+python-packaging
+python@3.11
+python@3.13
+r
+rav1e
+rclone
+readline
+redis
+rtmpdump
+rubberband
+sdl2
+sentencepiece
+shared-mime-info
+simdjson
+snappy
+speex
+sqlite
+srt
+sshfs-mac
+svt-av1
+tailscale
+tcl-tk
+tcl-tk@8
+tesseract
+theora
+tidy-html5
+tree
+tree-sitter
+unbound
+unibilium
+unixodbc
+utf8proc
+uvwasi
+webp
+x264
+x265
+xorgproto
+xvid
+xz
+zeromq
+zimg
+zlib
+zstd
+
+========================================================================
+
+=== Mac App Store Apps (27) ===
+
+1024640650  CotEditor             (6.0.4)
+1282504627  Mimeo Photos          (6.4.1)
+1355679052  Dropover              (5.1.2)
+1474276998  HP Smart              (20.1)
+1475387142  Tailscale             (1.88.4)
+1518955356  HolaTranslator        (4.4.0)
+1534275760  LanguageTool          (8.21.1)
+1569813296  1Password for Safari  (8.11.15)
+1586435171  Actions               (3.8.0)
+1640236961  Save to Reader        (0.16.10)
+302584613   Kindle                (7.41)
+310633997   WhatsApp              (25.25.74)
+408981434   iMovie                (10.4.3)
+409183694   Keynote               (14.4)
+409201541   Pages                 (14.4)
+409203825   Numbers               (14.4)
+425424353   The Unarchiver        (4.3.9)
+441258766   Magnet                (3.0.7)
+462054704   Microsoft Word        (16.102.1)
+462058435   Microsoft Excel       (16.102.1)
+462062816   Microsoft PowerPoint  (16.102.1)
+497799835   Xcode                 (26.0.1)
+6714467650  Perplexity            (2.250825.2)
+6720708363  Obsidian Web Clipper  (0.11.9)
+897446215   Canva                 (1.116.0)
+967805235   Paste                 (6.0.0)
+985367838   Microsoft Outlook     (16.102.1)
+
+========================================================================
+
+=== Setapp Apps (32) ===
+
+AirBuddy
+AlDente Pro
+BetterTouchTool
+BusyCal
+BusyContacts
+ChronoSync Express
+CleanMyMac
+CleanShot X
+Clop
+Commander One
+Downie
+Euclid
+Hookmark
+iStat Menus
+MindNode Classic
+Nitro PDF Pro
+One Switch
+Paletro
+Paste
+Permute
+PixelSnap
+PopClip
+QuitAll
+Session
+Supercharge
+Swift Publisher
+TablePlus
+Tiny Shield
+Ulysses
+Whisk
+WhisperTranscribe
+Yoink
+
+========================================================================
+
+=== Manual Installations (70) ===
+
+1Password for Safari
+Actions
+Alfred 5
+Amazon Kindle
+AnyDesk
+Arc
+Canva
+ChatGPT
+Claude
+CotEditor
+Cursor
+CyberPower PowerPanel Business Installer
+Docker
+Dropover
+Firma4ng
+Flux
+Google Docs
+Google Drive
+Google Sheets
+Google Slides
+HolaTranslator
+HP Easy Scan
+HP Smart
+iMovie
+Keynote
+LanguageTool
+LanguageTool for Desktop
+LibreWolf
+LM Studio
+Logi Bolt
+Logi Options
+logioptionsplus
+MacWhisper
+Magnet
+Microsoft Excel
+Microsoft Outlook
+Microsoft PowerPoint
+Microsoft Teams
+Microsoft Word
+Mimeo Photos
+MonitorControl
+Numbers
+Obsidian
+Obsidian Web Clipper
+Ollama
+Pages
+Parallels Desktop
+Parallels Toolbox
+Paste
+Perplexity
+PowerPanel Personal
+PPB Remote
+ProNotes
+ProtonVPN
+Reader
+Readwise
+Readwise_iBooks
+Save to Reader
+Seconds Pro
+Setapp
+Spotify
+Synology Active Backup for Business Agent
+Tailscale
+The Unarchiver
+VLC
+VoiceInk
+Xcode
+Yealink USB Connect
+Zen
+zoom.us
+
+========================================================================
+
+Notes:
+- Manual installations exclude apps already managed by Homebrew
+- Setapp apps are from /Applications/Setapp/
+- To remove apps, add names to applications/remove-apps.txt
+- Then run: ./scripts/apps/cleanup-apps.sh --execute
