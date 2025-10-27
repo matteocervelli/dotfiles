@@ -15,6 +15,8 @@
 ~$
 
 # VS Code runtime files and caches
+# IMPORTANT: Stow should create symlinks ONLY for individual files in User/
+# Never symlink entire directories to avoid cache pollution in git repo
 ^/\.config/Code/User/globalStorage$
 ^/\.config/Code/User/workspaceStorage$
 ^/\.config/Code/User/History$
@@ -28,3 +30,6 @@
 ^/\.config/Code/Backups$
 ^/\.config/Code/Cookies.*$
 ^/\.config/Code/.*\.lock$
+^/\.config/Code/Network Persistent State$
+^/\.config/Code/Session Storage$
+^/\.config/Code/TransportSecurity$

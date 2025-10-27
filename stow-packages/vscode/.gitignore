@@ -1,0 +1,18 @@
+# VS Code runtime and cache files
+# These should NEVER be in git, only settings/keybindings/extensions
+.config/Code/Cache/
+.config/Code/CachedData/
+.config/Code/CachedExtensionVSIXs/
+.config/Code/User/globalStorage/
+.config/Code/User/workspaceStorage/
+.config/Code/User/History/
+.config/Code/logs/
+.config/Code/Backups/
+.config/Code/GPUCache/
+.config/Code/DawnGraphiteCache/
+.config/Code/DawnWebGPUCache/
+.config/Code/Network Persistent State
+.config/Code/Session Storage/
+.config/Code/TransportSecurity
+.config/Code/Cookies*
+.config/Code/*.lock
