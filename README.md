@@ -64,6 +64,37 @@ make install
 - [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
 - [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
 
+### VPS (Cloud Server)
+
+**Production-ready Ubuntu VPS with security hardening and monitoring.**
+
+```bash
+# Clone repository on VPS
+git clone https://github.com/matteocervelli/dotfiles.git
+cd dotfiles
+
+# VPS setup with security hardening + monitoring
+./scripts/bootstrap/vps-ubuntu-bootstrap.sh
+
+# VPS setup with Docker
+./scripts/bootstrap/vps-ubuntu-bootstrap.sh --with-docker
+
+# Dry run (preview changes)
+./scripts/bootstrap/vps-ubuntu-bootstrap.sh --dry-run
+```
+
+**Features:**
+- ✅ SSH hardening (key-only auth, no root login)
+- ✅ UFW firewall (ports: 22, 80, 443)
+- ✅ fail2ban (brute-force protection)
+- ✅ Automatic security updates
+- ✅ Prometheus node_exporter (system metrics)
+- ✅ Optional Docker Engine + Compose v2
+
+**See also:**
+- [VPS Ubuntu Setup Guide](docs/guides/vps-ubuntu-setup.md) - Complete VPS configuration guide
+- [Multi-Platform Overview](docs/os-configurations/OVERVIEW.md) - All supported platforms
+
 ## 🧪 Usage
 
 ```bash
