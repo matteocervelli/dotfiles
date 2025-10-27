@@ -1,6 +1,6 @@
 # Font Management System
 
-Complete automated font management for macOS across multiple devices (Mac Studio & MacBook).
+Complete automated font management for macOS and Linux across multiple devices.
 
 ## Overview
 
@@ -309,13 +309,21 @@ make fonts-install FORCE=true
 - **PCF** (.pcf.gz) - Bitmap fonts (Terminus)
 - **Variable Fonts** - Single file with multiple styles (Raleway, Montserrat, etc.)
 
-### macOS Font Locations
+### Font Locations by Platform
 
+**macOS:**
 - **User Fonts**: `~/Library/Fonts/` (used by this system, no sudo required)
 - **System Fonts**: `/Library/Fonts/` (requires sudo, not modified)
 - **macOS Fonts**: `/System/Library/Fonts/` (system fonts, never modified)
 
+**Linux:**
+- **User Fonts**: `~/.local/share/fonts/` (used by this system, no sudo required)
+- **System Fonts**: `/usr/share/fonts/` (requires sudo, not modified)
+- **Local Fonts**: `/usr/local/share/fonts/` (system-wide, requires sudo, not modified)
+
 ### Font Cache Management
+
+**macOS:**
 
 macOS caches font data for performance. After installing fonts:
 
@@ -328,6 +336,24 @@ atsutil databases -verify
 
 # Check font recognition (may take a few seconds)
 system_profiler SPFontsDataType | grep MesloLGS
+```
+
+**Linux:**
+
+Linux uses fontconfig for font management. After installing fonts:
+
+```bash
+# Rebuild cache (automatic in install script)
+fc-cache -f ~/.local/share/fonts
+
+# List available fonts
+fc-list | grep MesloLGS
+
+# Query font information
+fc-query ~/.local/share/fonts/MesloLGS\ NF\ Regular.ttf
+
+# Verify fontconfig installation
+fc-cache --version
 ```
 
 ### Performance Characteristics
@@ -421,7 +447,7 @@ Fonts are for personal development use. Check individual font licenses for comme
 A: We need exact versions for consistency across devices. Brew cask fonts can update independently. Direct file management ensures identical fonts everywhere.
 
 **Q: Can I use this on Linux?**
-A: Currently macOS only. Linux support planned for FASE 3 (fonts go to `~/.local/share/fonts/`, use `fc-cache -f` instead of atsutil).
+A: Yes! Full Linux support is available. The system automatically detects your OS and uses the appropriate font directory (`~/.local/share/fonts/`) and cache command (`fc-cache -f`).
 
 **Q: Why so many Powerline variants?**
 A: Different terminal emulators and use cases benefit from different fonts. The collection provides maximum flexibility.

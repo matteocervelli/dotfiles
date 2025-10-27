@@ -24,7 +24,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 FONTS_CONFIG="$DOTFILES_DIR/fonts/fonts.yml"
 FONTS_BACKUP="$DOTFILES_DIR/fonts/backup"
-TARGET_DIR="$HOME/Library/Fonts"
+
+# Target directory will be set after OS detection
+TARGET_DIR=""
 
 # Source utilities
 source "$SCRIPT_DIR/../utils/logger.sh"
@@ -74,14 +76,21 @@ OPTIONS:
 
 DESCRIPTION:
     This script installs fonts from the dotfiles backup directory to your
-    system fonts folder (~/Library/Fonts on macOS). Fonts are organized by
-    category in fonts/fonts.yml for selective installation.
+    system fonts folder:
+    - macOS: ~/Library/Fonts
+    - Linux: ~/.local/share/fonts
+
+    Fonts are organized by category in fonts/fonts.yml for selective installation.
 
     Font Categories:
-    - Essential: Terminal (MesloLGS NF) + Professional (Lato, Raleway)
+    - Essential: Terminal (MesloLGS NF) + Professional (Lato, Raleway, Lora)
     - Coding: Hack, Space Mono, IBM 3270, CPMono
     - Powerline: 120+ terminal fonts with special glyphs
     - Optional: Complete Lato family + UI fonts + design fonts
+
+    Supported Platforms:
+    - macOS: Full support with atsutil cache management
+    - Linux: Full support with fc-cache font cache management
 
 EXAMPLES:
     # Install only essential fonts (fast, recommended for bootstrap)
@@ -156,17 +165,29 @@ done
 check_prerequisites() {
     log_step "Checking Prerequisites"
 
-    # Check if running on macOS
-    if ! is_macos; then
-        log_error "This script currently only supports macOS"
-        log_info "Linux support coming soon"
+    # Detect OS and set target directory
+    if is_macos; then
+        TARGET_DIR="$HOME/Library/Fonts"
+        log_info "Detected: macOS"
+    elif is_linux; then
+        TARGET_DIR="$HOME/.local/share/fonts"
+        log_info "Detected: Linux"
+    else
+        log_error "Unsupported operating system: $(detect_os)"
+        log_info "Supported: macOS, Linux"
         exit 1
     fi
 
     # Check if yq is available
     if ! command -v yq &> /dev/null; then
         log_error "yq is required but not installed"
-        log_info "Install with: brew install yq"
+        if is_macos; then
+            log_info "Install with: brew install yq"
+        elif is_linux; then
+            log_info "Install with: sudo apt install yq  # Ubuntu/Debian"
+            log_info "            or sudo yum install yq  # Fedora/RHEL"
+            log_info "            or sudo snap install yq  # Universal"
+        fi
         exit 1
     fi
 
@@ -188,62 +209,59 @@ check_prerequisites() {
         mkdir -p "$TARGET_DIR"
     fi
 
-    log_success "Prerequisites check passed"
+    log_success "Prerequisites check passed (OS: $(detect_os))"
 }
 
 # Get list of fonts to install based on mode
 get_fonts_to_install() {
     local mode="$1"
-    local fonts=()
 
     case "$mode" in
         essential)
             # Essential: terminal + professional
-            fonts+=($(yq eval '.essential.terminal[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.essential.professional[]' "$FONTS_CONFIG"))
+            yq eval '.essential.terminal[]' "$FONTS_CONFIG"
+            yq eval '.essential.professional[]' "$FONTS_CONFIG"
             ;;
         coding)
             # Essential + coding
-            fonts+=($(yq eval '.essential.terminal[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.essential.professional[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.hack[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.space-mono[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.ibm-3270[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.cpmono[]' "$FONTS_CONFIG"))
+            yq eval '.essential.terminal[]' "$FONTS_CONFIG"
+            yq eval '.essential.professional[]' "$FONTS_CONFIG"
+            yq eval '.coding.hack[]' "$FONTS_CONFIG"
+            yq eval '.coding.space-mono[]' "$FONTS_CONFIG"
+            yq eval '.coding.ibm-3270[]' "$FONTS_CONFIG"
+            yq eval '.coding.cpmono[]' "$FONTS_CONFIG"
             ;;
         powerline)
             # Essential + all powerline
-            fonts+=($(yq eval '.essential.terminal[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.essential.professional[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.meslo-variants[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.source-code-pro[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.dejavu[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.roboto-mono[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.other-powerline[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.terminus[]' "$FONTS_CONFIG"))
+            yq eval '.essential.terminal[]' "$FONTS_CONFIG"
+            yq eval '.essential.professional[]' "$FONTS_CONFIG"
+            yq eval '.powerline.meslo-variants[]' "$FONTS_CONFIG"
+            yq eval '.powerline.source-code-pro[]' "$FONTS_CONFIG"
+            yq eval '.powerline.dejavu[]' "$FONTS_CONFIG"
+            yq eval '.powerline.roboto-mono[]' "$FONTS_CONFIG"
+            yq eval '.powerline.other-powerline[]' "$FONTS_CONFIG"
+            yq eval '.powerline.terminus[]' "$FONTS_CONFIG"
             ;;
         all)
             # All fonts
-            fonts+=($(yq eval '.essential.terminal[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.essential.professional[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.hack[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.space-mono[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.ibm-3270[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.coding.cpmono[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.meslo-variants[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.source-code-pro[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.dejavu[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.roboto-mono[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.other-powerline[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.powerline.terminus[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.optional-development.lato-complete[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.optional-development.ui-fonts[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.optional-design.serif[]' "$FONTS_CONFIG"))
-            fonts+=($(yq eval '.optional-design.display[]' "$FONTS_CONFIG"))
+            yq eval '.essential.terminal[]' "$FONTS_CONFIG"
+            yq eval '.essential.professional[]' "$FONTS_CONFIG"
+            yq eval '.coding.hack[]' "$FONTS_CONFIG"
+            yq eval '.coding.space-mono[]' "$FONTS_CONFIG"
+            yq eval '.coding.ibm-3270[]' "$FONTS_CONFIG"
+            yq eval '.coding.cpmono[]' "$FONTS_CONFIG"
+            yq eval '.powerline.meslo-variants[]' "$FONTS_CONFIG"
+            yq eval '.powerline.source-code-pro[]' "$FONTS_CONFIG"
+            yq eval '.powerline.dejavu[]' "$FONTS_CONFIG"
+            yq eval '.powerline.roboto-mono[]' "$FONTS_CONFIG"
+            yq eval '.powerline.other-powerline[]' "$FONTS_CONFIG"
+            yq eval '.powerline.terminus[]' "$FONTS_CONFIG"
+            yq eval '.optional-development.lato-complete[]' "$FONTS_CONFIG"
+            yq eval '.optional-development.ui-fonts[]' "$FONTS_CONFIG"
+            yq eval '.optional-design.serif[]' "$FONTS_CONFIG"
+            yq eval '.optional-design.display[]' "$FONTS_CONFIG"
             ;;
     esac
-
-    printf '%s\n' "${fonts[@]}"
 }
 
 # Install a single font
@@ -291,7 +309,7 @@ install_font() {
     fi
 }
 
-# Clear font cache on macOS
+# Clear font cache (OS-specific)
 clear_font_cache() {
     if [ "$SKIP_CACHE" = true ]; then
         log_info "Skipping font cache rebuild (--skip-cache)"
@@ -305,19 +323,33 @@ clear_font_cache() {
         return 0
     fi
 
-    # Clear cache using atsutil (macOS)
-    if command -v atsutil &> /dev/null; then
-        if atsutil databases -remove 2>/dev/null; then
-            log_success "Font cache cleared successfully"
+    if is_macos; then
+        # macOS: Clear cache using atsutil
+        if command -v atsutil &> /dev/null; then
+            if atsutil databases -remove 2>/dev/null; then
+                log_success "Font cache cleared successfully (macOS)"
+            else
+                log_warning "Failed to clear font cache (this is normal on some macOS versions)"
+            fi
         else
-            log_warning "Failed to clear font cache (this is normal on some macOS versions)"
+            log_warning "atsutil not available, skipping cache clear"
         fi
-    else
-        log_warning "atsutil not available, skipping cache clear"
-    fi
 
-    # Kill font services to force reload
-    killall "Font Book" 2>/dev/null || true
+        # Kill font services to force reload
+        killall "Font Book" 2>/dev/null || true
+    elif is_linux; then
+        # Linux: Rebuild font cache using fc-cache
+        if command -v fc-cache &> /dev/null; then
+            if fc-cache -f "$TARGET_DIR" 2>/dev/null; then
+                log_success "Font cache rebuilt successfully (Linux)"
+            else
+                log_warning "Failed to rebuild font cache with fc-cache"
+            fi
+        else
+            log_warning "fc-cache not available, skipping cache rebuild"
+            log_info "Install with: sudo apt install fontconfig  # Ubuntu/Debian"
+        fi
+    fi
 }
 
 # Verify font installation

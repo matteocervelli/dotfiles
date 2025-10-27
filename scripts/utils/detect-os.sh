@@ -87,6 +87,25 @@ detect_os() {
     esac
 }
 
+# Helper functions for common OS checks
+is_macos() {
+    [ "$(detect_os)" = "macos" ]
+}
+
+is_linux() {
+    local os
+    os=$(detect_os)
+    [[ "$os" == "ubuntu" || "$os" == "fedora" || "$os" == "arch" || "$os" == "alpine" || "$os" == "linux" ]]
+}
+
+is_ubuntu() {
+    [ "$(detect_os)" = "ubuntu" ]
+}
+
+is_windows() {
+    [ "$(detect_os)" = "windows" ]
+}
+
 # Additional helper function to get detailed OS information
 get_os_details() {
     local os
@@ -140,4 +159,8 @@ else
     # Optionally export functions for use in subshells
     export -f detect_os 2>/dev/null || true
     export -f get_os_details 2>/dev/null || true
+    export -f is_macos 2>/dev/null || true
+    export -f is_linux 2>/dev/null || true
+    export -f is_ubuntu 2>/dev/null || true
+    export -f is_windows 2>/dev/null || true
 fi
