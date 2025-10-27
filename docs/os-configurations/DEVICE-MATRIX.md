@@ -14,7 +14,7 @@
 | 2 | MacBook | macOS Sequoia 15.x | Native | Apple Silicon (M1/M2) | Portable development | 16-32GB RAM | `macos-bootstrap.sh` | `macbook` | - | ✅ Active |
 | 3 | Parallels Ubuntu | Ubuntu 24.04 LTS | Parallels | ARM64 | Docker workloads, dev testing | 8GB RAM, 50GB | `ubuntu-bootstrap.sh` | `ubuntu-vm` | [#22](https://github.com/matteocervelli/dotfiles/issues/22) | 🟡 FASE 7.1 |
 | 4 | Parallels Fedora | Fedora Workstation | Parallels | ARM64 | RHEL ecosystem testing | 8GB RAM, 30GB | `fedora-bootstrap.sh` | `fedora-dev` | [#40](https://github.com/matteocervelli/dotfiles/issues/40) | 🟡 FASE 7.2 |
-| 5 | Parallels Mint | Linux Mint Cinnamon | Parallels | ARM64 | Desktop GUI alternative | 12GB RAM, 100GB | `mint-bootstrap.sh` | `mint-desktop` | [#41](https://github.com/matteocervelli/dotfiles/issues/41) | 🟡 FASE 7.3 |
+| 5 | Parallels Mint | Linux Mint Cinnamon | Parallels | ARM64 | Desktop GUI alternative | 12GB RAM, 100GB | `mint-bootstrap.sh` | `mint-desktop` | [#41](https://github.com/matteocervelli/dotfiles/issues/41) | ✅ Ready |
 | 6 | Parallels Windows | Windows 11 | Parallels | ARM64 | Cross-platform dev, testing | 12GB RAM, 80GB | `windows-bootstrap.ps1` | `windows-dev` | [#38](https://github.com/matteocervelli/dotfiles/issues/38) | ⚪ Future |
 | 7 | MacBook Fedora (Kids) | Fedora Workstation | Parallels | ARM64 | Kids' educational environment | 4GB RAM, 30GB | `kids-fedora-bootstrap.sh` | `kids-safe` | [#46](https://github.com/matteocervelli/dotfiles/issues/46) | 🟡 FASE 7.8 |
 | 8 | UTM Arch | Arch Linux | UTM | ARM64 | Bleeding edge, rolling release | 4GB RAM, 20GB | `arch-bootstrap.sh` | `arch-dev` | [#42](https://github.com/matteocervelli/dotfiles/issues/42) | 🟡 FASE 7.4 |

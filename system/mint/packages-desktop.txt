@@ -1,0 +1,236 @@
+# Linux Mint Desktop Package List
+# Profile: mint-desktop
+# Roles: development, productivity
+# Target: Linux Mint 21+ (Cinnamon desktop)
+
+# =============================================================================
+# Development Tools
+# =============================================================================
+
+# Build tools
+build-essential
+autoconf
+automake
+cmake
+gcc
+g++
+make
+pkg-config
+libtool
+
+# Version control
+git
+git-lfs
+gh
+
+# =============================================================================
+# Shell & Terminal
+# =============================================================================
+
+zsh
+bash-completion
+tmux
+screen
+
+# =============================================================================
+# Modern CLI Tools
+# =============================================================================
+
+# File operations
+fzf
+ripgrep
+fd-find
+eza
+bat
+tree
+
+# System monitoring
+htop
+btop
+iotop
+ncdu
+
+# Network tools
+curl
+wget
+httpie
+nmap
+netcat
+
+# Text processing
+jq
+yq
+
+# =============================================================================
+# Programming Languages & Runtimes
+# =============================================================================
+
+# Python
+python3
+python3-pip
+python3-venv
+python3-dev
+pipx
+
+# Node.js
+nodejs
+npm
+
+# Ruby
+ruby
+ruby-dev
+
+# Go (via snap or direct download)
+# golang-go
+
+# Rust (via rustup)
+# N/A - installed via: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# =============================================================================
+# Database Clients
+# =============================================================================
+
+postgresql-client
+sqlite3
+redis-tools
+
+# =============================================================================
+# Cloud & DevOps
+# =============================================================================
+
+rclone
+tailscale
+
+# Docker (installed via dedicated script)
+# docker-ce
+# docker-ce-cli
+# containerd.io
+# docker-compose-plugin
+
+# =============================================================================
+# GUI Applications - Development
+# =============================================================================
+
+# Code editors (VS Code via snap)
+# code
+
+# Terminal emulator
+gnome-terminal
+tilix
+
+# =============================================================================
+# GUI Applications - Productivity
+# =============================================================================
+
+# Office suite
+libreoffice
+libreoffice-style-breeze
+
+# Communication
+thunderbird
+evolution
+
+# Browsers
+firefox
+chromium-browser
+
+# PDF viewer
+evince
+
+# =============================================================================
+# GUI Applications - Media
+# =============================================================================
+
+# Image editing
+gimp
+inkscape
+krita
+
+# Image viewers
+eog
+gthumb
+
+# Video player
+vlc
+mpv
+
+# Audio player
+rhythmbox
+
+# Media processing
+imagemagick
+ffmpeg
+handbrake
+
+# =============================================================================
+# System Utilities
+# =============================================================================
+
+# System management
+timeshift           # Mint-specific backup tool
+gnome-system-monitor
+gparted
+dconf-editor
+
+# File management
+nemo-fileroller     # Archive support
+nemo-preview        # File preview
+nemo-seahorse       # Encryption support
+
+# Clipboard manager
+copyq
+
+# Screenshot tool
+flameshot
+shutter
+
+# Disk utilities
+gdu
+duf
+
+# =============================================================================
+# Security & Encryption
+# =============================================================================
+
+gnupg
+ca-certificates
+openssl
+pass
+
+# 1Password CLI
+1password-cli
+
+# =============================================================================
+# Fonts
+# =============================================================================
+
+fonts-firacode
+fonts-jetbrains-mono
+fonts-roboto
+fonts-noto
+fonts-liberation
+
+# =============================================================================
+# Virtualization & Containers
+# =============================================================================
+
+# Parallels Tools (installed automatically by Parallels)
+# parallels-tools
+
+# =============================================================================
+# Additional Utilities
+# =============================================================================
+
+apt-transport-https
+software-properties-common
+ca-certificates
+gnupg
+lsb-release
+moreutils
+pv
+socat
+unzip
+zip
+p7zip-full
+rsync
+ssh
