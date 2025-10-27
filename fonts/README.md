@@ -262,8 +262,46 @@ atsutil databases -remove
 
 ## Troubleshooting
 
+### Prerequisites: yq Installation
+
+The font management system requires `yq` (YAML processor) to parse font configurations.
+
+**⚠️ Important for Linux ARM64 systems (e.g., Parallels VM):**
+- **Avoid snap installation** - it has permission restrictions with shared folders
+- Use direct binary installation instead
+- The bootstrap script handles this automatically
+
+**Manual yq installation (if needed):**
+
+```bash
+# 1. Check current yq architecture
+which yq && file $(which yq)
+
+# 2. ARM64 (aarch64) systems:
+cd /tmp
+wget https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_arm64.tar.gz -O yq.tar.gz
+tar xzf yq.tar.gz
+sudo mv yq_linux_arm64 /usr/local/bin/yq
+sudo chmod +x /usr/local/bin/yq
+rm yq.tar.gz
+
+# 3. AMD64 (x86_64) systems:
+sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_amd64
+sudo chmod +x /usr/local/bin/yq
+
+# 4. Remove snap version if it causes issues:
+sudo snap remove yq
+```
+
+**Why avoid snap yq on Parallels VMs:**
+- Snap applications run in security-confined containers
+- Cannot access files in Parallels shared folders (`/home/user/dev/projects/...`)
+- Results in "permission denied" errors when reading `fonts.yml`
+- Direct binary installation has no such restrictions
+
 ### Fonts Not Appearing
 
+**macOS:**
 ```bash
 # Clear font cache manually
 atsutil databases -remove
@@ -275,15 +313,33 @@ killall "Font Book"
 ls -la ~/Library/Fonts/ | grep MesloLGS
 ```
 
+**Linux:**
+```bash
+# Rebuild font cache manually
+fc-cache -f ~/.local/share/fonts
+
+# Verify fonts are recognized
+fc-list | grep MesloLGS
+
+# Check font files are in place
+ls -la ~/.local/share/fonts/ | grep MesloLGS
+```
+
 ### Installation Fails
 
 ```bash
 # Check prerequisites
 make health
 
-# Verify yq is installed
+# Verify yq is installed and correct architecture
 which yq
+yq --version
+file $(which yq)
+
+# macOS: Install via Homebrew
 brew install yq
+
+# Linux: See "Prerequisites: yq Installation" section above
 
 # Run with verbose output
 ./scripts/fonts/install-fonts.sh --all --verbose
