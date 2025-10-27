@@ -1154,11 +1154,11 @@ ssh matteocervelli@ubuntu-dev4change docker ps
 ```bash
 # Create remote context
 docker context create ubuntu-dev4change \
-  --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change"
+  --docker "host=ssh://matteocervelli@ubuntu-dev4change"
 
 # Or with custom SSH key
 docker context create ubuntu-dev4change \
-  --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change" \
+  --docker "host=ssh://matteocervelli@ubuntu-dev4change" \
   --description "Ubuntu VM on Parallels"
 
 # List contexts
@@ -1565,7 +1565,7 @@ ssh-copy-id matteocervelli@ubuntu-dev4change
 
 # 3. Recreate Docker context
 docker context rm ubuntu-dev4change
-docker context create ubuntu-dev4change --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change"
+docker context create ubuntu-dev4change --docker "host=ssh://matteocervelli@ubuntu-dev4change"
 
 # 4. Test again
 docker context use ubuntu-dev4change
@@ -1708,4 +1708,4 @@ sudo apt update && sudo apt upgrade -y
 **Last Updated**: 2025-10-26
 **Status**: ✅ Complete
 **Part of**: FASE 4 - VM Ubuntu Setup
-**Issue**: [#23](https://github.com/matteocervellicervelli/dotfiles/issues/23)
+**Issue**: [#23](https://github.com/matteocervelli/dotfiles/issues/23)

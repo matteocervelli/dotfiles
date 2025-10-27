@@ -1,0 +1,15 @@
+# Stow Local Ignore - VSCode Package
+# Files to ignore when stowing this package
+
+# README and documentation
+^/README\.md$
+
+# Backup files
+\.bak$
+\.backup$
+\.old$
+
+# Editor files
+\.swp$
+\.swo$
+~$

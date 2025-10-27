@@ -92,13 +92,13 @@ run_test() {
 test_parallels_tools() {
     local test_name="Parallels Tools installed"
 
-    if command -v prltools &>/dev/null; then
+    if command -v prltoolsd &>/dev/null; then
         local version
-        version=$(prltools -v 2>&1 | head -1)
+        version=$(prltoolsd -v 2>&1 | head -1)
         log_success "$test_name ($version)"
         ((TESTS_PASSED++))
     else
-        log_error "$test_name - prltools command not found"
+        log_error "$test_name - prltoolsd command not found"
         ((TESTS_FAILED++))
         return 1
     fi
