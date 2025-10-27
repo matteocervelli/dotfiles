@@ -1,0 +1,17 @@
+'CPMono_v07 Black.otf'
+'CPMono_v07 Bold.otf'
+'CPMono_v07 ExtraLight.otf'
+'CPMono_v07 Light.otf'
+'CPMono_v07 Plain.otf'
+3270-Regular.ttf
+3270Condensed-Regular.ttf
+3270SemiCondensed-Regular.ttf
+gfont
+Hack-Bold.ttf
+Hack-BoldItalic.ttf
+Hack-Italic.ttf
+Hack-Regular.ttf
+SpaceMono-Bold.ttf
+SpaceMono-BoldItalic.ttf
+SpaceMono-Italic.ttf
+SpaceMono-Regular.ttf

@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install docker-install ubuntu-full
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify docker-install ubuntu-full
 
 # Default target - show help
 help:
@@ -29,6 +29,13 @@ help:
 	@echo "  make brewfile-check             Validate Brewfile (dry-run, no installation)"
 	@echo "  make brewfile-install           Install packages from Brewfile"
 	@echo "  make brewfile-update            Update Brewfile from currently installed packages"
+	@echo ""
+	@echo "🔤 Font Management:"
+	@echo "  make fonts-install              Install all fonts (179 fonts)"
+	@echo "  make fonts-install-essential    Install essential fonts only (14 fonts: MesloLGS NF + Lato + Raleway + Lora)"
+	@echo "  make fonts-install-coding       Install essential + coding fonts (Hack, Space Mono, etc.)"
+	@echo "  make fonts-install-powerline    Install essential + all Powerline fonts (130+ fonts)"
+	@echo "  make fonts-verify               Verify essential fonts are installed"
 	@echo ""
 	@echo "🔌 VSCode Extensions:"
 	@echo "  make vscode-extensions-install  Install all VSCode extensions from list"
@@ -406,3 +413,107 @@ ubuntu-full:
 		exit 1; \
 	fi
 	@sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
+
+# ============================================================================
+# Font Management
+# ============================================================================
+
+# Install all fonts (179 fonts total)
+fonts-install:
+	@echo "🔤 Installing all fonts..."
+	@echo ""
+	@if [ ! -f ./scripts/fonts/install-fonts.sh ]; then \
+		echo "❌ Font installation script not found"; \
+		echo "Expected: ./scripts/fonts/install-fonts.sh"; \
+		exit 1; \
+	fi
+	@./scripts/fonts/install-fonts.sh --all
+	@echo ""
+	@echo "✅ Font installation complete"
+	@echo "💡 Verify installation: make fonts-verify"
+
+# Install essential fonts only (MesloLGS NF + Lato + Raleway)
+fonts-install-essential:
+	@echo "🔤 Installing essential fonts..."
+	@echo ""
+	@echo "📦 This will install:"
+	@echo "   • MesloLGS NF (4 variants) - Required for Powerlevel10k terminal theme"
+	@echo "   • Lato (4 variants) - Professional sans-serif for documents"
+	@echo "   • Raleway (2 variants) - Modern geometric sans-serif"
+	@echo "   • Lora (4 variants) - Elegant serif for professional documents"
+	@echo ""
+	@if [ ! -f ./scripts/fonts/install-fonts.sh ]; then \
+		echo "❌ Font installation script not found"; \
+		echo "Expected: ./scripts/fonts/install-fonts.sh"; \
+		exit 1; \
+	fi
+	@./scripts/fonts/install-fonts.sh --essential-only
+	@echo ""
+	@echo "✅ Essential fonts installed"
+	@echo "💡 Install all fonts with: make fonts-install"
+
+# Install essential + coding fonts
+fonts-install-coding:
+	@echo "🔤 Installing essential + coding fonts..."
+	@echo ""
+	@echo "📦 This will install:"
+	@echo "   • Essential fonts (10 fonts)"
+	@echo "   • Hack (4 variants)"
+	@echo "   • Space Mono (4 variants)"
+	@echo "   • IBM 3270 (3 variants)"
+	@echo "   • CPMono (5 variants)"
+	@echo ""
+	@if [ ! -f ./scripts/fonts/install-fonts.sh ]; then \
+		echo "❌ Font installation script not found"; \
+		echo "Expected: ./scripts/fonts/install-fonts.sh"; \
+		exit 1; \
+	fi
+	@./scripts/fonts/install-fonts.sh --with-coding
+	@echo ""
+	@echo "✅ Coding fonts installed"
+
+# Install essential + all Powerline fonts
+fonts-install-powerline:
+	@echo "🔤 Installing essential + Powerline fonts..."
+	@echo ""
+	@echo "📦 This will install:"
+	@echo "   • Essential fonts (10 fonts)"
+	@echo "   • 120+ Powerline terminal fonts (Source Code Pro, DejaVu, Roboto Mono, etc.)"
+	@echo ""
+	@if [ ! -f ./scripts/fonts/install-fonts.sh ]; then \
+		echo "❌ Font installation script not found"; \
+		echo "Expected: ./scripts/fonts/install-fonts.sh"; \
+		exit 1; \
+	fi
+	@./scripts/fonts/install-fonts.sh --with-powerline
+	@echo ""
+	@echo "✅ Powerline fonts installed"
+
+# Verify essential fonts are installed
+fonts-verify:
+	@echo "🔍 Verifying essential font installation..."
+	@echo ""
+	@if [ ! -d "$$HOME/Library/Fonts" ]; then \
+		echo "❌ Fonts directory not found: ~/Library/Fonts"; \
+		exit 1; \
+	fi
+	@missing=0; \
+	fonts=("MesloLGS NF Regular.ttf" "MesloLGS NF Bold.ttf" "Lato-Regular.ttf" "Raleway-VF.ttf" "Lora-Regular.ttf"); \
+	for font in "$${fonts[@]}"; do \
+		if [ -f "$$HOME/Library/Fonts/$$font" ]; then \
+			echo "✅ $$font"; \
+		else \
+			echo "❌ Missing: $$font"; \
+			missing=$$((missing + 1)); \
+		fi; \
+	done; \
+	echo ""; \
+	if [ $$missing -eq 0 ]; then \
+		echo "✅ All essential fonts verified"; \
+		total=$$(find "$$HOME/Library/Fonts" -type f \( -name "*.ttf" -o -name "*.otf" \) 2>/dev/null | wc -l | tr -d ' '); \
+		echo "📊 Total custom fonts installed: $$total"; \
+	else \
+		echo "❌ $$missing essential fonts missing"; \
+		echo "Install with: make fonts-install-essential"; \
+		exit 1; \
+	fi

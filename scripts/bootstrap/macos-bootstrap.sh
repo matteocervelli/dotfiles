@@ -93,6 +93,19 @@ else
     log_success "Powerlevel10k already installed"
 fi
 
+# Install essential fonts (required for Powerlevel10k)
+log_step "Installing Essential Fonts"
+if [ -f "$SCRIPT_DIR/../fonts/install-fonts.sh" ]; then
+    log_info "Installing MesloLGS NF + professional fonts (Lato, Raleway)..."
+    "$SCRIPT_DIR/../fonts/install-fonts.sh" --essential-only || {
+        log_warning "Font installation failed or skipped"
+        log_info "Run manually later: ./scripts/fonts/install-fonts.sh --essential-only"
+    }
+else
+    log_warning "Font installation script not found"
+    log_info "Expected: $SCRIPT_DIR/../fonts/install-fonts.sh"
+fi
+
 log_success "macOS dependencies installed successfully!"
 
 # Setup SSH keys
