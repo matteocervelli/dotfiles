@@ -154,7 +154,7 @@ done
 
 # Check prerequisites
 check_prerequisites() {
-    log_header "Checking Prerequisites"
+    log_step "Checking Prerequisites"
 
     # Check if running on macOS
     if ! is_macos; then
@@ -298,7 +298,7 @@ clear_font_cache() {
         return 0
     fi
 
-    log_header "Rebuilding Font Cache"
+    log_step "Rebuilding Font Cache"
 
     if [ "$DRY_RUN" = true ]; then
         log_info "Would rebuild font cache"
@@ -322,7 +322,7 @@ clear_font_cache() {
 
 # Verify font installation
 verify_installation() {
-    log_header "Verifying Installation"
+    log_step "Verifying Installation"
 
     local essential_fonts=(
         "MesloLGS NF Regular.ttf"
@@ -363,7 +363,7 @@ print_summary() {
         all) mode_description="All Fonts" ;;
     esac
 
-    log_header "Installation Summary"
+    log_step "Installation Summary"
     echo ""
     echo "  Mode:        $mode_description"
     echo "  Installed:   $INSTALLED_COUNT fonts"
@@ -389,7 +389,7 @@ print_summary() {
 
 # Main installation process
 main() {
-    log_header "Font Installation"
+    log_step "Font Installation"
     echo ""
     echo "  Dotfiles:    $DOTFILES_DIR"
     echo "  Source:      $FONTS_BACKUP"
@@ -403,7 +403,7 @@ main() {
     check_prerequisites
 
     # Get fonts to install
-    log_header "Preparing Font List"
+    log_step "Preparing Font List"
     local fonts_to_install
     fonts_to_install=$(get_fonts_to_install "$INSTALL_MODE")
     local total_fonts
@@ -411,7 +411,7 @@ main() {
     log_info "Found $total_fonts fonts to install"
 
     # Install fonts
-    log_header "Installing Fonts"
+    log_step "Installing Fonts"
     while IFS= read -r font; do
         [ -z "$font" ] && continue
         install_font "$font"

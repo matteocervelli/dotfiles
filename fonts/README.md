@@ -4,18 +4,18 @@ Complete automated font management for macOS across multiple devices (Mac Studio
 
 ## Overview
 
-This system manages **179 custom fonts** organized into categories for selective installation:
-- **Essential**: Terminal + Professional fonts (10 fonts)
+This system manages **190 custom fonts** organized into categories for selective installation:
+- **Essential**: Terminal + Professional fonts (14 fonts)
 - **Coding**: Monospace fonts for development (16 fonts)
 - **Powerline**: Terminal fonts with special glyphs (120+ fonts)
-- **Optional**: Complete font families for design work (33 fonts)
+- **Optional**: Complete font families for design work (40 fonts)
 
 ## Quick Start
 
 ### Install Essential Fonts Only (Recommended for Bootstrap)
 
 ```bash
-# Install MesloLGS NF + Lato + Raleway (10 fonts, <5 seconds)
+# Install MesloLGS NF + Lato + Raleway + Lora (14 fonts, <5 seconds)
 make fonts-install-essential
 
 # Or via script
@@ -26,6 +26,7 @@ Essential fonts include:
 - **MesloLGS NF** (4 variants) - Required for Powerlevel10k terminal theme
 - **Lato** (Regular, Bold, Italic, BoldItalic) - Professional sans-serif
 - **Raleway** (Variable font + Italic) - Modern geometric sans-serif
+- **Lora** (Regular, Bold, Italic, BoldItalic) - Elegant serif for professional documents
 
 ### Install All Fonts
 
@@ -49,7 +50,7 @@ make health
 
 ## Font Categories
 
-### Essential (10 fonts)
+### Essential (14 fonts)
 
 **Terminal:**
 - MesloLGS NF Regular.ttf
@@ -58,12 +59,16 @@ make health
 - MesloLGS NF Bold Italic.ttf
 
 **Professional:**
-- Lato-Regular.ttf
+- Lato-Regular.ttf (Sans-serif, clean and modern)
 - Lato-Bold.ttf
 - Lato-Italic.ttf
 - Lato-BoldItalic.ttf
-- Raleway-VF.ttf (Variable font)
+- Raleway-VF.ttf (Variable font, geometric sans-serif)
 - Raleway-Italic-VF.ttf (Variable font)
+- Lora-Regular.ttf (Serif, elegant and professional)
+- Lora-Bold.ttf
+- Lora-Italic.ttf
+- Lora-BoldItalic.ttf
 
 ### Coding Fonts (16 fonts)
 
@@ -90,12 +95,21 @@ Terminal fonts with special glyphs for status lines:
 **UI Fonts** (6 variable fonts):
 - Montserrat, Outfit, Overpass, Rubik
 
-### Optional Design (9 fonts)
+### Optional Design (16 fonts)
 
 **Serif Fonts**:
 - Fanwood (4 variants) - Classic serif
 - Noto Serif (2 variable fonts) - Google's serif family
 - GoudyBookletter1911 - Decorative serif
+
+**Lora Extended**:
+- Lora-Medium.ttf (Additional weights beyond essential)
+- Lora-MediumItalic.ttf
+- Lora-SemiBold.ttf
+- Lora-SemiBoldItalic.ttf
+- Lora-RegularItalic.ttf
+- Lora-VariableFont_wght.ttf (Variable font)
+- Lora-Italic-VariableFont_wght.ttf (Variable font)
 
 **Display Fonts**:
 - Playlist (3 variants) - Caps + Script

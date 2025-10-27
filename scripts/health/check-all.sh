@@ -278,6 +278,7 @@ if is_macos; then
         "Lato-Regular.ttf"
         "Lato-Bold.ttf"
         "Raleway-VF.ttf"
+        "Lora-Regular.ttf"
     )
 
     missing_essential=()
@@ -291,7 +292,7 @@ if is_macos; then
         log_success "All essential fonts installed"
         if [ "$VERBOSE" = true ]; then
             log_info "  Terminal: MesloLGS NF (4 variants)"
-            log_info "  Professional: Lato (2 variants) + Raleway"
+            log_info "  Professional: Lato (2 variants) + Raleway + Lora"
         fi
         track_check "passed"
     else

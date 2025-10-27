@@ -18,6 +18,10 @@ essential:
     - Lato-BoldItalic.ttf
     - Raleway-VF.ttf
     - Raleway-Italic-VF.ttf
+    - Lora-Regular.ttf
+    - Lora-Bold.ttf
+    - Lora-Italic.ttf
+    - Lora-BoldItalic.ttf
 
 # Coding fonts - Popular monospace fonts for development
 coding:
@@ -217,6 +221,16 @@ optional-design:
     - NotoSerif-VariableFont_wdth,wght.ttf
     - NotoSerif-Italic-VariableFont_wdth,wght.ttf
     - GoudyBookletter1911.otf
+
+  # Lora complete family (additional weights beyond essential)
+  lora-extended:
+    - Lora-Medium.ttf
+    - Lora-MediumItalic.ttf
+    - Lora-SemiBold.ttf
+    - Lora-SemiBoldItalic.ttf
+    - Lora-RegularItalic.ttf
+    - Lora-VariableFont_wght.ttf
+    - Lora-Italic-VariableFont_wght.ttf
 
   display:
     - Playlist-Caps-Bold.otf

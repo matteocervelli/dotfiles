@@ -32,7 +32,7 @@ help:
 	@echo ""
 	@echo "🔤 Font Management:"
 	@echo "  make fonts-install              Install all fonts (179 fonts)"
-	@echo "  make fonts-install-essential    Install essential fonts only (10 fonts: MesloLGS NF + Lato + Raleway)"
+	@echo "  make fonts-install-essential    Install essential fonts only (14 fonts: MesloLGS NF + Lato + Raleway + Lora)"
 	@echo "  make fonts-install-coding       Install essential + coding fonts (Hack, Space Mono, etc.)"
 	@echo "  make fonts-install-powerline    Install essential + all Powerline fonts (130+ fonts)"
 	@echo "  make fonts-verify               Verify essential fonts are installed"
@@ -440,6 +440,7 @@ fonts-install-essential:
 	@echo "   • MesloLGS NF (4 variants) - Required for Powerlevel10k terminal theme"
 	@echo "   • Lato (4 variants) - Professional sans-serif for documents"
 	@echo "   • Raleway (2 variants) - Modern geometric sans-serif"
+	@echo "   • Lora (4 variants) - Elegant serif for professional documents"
 	@echo ""
 	@if [ ! -f ./scripts/fonts/install-fonts.sh ]; then \
 		echo "❌ Font installation script not found"; \
@@ -497,7 +498,7 @@ fonts-verify:
 		exit 1; \
 	fi
 	@missing=0; \
-	fonts=("MesloLGS NF Regular.ttf" "MesloLGS NF Bold.ttf" "Lato-Regular.ttf" "Raleway-VF.ttf"); \
+	fonts=("MesloLGS NF Regular.ttf" "MesloLGS NF Bold.ttf" "Lato-Regular.ttf" "Raleway-VF.ttf" "Lora-Regular.ttf"); \
 	for font in "$${fonts[@]}"; do \
 		if [ -f "$$HOME/Library/Fonts/$$font" ]; then \
 			echo "✅ $$font"; \
