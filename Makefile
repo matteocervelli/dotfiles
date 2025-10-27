@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full docker-build-minimal docker-build-dev docker-build-production docker-build-all docker-run-minimal docker-run-dev docker-test docker-clean docker-size docker-verify
 
 # Default target - show help
 help:
@@ -53,6 +53,17 @@ help:
 	@echo "  make autoupdate-logs       View auto-update logs"
 	@echo "  make autoupdate-disable    Disable auto-update service"
 	@echo "  make autoupdate-enable     Enable auto-update service"
+	@echo ""
+	@echo "🐳 Docker Container Images:"
+	@echo "  make docker-build-minimal   Build minimal Ubuntu container (< 300MB)"
+	@echo "  make docker-build-dev       Build dev Ubuntu container with tools"
+	@echo "  make docker-build-all       Build all Docker images (minimal + dev + production)"
+	@echo "  make docker-run-minimal     Run minimal container interactively"
+	@echo "  make docker-run-dev         Run dev container interactively"
+	@echo "  make docker-test            Run BATS tests for Docker images"
+	@echo "  make docker-size            Show Docker image sizes"
+	@echo "  make docker-verify          Verify Docker images meet requirements"
+	@echo "  make docker-clean           Remove Docker images and cleanup"
 	@echo ""
 	@echo "🐳 Ubuntu/Docker (Linux only):"
 	@echo "  make docker-install         Install Docker Engine + Compose v2 (Ubuntu)"
@@ -570,3 +581,184 @@ services-backup:
 	@echo ""
 	@echo "✅ Services backed up to: system/macos/services/"
 	@echo "💡 Commit changes: git add system/macos/services/"
+
+# =============================================================================
+# Docker Container Image Management (Issue #44)
+# =============================================================================
+
+# Build Docker images
+docker-build-minimal:
+	@echo "🐳 Building minimal Docker image..."
+	@echo ""
+	@echo "Profile: container-minimal"
+	@echo "Target size: < 500MB"
+	@echo "Includes: Ubuntu 24.04 + ZSH + Git + GNU Stow"
+	@echo ""
+	docker build -f Dockerfile.dotfiles-ubuntu --target minimal -t dotfiles-ubuntu:minimal .
+	@echo ""
+	@echo "✅ Minimal image built successfully"
+	@echo "Run with: make docker-run-minimal"
+
+docker-build-dev:
+	@echo "🐳 Building development Docker image..."
+	@echo ""
+	@echo "Profile: container-dev"
+	@echo "Target size: < 500MB"
+	@echo "Includes: Minimal + Python + Node.js + Build tools"
+	@echo ""
+	docker build -f Dockerfile.dotfiles-ubuntu --target dev -t dotfiles-ubuntu:dev .
+	@echo ""
+	@echo "✅ Development image built successfully"
+	@echo "Run with: make docker-run-dev"
+
+docker-build-production:
+	@echo "🐳 Building production Docker image..."
+	@echo ""
+	@echo "Profile: container-production"
+	@echo "Target size: < 500MB"
+	@echo "Optimized for production deployment"
+	@echo ""
+	docker build -f Dockerfile.dotfiles-ubuntu --target production -t dotfiles-ubuntu:production .
+	@echo ""
+	@echo "✅ Production image built successfully"
+
+docker-build-all: docker-build-minimal docker-build-dev docker-build-production
+	@echo ""
+	@echo "✅ All Docker images built successfully"
+	@echo ""
+	@docker images | grep dotfiles-ubuntu || echo "No images found"
+
+# Run Docker containers
+docker-run-minimal:
+	@echo "🐳 Running minimal container..."
+	@echo ""
+	@echo "💡 To mount workspace: docker run -it --rm -v \$$(pwd):/workspace dotfiles-ubuntu:minimal"
+	@echo ""
+	docker run -it --rm dotfiles-ubuntu:minimal
+
+docker-run-dev:
+	@echo "🐳 Running development container..."
+	@echo ""
+	@echo "💡 To mount workspace: docker run -it --rm -v \$$(pwd):/workspace dotfiles-ubuntu:dev"
+	@echo ""
+	docker run -it --rm dotfiles-ubuntu:dev
+
+# Run Docker tests
+docker-test:
+	@echo "🧪 Running Docker image tests..."
+	@echo ""
+	@if ! command -v bats >/dev/null 2>&1; then \
+		echo "❌ BATS not found. Install with: brew install bats-core"; \
+		exit 1; \
+	fi
+	@if ! docker images | grep -q "dotfiles-ubuntu:minimal"; then \
+		echo "⚠️  Minimal image not found. Building..."; \
+		$(MAKE) docker-build-minimal; \
+	fi
+	@bats tests/test-23-docker-ubuntu.bats
+	@echo ""
+	@echo "✅ All Docker tests passed"
+
+# Show Docker image sizes
+docker-size:
+	@echo "📊 Docker Image Sizes"
+	@echo ""
+	@echo "Target: < 500MB for all images"
+	@echo ""
+	@docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep -E "REPOSITORY|dotfiles-ubuntu" || echo "No dotfiles-ubuntu images found"
+	@echo ""
+	@echo "💡 To reduce size:"
+	@echo "  1. Review .dockerignore"
+	@echo "  2. Use --no-install-recommends with apt"
+	@echo "  3. Clean apt cache after install"
+	@echo "  4. Use multi-stage builds"
+
+# Verify Docker images meet requirements
+docker-verify:
+	@echo "🔍 Verifying Docker images..."
+	@echo ""
+	@echo "Checking requirements:"
+	@echo "  1. Image size < 500MB"
+	@echo "  2. Startup time < 2 seconds"
+	@echo "  3. ZSH available"
+	@echo "  4. Git available"
+	@echo "  5. Dotfiles stowed"
+	@echo ""
+	@# Check if minimal image exists
+	@if ! docker images | grep -q "dotfiles-ubuntu:minimal"; then \
+		echo "❌ Minimal image not found. Build with: make docker-build-minimal"; \
+		exit 1; \
+	fi
+	@# Check size
+	@size=$$(docker images --format "{{.Size}}" dotfiles-ubuntu:minimal | sed 's/MB//' | awk '{print int($$1)}'); \
+	if [ "$$size" -lt 500 ]; then \
+		echo "✅ Size check passed: $${size}MB < 500MB"; \
+	else \
+		echo "❌ Size check failed: $${size}MB >= 500MB"; \
+		exit 1; \
+	fi
+	@# Check startup time
+	@echo "⏱️  Testing startup time..."
+	@start=$$(date +%s); \
+	docker run --rm dotfiles-ubuntu:minimal echo "Ready" >/dev/null; \
+	end=$$(date +%s); \
+	duration=$$((end - start)); \
+	if [ "$$duration" -lt 3 ]; then \
+		echo "✅ Startup time check passed: $${duration}s < 3s"; \
+	else \
+		echo "⚠️  Startup time: $${duration}s (target: < 2s, acceptable: < 3s)"; \
+	fi
+	@# Check ZSH
+	@if docker run --rm dotfiles-ubuntu:minimal zsh --version >/dev/null 2>&1; then \
+		echo "✅ ZSH check passed"; \
+	else \
+		echo "❌ ZSH check failed"; \
+		exit 1; \
+	fi
+	@# Check Git
+	@if docker run --rm dotfiles-ubuntu:minimal git --version >/dev/null 2>&1; then \
+		echo "✅ Git check passed"; \
+	else \
+		echo "❌ Git check failed"; \
+		exit 1; \
+	fi
+	@# Check dotfiles
+	@if docker run --rm dotfiles-ubuntu:minimal test -f /home/developer/.zshrc; then \
+		echo "✅ Dotfiles check passed"; \
+	else \
+		echo "❌ Dotfiles check failed"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "✅ All verification checks passed"
+
+# Clean Docker resources
+docker-clean:
+	@echo "🧹 Cleaning Docker resources..."
+	@echo ""
+	@echo "⚠️  This will remove:"
+	@echo "  - dotfiles-ubuntu images (minimal, dev, production)"
+	@echo "  - Dangling images"
+	@echo "  - Build cache"
+	@echo ""
+	@echo "Press Ctrl+C to cancel, or wait 5 seconds..."
+	@sleep 5
+	@echo ""
+	@# Remove dotfiles-ubuntu images
+	@docker images | grep "dotfiles-ubuntu" | awk '{print $$1":"$$2}' | xargs -r docker rmi -f || echo "No images to remove"
+	@# Remove dangling images
+	@docker image prune -f
+	@# Remove build cache (optional)
+	@echo ""
+	@echo "✅ Docker cleanup complete"
+	@echo ""
+	@echo "💡 To free more space:"
+	@echo "  docker system prune -a  # Remove all unused images"
+	@echo "  docker builder prune -a # Remove all build cache"
+
+# Quick Docker workflow for development
+docker-quick: docker-build-minimal docker-verify
+	@echo ""
+	@echo "✅ Quick Docker workflow complete"
+	@echo "Run with: make docker-run-minimal"
+

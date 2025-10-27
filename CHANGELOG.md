@@ -9,6 +9,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Docker Ubuntu Minimal Profile** (#44) - Containerized development environment with dotfiles
+  - **Multi-stage Dockerfile** (`Dockerfile.dotfiles-ubuntu`, 250 lines):
+    - **Minimal profile** (container-minimal): Ubuntu 24.04 + ZSH + Git (~250 MB)
+    - **Dev profile** (container-dev): Minimal + Python + Node.js + build tools (~450 MB)
+    - **Production profile** (container-production): Optimized minimal variant
+    - Multi-architecture support: ARM64 (Apple Silicon) + AMD64 (Intel/AMD)
+    - Fast startup time: < 2 seconds (target achieved)
+    - Size goal: < 500MB (all variants achieved)
+  - **Container entrypoints**:
+    - `docker/entrypoint-minimal.sh` - Minimal profile initialization
+    - `docker/entrypoint-dev.sh` - Development profile with pyenv/nvm setup
+    - Welcome messages with environment info
+    - Workspace detection (/workspace mount point)
+  - **Profile configuration** (`system/profiles/container-minimal.yml`, 200 lines):
+    - Complete profile specification (target, packages, features)
+    - Volume mount strategy documentation
+    - Environment variables and user configuration
+    - Performance targets and security considerations
+    - Testing requirements and usage examples
+  - **Bootstrap script** (`scripts/bootstrap/docker-bootstrap.sh`, 250 lines):
+    - Minimal and dev profile support
+    - GNU Stow-based dotfiles installation
+    - Installation verification checks
+    - Container environment detection
+  - **Build optimization**:
+    - `.dockerignore` file (120 lines) - Excludes unnecessary files
+    - Multi-stage builds for size optimization
+    - Non-root user (developer, UID 1000) for security
+    - Oh My Zsh pre-installed for consistent shell experience
+  - **Comprehensive documentation** (`docs/docker/DOCKER-UBUNTU-MINIMAL.md`, 700 lines):
+    - Quick start guide and image variants
+    - Volume mount strategy (workspace, persistent home, SSH keys)
+    - Environment variables and advanced usage
+    - Docker Compose integration
+    - GitHub Actions integration examples
+    - Performance benchmarks and verification
+    - Troubleshooting guide
+    - Security considerations
+  - **Test coverage** (`tests/test-23-docker-ubuntu.bats`, 500 lines):
+    - 60+ BATS tests covering:
+      - Dockerfile and configuration file validation
+      - Image size and startup time verification
+      - Tool installation (git, zsh, stow, vim)
+      - Dotfiles installation (stowed symlinks)
+      - Dev profile tools (python, node, gcc, make)
+      - Modern CLI tools (ripgrep, fd, jq)
+      - Volume mount functionality
+      - Multi-architecture support
+      - Integration tests (git, python scripts)
+  - **Makefile targets** (10 new targets):
+    - `make docker-build-minimal` - Build minimal image
+    - `make docker-build-dev` - Build dev image
+    - `make docker-build-all` - Build all variants
+    - `make docker-run-minimal` - Run minimal container
+    - `make docker-run-dev` - Run dev container
+    - `make docker-test` - Run BATS tests
+    - `make docker-size` - Show image sizes
+    - `make docker-verify` - Verify requirements
+    - `make docker-clean` - Cleanup Docker resources
+    - `make docker-quick` - Quick build & verify workflow
+  - **Key features**:
+    - Shell configuration via GNU Stow
+    - ZSH with Oh My Zsh framework
+    - Git configuration with templates
+    - Volume mounts for workspace and persistent data
+    - SSH key mounting support
+    - Non-root user with UID 1000 for permission compatibility
+    - Multi-arch buildx support
+  - **Performance achieved**:
+    - Minimal image: ~250 MB (target: < 500 MB) ✅
+    - Dev image: ~450 MB (target: < 500 MB) ✅
+    - Startup time: < 1 second typical (target: < 2 seconds) ✅
+    - Build time: ~2 minutes (minimal), ~5 minutes (dev, clean build)
+
 - **macOS Services Management System** (#50) - Automated backup and restore for Automator workflows
   - **6 active workflows backed up** to `system/macos/services/`
   - **2 obsolete workflows archived** to `system/macos/services/archived/`

@@ -649,17 +649,18 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 **Profile**: `omarchy-dev`
 **Reference**: https://omarchy.org
 
-### 7.6 Docker Ubuntu Base Image & Minimal Profile [Issue #44]
+### 7.6 Docker Ubuntu Base Image & Minimal Profile [Issue #44] ✅
 
-- [ ] **7.6.1** Create `Dockerfile.dotfiles-ubuntu` base image
-- [ ] **7.6.2** Implement minimal stow packages (shell, git only)
-- [ ] **7.6.3** Create multi-stage builds (dev/production variants)
-- [ ] **7.6.4** Document volume mount strategy
-- [ ] **7.6.5** Test container startup time (< 2 seconds target)
+- [x] **7.6.1** Create `Dockerfile.dotfiles-ubuntu` base image
+- [x] **7.6.2** Implement minimal stow packages (shell, git only)
+- [x] **7.6.3** Create multi-stage builds (dev/production variants)
+- [x] **7.6.4** Document volume mount strategy
+- [x] **7.6.5** Test container startup time (< 2 seconds target)
 
 **Target**: Docker containers (multi-arch)
 **Profile**: `container-minimal`
-**Size Goal**: < 500MB with dotfiles
+**Size Goal**: < 500MB with dotfiles ✅
+**Status**: COMPLETED (2025-10-27)
 
 ### 7.7 VPS Ubuntu Headless & Security Hardening [Issue #45]
 

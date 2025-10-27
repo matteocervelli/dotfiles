@@ -1,0 +1,205 @@
+# Container Minimal Profile
+# Profile for Docker/Podman containers with minimal dotfiles
+#
+# Target: Docker containers (multi-arch: ARM64 + x86_64)
+# Size Goal: < 500MB with dotfiles
+# Startup Time: < 2 seconds
+# Issue: https://github.com/matteocervelli/dotfiles/issues/44
+
+name: container-minimal
+description: Minimal Ubuntu container with shell and git configuration only
+version: 1.0.0
+created: 2025-10-27
+updated: 2025-10-27
+
+# Target environment
+target:
+  platform: linux
+  distribution: ubuntu
+  version: "24.04"
+  architecture:
+    - amd64
+    - arm64
+  container: true
+  use_case: development
+
+# Stow packages to install
+stow_packages:
+  - shell      # ZSH + Oh My Zsh + aliases + functions
+  - git        # Git configuration and templates
+
+# System packages (APT)
+apt_packages:
+  essential:
+    - ca-certificates
+    - curl
+    - wget
+    - git
+    - gnupg
+    - zsh
+    - bash-completion
+    - stow
+
+  utilities:
+    - vim
+    - nano
+    - tree
+
+# Features
+features:
+  shell:
+    default: zsh
+    oh_my_zsh: true
+    plugins:
+      - git
+      - docker
+      - colored-man-pages
+    theme: robbyrussell
+
+  git:
+    enabled: true
+    config:
+      user_name: developer
+      user_email: developer@example.com
+    aliases: true
+
+  # Disabled features for minimal profile
+  docker: false
+  python: false
+  nodejs: false
+  databases: false
+  gui: false
+
+# Roles (from role-based system)
+roles: []
+
+# Environment variables
+environment:
+  SHELL: /bin/zsh
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+  TZ: UTC
+
+# User configuration
+user:
+  name: developer
+  uid: 1000
+  gid: 1000
+  home: /home/developer
+  shell: /bin/zsh
+  groups:
+    - sudo
+
+# Volume mounts (recommended)
+volumes:
+  workspace:
+    host: .
+    container: /workspace
+    description: Mount current directory as workspace
+
+  # Optional persistent home
+  # home:
+  #   host: ~/.docker-home
+  #   container: /home/developer
+  #   description: Persist user configuration across containers
+
+# Ports (none for minimal profile)
+ports: []
+
+# Docker-specific configuration
+docker:
+  base_image: ubuntu:24.04
+  dockerfile: Dockerfile.dotfiles-ubuntu
+  target: minimal
+  tags:
+    - dotfiles-ubuntu:minimal
+    - dotfiles-ubuntu:latest
+
+  build_args: {}
+
+  labels:
+    maintainer: Matteo Cervelli
+    profile: container-minimal
+    issue: https://github.com/matteocervelli/dotfiles/issues/44
+
+# Performance targets
+performance:
+  max_image_size_mb: 500
+  target_startup_time_seconds: 2
+  max_layer_count: 20
+
+# Security considerations
+security:
+  run_as_non_root: true
+  read_only_root_filesystem: false  # Can be enabled for production
+  drop_capabilities: []
+
+# Testing requirements
+tests:
+  - name: image_size
+    description: Verify image is under 500MB
+    command: docker images --format "{{.Size}}" dotfiles-ubuntu:minimal | grep -E "^[0-9]+MB$"
+
+  - name: startup_time
+    description: Verify startup time is under 2 seconds
+    command: time docker run --rm dotfiles-ubuntu:minimal echo "Ready"
+
+  - name: zsh_available
+    description: Verify ZSH is installed and working
+    command: docker run --rm dotfiles-ubuntu:minimal zsh --version
+
+  - name: git_available
+    description: Verify Git is installed and working
+    command: docker run --rm dotfiles-ubuntu:minimal git --version
+
+  - name: stow_applied
+    description: Verify dotfiles are stowed correctly
+    command: docker run --rm dotfiles-ubuntu:minimal test -f /home/developer/.zshrc
+
+# Documentation
+documentation:
+  readme: docs/docker/DOCKER-UBUNTU-MINIMAL.md
+  guide: docs/guides/docker-container-setup.md
+
+# Related profiles
+related_profiles:
+  - container-dev       # Development variant with languages
+  - container-production  # Production-hardened variant
+  - ubuntu-vm           # Full Ubuntu VM profile
+  - vps-minimal         # VPS headless profile
+
+# Usage examples
+usage:
+  build: |
+    # Build minimal image
+    docker build -f Dockerfile.dotfiles-ubuntu -t dotfiles-ubuntu:minimal .
+
+    # Multi-arch build
+    docker buildx build --platform linux/amd64,linux/arm64 \
+      -f Dockerfile.dotfiles-ubuntu -t dotfiles-ubuntu:minimal .
+
+  run: |
+    # Interactive shell
+    docker run -it --rm dotfiles-ubuntu:minimal
+
+    # With workspace mount
+    docker run -it --rm -v $(pwd):/workspace dotfiles-ubuntu:minimal
+
+    # Run command
+    docker run --rm dotfiles-ubuntu:minimal git --version
+
+  verify: |
+    # Check image size
+    docker images dotfiles-ubuntu:minimal
+
+    # Test startup time
+    time docker run --rm dotfiles-ubuntu:minimal echo "Ready"
+
+    # Verify configuration
+    docker run --rm dotfiles-ubuntu:minimal zsh -c "echo \$SHELL"
+
+# Maintenance
+maintenance:
+  update_frequency: monthly
+  base_image_tracking: ubuntu:24.04
+  dependencies_check: automated

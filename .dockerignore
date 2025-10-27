@@ -1,0 +1,146 @@
+# .dockerignore
+# Exclude unnecessary files from Docker build context
+# Goal: Reduce build context size and improve build speed
+
+# =============================================================================
+# Version Control
+# =============================================================================
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# =============================================================================
+# Documentation (not needed in container)
+# =============================================================================
+docs/
+*.md
+!README.md
+CHANGELOG.md
+LICENSE
+
+# =============================================================================
+# Backups and Archives
+# =============================================================================
+backups/
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# macOS-specific (not needed in Linux container)
+# =============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+system/macos/
+stow-packages/iterm2/
+screenshots/
+fonts/
+
+# =============================================================================
+# Development Tools
+# =============================================================================
+.vscode/
+.idea/
+*.code-workspace
+.claude/
+
+# =============================================================================
+# Temporary Files
+# =============================================================================
+tmp/
+temp/
+*.tmp
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# =============================================================================
+# Tests and CI (not needed in runtime container)
+# =============================================================================
+tests/
+.bats/
+*.bats
+coverage/
+
+# =============================================================================
+# Application-specific directories
+# =============================================================================
+applications/
+templates/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+venv/
+.venv/
+env/
+ENV/
+
+# =============================================================================
+# Sync and Cloud Storage (not needed in container)
+# =============================================================================
+sync/
+rclone/
+.rclone/
+
+# =============================================================================
+# Build Artifacts
+# =============================================================================
+dist/
+build/
+*.egg-info/
+target/
+out/
+
+# =============================================================================
+# Platform-specific packages (only need shell + git for minimal)
+# =============================================================================
+stow-packages/vscode/
+stow-packages/ssh/
+# Keep: stow-packages/shell/, stow-packages/git/, stow-packages/dev-env/
+
+# =============================================================================
+# Scripts (only include utils, exclude bootstrap/setup)
+# =============================================================================
+scripts/bootstrap/
+scripts/setup-*.sh
+scripts/apps/
+scripts/health/
+scripts/sync/
+# Keep: scripts/utils/
+
+# =============================================================================
+# System Configuration Files
+# =============================================================================
+system/ubuntu/packages.txt
+system/ubuntu/package-mappings.yml
+Brewfile
+Makefile
+
+# =============================================================================
+# Keep These (Explicitly Included)
+# =============================================================================
+# stow-packages/shell/
+# stow-packages/git/
+# stow-packages/dev-env/ (for dev stage)
+# scripts/utils/
+# docker/
+
+# =============================================================================
+# Additional Exclusions
+# =============================================================================
+*.iso
+*.dmg
+*.pkg
+*.deb
+*.rpm
