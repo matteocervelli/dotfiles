@@ -1,0 +1,353 @@
+# Prometheus Alert Rules
+# Production-ready alerts for VPS monitoring
+
+groups:
+  # ==========================================================================
+  # System Health Alerts
+  # ==========================================================================
+  - name: system_health
+    interval: 30s
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% (current value: {{ $value }}%)"
+
+      # Critical CPU usage
+      - alert: CriticalCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 2m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 95% (current value: {{ $value }}%)"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 80% (current value: {{ $value }}%)"
+
+      # Critical memory usage
+      - alert: CriticalMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "Critical memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 95% (current value: {{ $value }}%)"
+
+      # High disk usage
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"})) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "High disk usage on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} usage is above 80% (current value: {{ $value }}%)"
+
+      # Critical disk usage
+      - alert: CriticalDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"})) * 100 > 90
+        for: 2m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "Critical disk usage on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} usage is above 90% (current value: {{ $value }}%)"
+
+      # High load average
+      - alert: HighLoadAverage
+        expr: node_load15 / count(node_cpu_seconds_total{mode="idle"}) without(cpu, mode) > 2
+        for: 10m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "High load average on {{ $labels.instance }}"
+          description: "15-minute load average is high (current value: {{ $value }})"
+
+  # ==========================================================================
+  # Container Health Alerts
+  # ==========================================================================
+  - name: container_health
+    interval: 30s
+    rules:
+      # Container down
+      - alert: ContainerDown
+        expr: up{job="cadvisor"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: container
+        annotations:
+          summary: "Container {{ $labels.name }} is down"
+          description: "Container has been down for more than 1 minute"
+
+      # High container CPU
+      - alert: HighContainerCPU
+        expr: rate(container_cpu_usage_seconds_total{name!=""}[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: container
+        annotations:
+          summary: "High CPU usage in container {{ $labels.name }}"
+          description: "Container CPU usage is above 80% (current value: {{ $value }}%)"
+
+      # High container memory
+      - alert: HighContainerMemory
+        expr: (container_memory_usage_bytes{name!=""} / container_spec_memory_limit_bytes{name!=""}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: container
+        annotations:
+          summary: "High memory usage in container {{ $labels.name }}"
+          description: "Container memory usage is above 80% (current value: {{ $value }}%)"
+
+      # Container restarting
+      - alert: ContainerRestarting
+        expr: rate(container_last_seen{name!=""}[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          category: container
+        annotations:
+          summary: "Container {{ $labels.name }} is restarting"
+          description: "Container has been restarting frequently"
+
+  # ==========================================================================
+  # Database Alerts (PostgreSQL)
+  # ==========================================================================
+  - name: postgres_health
+    interval: 30s
+    rules:
+      # PostgreSQL down
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL instance {{ $labels.instance }} is down"
+
+      # Too many connections
+      - alert: PostgreSQLTooManyConnections
+        expr: sum by(instance) (pg_stat_activity_count) > (pg_settings_max_connections * 0.8)
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "PostgreSQL has too many connections"
+          description: "PostgreSQL connections are above 80% of max (current: {{ $value }})"
+
+      # Slow queries
+      - alert: PostgreSQLSlowQueries
+        expr: rate(pg_stat_activity_max_tx_duration[5m]) > 60
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "PostgreSQL has slow queries"
+          description: "Long-running queries detected (duration: {{ $value }}s)"
+
+      # Replication lag
+      - alert: PostgreSQLReplicationLag
+        expr: pg_replication_lag > 30
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "PostgreSQL replication lag"
+          description: "Replication lag is {{ $value }} seconds"
+
+  # ==========================================================================
+  # Redis Alerts
+  # ==========================================================================
+  - name: redis_health
+    interval: 30s
+    rules:
+      # Redis down
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: cache
+        annotations:
+          summary: "Redis is down"
+          description: "Redis instance {{ $labels.instance }} is down"
+
+      # High memory usage
+      - alert: RedisHighMemoryUsage
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          category: cache
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Redis memory usage is above 90% (current: {{ $value }}%)"
+
+      # Too many connections
+      - alert: RedisTooManyConnections
+        expr: redis_connected_clients > 1000
+        for: 5m
+        labels:
+          severity: warning
+          category: cache
+        annotations:
+          summary: "Redis has too many connections"
+          description: "Redis has {{ $value }} connections"
+
+      # Rejected connections
+      - alert: RedisRejectedConnections
+        expr: increase(redis_rejected_connections_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          category: cache
+        annotations:
+          summary: "Redis rejecting connections"
+          description: "Redis is rejecting connections (maxclients limit reached)"
+
+  # ==========================================================================
+  # Celery Alerts
+  # ==========================================================================
+  - name: celery_health
+    interval: 30s
+    rules:
+      # Worker down
+      - alert: CeleryWorkerDown
+        expr: celery_workers == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: celery
+        annotations:
+          summary: "No Celery workers available"
+          description: "All Celery workers are down"
+
+      # High queue length
+      - alert: CeleryHighQueueLength
+        expr: celery_queue_length > 100
+        for: 10m
+        labels:
+          severity: warning
+          category: celery
+        annotations:
+          summary: "Celery queue length is high"
+          description: "Queue {{ $labels.queue }} has {{ $value }} tasks"
+
+      # Task failures
+      - alert: CeleryTaskFailures
+        expr: rate(celery_task_failed_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          category: celery
+        annotations:
+          summary: "High Celery task failure rate"
+          description: "Task {{ $labels.task }} failure rate: {{ $value }}/s"
+
+  # ==========================================================================
+  # Application Alerts
+  # ==========================================================================
+  - name: application_health
+    interval: 30s
+    rules:
+      # Application down
+      - alert: ApplicationDown
+        expr: up{job="app-metrics"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "Application {{ $labels.service }} is down"
+          description: "Application has been down for more than 2 minutes"
+
+      # High HTTP error rate
+      - alert: HighHTTPErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "High HTTP 5xx error rate"
+          description: "Error rate is above 5% (current: {{ $value }})"
+
+      # High response time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "High HTTP response time"
+          description: "95th percentile response time is above 1s (current: {{ $value }}s)"
+
+  # ==========================================================================
+  # Monitoring Stack Health
+  # ==========================================================================
+  - name: monitoring_health
+    interval: 30s
+    rules:
+      # Prometheus scrape failures
+      - alert: PrometheusScrapeFailing
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: warning
+          category: monitoring
+        annotations:
+          summary: "Prometheus cannot scrape {{ $labels.job }}"
+          description: "Target {{ $labels.instance }} is down"
+
+      # Alertmanager down
+      - alert: AlertmanagerDown
+        expr: up{job="alertmanager"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: monitoring
+        annotations:
+          summary: "Alertmanager is down"
+          description: "Alertmanager has been down for more than 1 minute"
+
+      # Loki down
+      - alert: LokiDown
+        expr: up{job="loki"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: monitoring
+        annotations:
+          summary: "Loki is down"
+          description: "Loki has been down for more than 1 minute"

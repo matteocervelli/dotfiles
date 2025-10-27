@@ -1,0 +1,200 @@
+# Alertmanager Configuration
+# Alert routing and notification management
+
+global:
+  # How long to wait before sending a notification again if it has already been sent
+  resolve_timeout: 5m
+
+  # SMTP configuration for email notifications
+  # Uncomment and configure for email alerts
+  # smtp_smarthost: 'smtp.gmail.com:587'
+  # smtp_from: 'alertmanager@example.com'
+  # smtp_auth_username: 'your-email@gmail.com'
+  # smtp_auth_password: 'your-app-password'
+  # smtp_require_tls: true
+
+  # Slack webhook URL (configure via secret or env var)
+  # slack_api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+
+# Templates for notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Routing tree for alerts
+route:
+  # Default receiver for alerts
+  receiver: 'default'
+
+  # Group alerts by these labels
+  group_by: ['alertname', 'cluster', 'service']
+
+  # How long to wait before sending the first notification
+  group_wait: 30s
+
+  # How long to wait before sending notification about new alerts
+  group_interval: 5m
+
+  # How long to wait before re-sending a notification
+  repeat_interval: 4h
+
+  # Child routes for specific alert routing
+  routes:
+    # Critical alerts - send immediately
+    - match:
+        severity: critical
+      receiver: 'critical'
+      group_wait: 10s
+      repeat_interval: 1h
+
+    # System alerts
+    - match:
+        category: system
+      receiver: 'system-team'
+      group_wait: 30s
+
+    # Database alerts
+    - match:
+        category: database
+      receiver: 'database-team'
+      group_wait: 30s
+
+    # Application alerts
+    - match:
+        category: application
+      receiver: 'dev-team'
+      group_wait: 1m
+
+    # Celery alerts
+    - match:
+        category: celery
+      receiver: 'backend-team'
+      group_wait: 1m
+
+    # Container alerts
+    - match:
+        category: container
+      receiver: 'infra-team'
+      group_wait: 30s
+
+    # Monitoring stack alerts
+    - match:
+        category: monitoring
+      receiver: 'monitoring-team'
+      group_wait: 1m
+
+# Inhibition rules - suppress alerts when other alerts are firing
+inhibit_rules:
+  # Inhibit non-critical alerts when critical alerts are firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+  # Inhibit application alerts when system is down
+  - source_match:
+      alertname: 'InstanceDown'
+    target_match_re:
+      alertname: '.*'
+    equal: ['instance']
+
+  # Inhibit container alerts when host system has issues
+  - source_match:
+      category: 'system'
+      severity: 'critical'
+    target_match:
+      category: 'container'
+    equal: ['instance']
+
+# Receiver definitions
+receivers:
+  # Default receiver - logs only
+  - name: 'default'
+    # webhook_configs:
+    #   - url: 'http://localhost:5001/webhook'
+
+  # Critical alerts receiver
+  - name: 'critical'
+    # Email notification
+    # email_configs:
+    #   - to: 'ops-team@example.com'
+    #     headers:
+    #       Subject: '🔴 CRITICAL: {{ .GroupLabels.alertname }}'
+    #     html: '{{ template "email.default.html" . }}'
+    #
+    # Slack notification
+    # slack_configs:
+    #   - channel: '#alerts-critical'
+    #     title: '🔴 Critical Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+    #
+    # PagerDuty integration
+    # pagerduty_configs:
+    #   - service_key: 'YOUR_PAGERDUTY_SERVICE_KEY'
+    #     description: '{{ .CommonAnnotations.summary }}'
+
+  # System team receiver
+  - name: 'system-team'
+    # slack_configs:
+    #   - channel: '#alerts-system'
+    #     title: '⚠️ System Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+  # Database team receiver
+  - name: 'database-team'
+    # slack_configs:
+    #   - channel: '#alerts-database'
+    #     title: '🗄️ Database Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+  # Development team receiver
+  - name: 'dev-team'
+    # slack_configs:
+    #   - channel: '#alerts-dev'
+    #     title: '🐛 Application Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+  # Backend team receiver
+  - name: 'backend-team'
+    # slack_configs:
+    #   - channel: '#alerts-backend'
+    #     title: '⚙️ Celery Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+  # Infrastructure team receiver
+  - name: 'infra-team'
+    # slack_configs:
+    #   - channel: '#alerts-infra'
+    #     title: '🐳 Container Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+  # Monitoring team receiver
+  - name: 'monitoring-team'
+    # slack_configs:
+    #   - channel: '#alerts-monitoring'
+    #     title: '📊 Monitoring Alert'
+    #     text: '{{ .CommonAnnotations.summary }}'
+    #     send_resolved: true
+
+# Time intervals for muting alerts (optional)
+# time_intervals:
+#   - name: 'business-hours'
+#     time_intervals:
+#       - times:
+#           - start_time: '09:00'
+#             end_time: '17:00'
+#         weekdays: ['monday:friday']
+#
+#   - name: 'off-hours'
+#     time_intervals:
+#       - times:
+#           - start_time: '17:00'
+#             end_time: '09:00'
+#         weekdays: ['monday:friday']
+#       - weekdays: ['saturday', 'sunday']
