@@ -119,6 +119,34 @@ if [[ "$INSTALL_VNC" == "true" ]]; then
 
     log_info "Setting up VNC server..."
 
+    # Ask which desktop environment for VNC
+    echo ""
+    log_info "Which desktop environment for VNC?"
+    echo "  ${GREEN}1${NC} - XFCE (recommended - lightweight, works reliably)"
+    echo "  ${GREEN}2${NC} - GNOME (heavier, may have session issues)"
+    echo ""
+    read -p "Enter your choice [1-2]: " de_choice
+
+    case "$de_choice" in
+        1)
+            DE_NAME="XFCE"
+            log_info "Installing XFCE desktop environment..."
+            sudo apt-get install -y xfce4 xfce4-goodies
+            log_success "XFCE installed"
+            ;;
+        2)
+            DE_NAME="GNOME"
+            log_info "Using GNOME desktop (already installed)"
+            ;;
+        *)
+            log_warning "Invalid choice, defaulting to XFCE"
+            DE_NAME="XFCE"
+            log_info "Installing XFCE desktop environment..."
+            sudo apt-get install -y xfce4 xfce4-goodies
+            log_success "XFCE installed"
+            ;;
+    esac
+
     # Create VNC password
     echo ""
     log_warning "You need to set a VNC password for remote connections"
@@ -131,20 +159,42 @@ if [[ "$INSTALL_VNC" == "true" ]]; then
     VNC_XSTARTUP="$HOME/.vnc/xstartup"
     mkdir -p "$HOME/.vnc"
 
-    cat > "$VNC_XSTARTUP" << 'EOF'
+    if [[ "$DE_NAME" == "XFCE" ]]; then
+        cat > "$VNC_XSTARTUP" << 'EOF'
 #!/bin/sh
-# VNC xstartup script for GNOME
+# VNC xstartup script for XFCE
 
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
 
-# Start GNOME session
-exec gnome-session &
+# Start XFCE session
+exec startxfce4
 EOF
+    else
+        cat > "$VNC_XSTARTUP" << 'EOF'
+#!/bin/bash
+# VNC xstartup script for GNOME
+
+# Setup environment
+export XDG_SESSION_TYPE=x11
+export XDG_CURRENT_DESKTOP=GNOME
+export GNOME_SHELL_SESSION_MODE=ubuntu
+export XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+
+# Start DBUS
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval $(dbus-launch --sh-syntax)
+    export DBUS_SESSION_BUS_ADDRESS
+fi
+
+# Start GNOME session
+exec gnome-session --session=ubuntu
+EOF
+    fi
 
     chmod +x "$VNC_XSTARTUP"
 
-    log_success "VNC startup script created"
+    log_success "VNC startup script created for $DE_NAME"
 
     # Create systemd service for VNC
     log_info "Creating systemd service for VNC autostart (optional)..."

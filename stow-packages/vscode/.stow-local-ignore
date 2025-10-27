@@ -13,3 +13,18 @@
 \.swp$
 \.swo$
 ~$
+
+# VS Code runtime files and caches
+^/\.config/Code/User/globalStorage$
+^/\.config/Code/User/workspaceStorage$
+^/\.config/Code/User/History$
+^/\.config/Code/CachedExtensionVSIXs$
+^/\.config/Code/Cache$
+^/\.config/Code/CachedData$
+^/\.config/Code/GPUCache$
+^/\.config/Code/DawnGraphiteCache$
+^/\.config/Code/DawnWebGPUCache$
+^/\.config/Code/logs$
+^/\.config/Code/Backups$
+^/\.config/Code/Cookies.*$
+^/\.config/Code/.*\.lock$

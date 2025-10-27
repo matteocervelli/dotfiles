@@ -96,6 +96,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gnome-tweaks \
     gnome-shell-extensions \
     dconf-editor \
+    gnome-keyring \
+    libsecret-1-0 \
+    libsecret-tools \
     || {
         log_error "GNOME installation failed"
         exit 1

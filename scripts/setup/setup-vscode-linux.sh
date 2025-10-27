@@ -173,24 +173,48 @@ if [[ -d "$VSCODE_CONFIG" ]] && [[ ! -L "$VSCODE_CONFIG/settings.json" ]]; then
     log_success "Backup created"
 fi
 
-# Stow vscode package with explicit directory
-cd "$DOTFILES_REAL/stow-packages"
-stow -t ~ -d . vscode
+# Stow vscode package with explicit absolute path
+STOW_DIR="$(readlink -f "$DOTFILES_REAL/stow-packages" || realpath "$DOTFILES_REAL/stow-packages")"
+log_info "Stow directory: $STOW_DIR"
 
-log_success "VS Code settings stowed (symlinked)"
+cd "$STOW_DIR"
+if stow -v -t ~ -d "$STOW_DIR" vscode 2>&1 | tee /tmp/vscode-stow.log; then
+    log_success "VS Code settings stowed via stow command"
+else
+    log_warning "Stow command failed, falling back to manual symlinks"
+    log_info "Creating symlinks manually..."
+
+    # Create symlinks manually
+    VSCODE_SRC="$STOW_DIR/vscode/.config/Code/User"
+    VSCODE_DST="$HOME/.config/Code/User"
+
+    mkdir -p "$VSCODE_DST"
+
+    ln -sf "$VSCODE_SRC/settings.json" "$VSCODE_DST/settings.json"
+    ln -sf "$VSCODE_SRC/keybindings.json" "$VSCODE_DST/keybindings.json"
+    ln -sf "$VSCODE_SRC/extensions.txt" "$VSCODE_DST/extensions.txt"
+
+    log_success "Manual symlinks created"
+fi
 
 # Verify symlinks
 log_info "Verifying symlinks..."
 if [[ -L "$HOME/.config/Code/User/settings.json" ]]; then
     log_success "settings.json: $(readlink $HOME/.config/Code/User/settings.json)"
 else
-    log_warning "settings.json: Not a symlink"
+    log_error "settings.json: Not a symlink!"
 fi
 
 if [[ -L "$HOME/.config/Code/User/keybindings.json" ]]; then
     log_success "keybindings.json: $(readlink $HOME/.config/Code/User/keybindings.json)"
 else
-    log_warning "keybindings.json: Not a symlink"
+    log_error "keybindings.json: Not a symlink!"
+fi
+
+if [[ -L "$HOME/.config/Code/User/extensions.txt" ]]; then
+    log_success "extensions.txt: $(readlink $HOME/.config/Code/User/extensions.txt)"
+else
+    log_warning "extensions.txt: Not a symlink"
 fi
 
 # Install extensions
