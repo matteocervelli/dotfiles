@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Arch Linux Bootstrap Script**: Complete `scripts/bootstrap/arch-bootstrap.sh` with Pacman and AUR support [#42]
+  - Implements all bootstrap phases: system update, essential tools, AUR helper installation, dotfiles core, stow deployment
+  - Supports multiple AUR helpers: yay (default), paru, and trizen
+  - Comprehensive CLI options: `--dry-run`, `--verbose`, `--with-packages`, `--essential-only`, `--skip-aur`, `--aur-helper`
+  - Architecture detection for ARM64 (aarch64) and x86_64 systems
+  - Idempotent operations with proper error handling
+- **Package Mapping Documentation**: Cross-distribution package name reference in `docs/os-configurations/PACKAGE-MAPPINGS.md`
+  - Comprehensive mapping table for Ubuntu (APT) ↔ Fedora (DNF) ↔ Arch (Pacman)
+  - Package manager command references for all three distributions
+  - Architecture considerations and binary download guidelines
+  - Common package patterns for development tools, languages, databases, and shell tools
+
+### Added
 
 - **macOS Services Management System** (#50) - Automated backup and restore for Automator workflows
   - **6 active workflows backed up** to `system/macos/services/`

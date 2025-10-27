@@ -627,10 +627,10 @@ See [FASE 7: Multi-Platform OS Configurations](#fase-7-multi-platform-os-configu
 
 ### 7.4 Arch Linux Bootstrap & AUR Integration [Issue #42]
 
-- [ ] **7.4.1** Create `scripts/bootstrap/arch-bootstrap.sh`
-- [ ] **7.4.2** Implement Pacman package management
-- [ ] **7.4.3** Configure AUR helper (yay or paru)
-- [ ] **7.4.4** Map package names (APT → Pacman)
+- [x] **7.4.1** Create `scripts/bootstrap/arch-bootstrap.sh`
+- [x] **7.4.2** Implement Pacman package management
+- [x] **7.4.3** Configure AUR helper (yay or paru)
+- [x] **7.4.4** Map package names (APT → Pacman)
 - [ ] **7.4.5** Test on UTM Arch Linux VM
 
 **Target**: UTM Arch Linux (ARM64)
