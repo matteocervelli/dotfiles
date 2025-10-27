@@ -47,7 +47,7 @@ stow-packages/
 │   ├── .gitconfig
 │   ├── .gitignore_global
 │   └── .stow-local-ignore
-└── cursor/                 # Cursor/VS Code settings
+└── vscode/                 # VS Code settings
     └── .config/
         └── Code/
             └── User/
@@ -274,7 +274,7 @@ This is **impossible** with tree folding!
 
 ### 2. **One Concern Per Package**
 
-- ✅ Good: `shell/`, `git/`, `vim/`, `cursor/`
+- ✅ Good: `shell/`, `git/`, `vim/`, `vscode/`
 - ❌ Bad: `dev-tools/` containing shell + git + vim
 
 ### 3. **Use Descriptive Package Names**
@@ -288,9 +288,9 @@ This is **impossible** with tree folding!
 Create a `README.md` in complex packages:
 
 ```
-stow-packages/cursor/
+stow-packages/vscode/
 ├── .config/...
-└── README.md  ← Document Cursor-specific setup
+└── README.md  ← Document VS Code-specific setup
 ```
 
 ### 5. **Keep Secrets Out**
@@ -392,7 +392,7 @@ chmod +x scripts/stow/stow-all.sh
 |---------|-------------|--------|
 | `shell` | ZSH/Bash configuration, aliases, functions | ✅ Implemented |
 | `git` | Git configuration and global gitignore | 🚧 Planned |
-| `cursor` | Cursor/VS Code settings and keybindings | 🚧 Planned |
+| `vscode` | VS Code settings and keybindings | ✅ Implemented |
 | `ssh` | SSH configuration for Tailscale network | 🚧 Planned |
 | `1password` | 1Password CLI configuration | 🚧 Planned |
 | `bin` | Custom executable scripts | 🚧 Planned |

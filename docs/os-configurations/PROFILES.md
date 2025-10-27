@@ -41,7 +41,7 @@ vps-minimal = Ubuntu + [security] + Minimal Packages + ubuntu-bootstrap.sh --pro
 - **Media**: FFmpeg, ImageMagick, Handbrake
 - **Productivity**: All GUI apps from Brewfile
 
-**Stow Packages:** All (shell, git, ssh, 1password, cursor, iterm2, dev-env, llm-tools)
+**Stow Packages:** All (shell, git, ssh, 1password, vscode, iterm2, dev-env, llm-tools)
 
 **Bootstrap:**
 ```bash
@@ -218,7 +218,7 @@ RUN /tmp/docker-ubuntu.sh && rm /tmp/docker-ubuntu.sh
 - **Languages**: Python (pyenv), Node.js (nvm), Go, Rust, Swift (macOS only)
 - **Tools**: Git, build-essential, Docker, make, cmake
 - **Databases**: PostgreSQL client, Redis client
-- **Editors**: vim, nano (CLI), VS Code/Cursor (GUI)
+- **Editors**: vim, nano (CLI), VS Code (GUI)
 
 **Configs:**
 - `.zshrc` / `.bashrc` with dev aliases

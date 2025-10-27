@@ -125,8 +125,7 @@ This helps you decide:
   git commit -m "Backup iTerm2 preferences"
   git push
   ```
-- VS Code: Ensure Settings Sync is enabled
-- Cursor: Settings should sync via cloud
+- VS Code: Settings synced via Stow package
 
 ### 5. Deauthorize Software
 
@@ -351,7 +350,7 @@ ls -1 stow-packages/
 ./scripts/stow/stow-package.sh install shell     # Shell configuration
 ./scripts/stow/stow-package.sh install git       # Git configuration
 ./scripts/stow/stow-package.sh install ssh       # SSH configuration
-./scripts/stow/stow-package.sh install cursor    # Cursor settings
+./scripts/stow/stow-package.sh install vscode    # VS Code settings
 ./scripts/stow/stow-package.sh install dev-env   # XDG compliance
 
 # Or install all at once
@@ -533,7 +532,11 @@ mas install 497799835  # Xcode
 
 Some applications might not be in Homebrew:
 
-- **Cursor**: Download from https://cursor.sh
+- **VS Code**: Install via Homebrew or direct download
+  ```bash
+  brew install --cask visual-studio-code
+  # OR: https://code.visualstudio.com
+  ```
 - **Claude Code**: Already included via MCP configuration
 - **Specialized Software**: Adobe Creative Cloud, Office 365, etc.
 
@@ -776,7 +779,7 @@ op inject -i test.env
 rm test.env
 ```
 
-### 9. VS Code / Cursor Extensions
+### 9. VS Code Extensions
 
 ```bash
 # Export extensions list (if not already in repo)
@@ -1152,7 +1155,7 @@ ls -1 ~/dev/projects/dotfiles/stow-packages/
 # - shell      → ZSH configuration, aliases, functions
 # - git        → Git config, aliases, templates
 # - ssh        → SSH configuration for Tailscale
-# - cursor     → Cursor/VS Code settings
+# - vscode     → VS Code settings
 # - claude     → Claude Code configurations
 # - dev-env    → XDG compliance, development tool configs
 # - iterm2     → iTerm2 backup/restore scripts
@@ -1167,7 +1170,7 @@ ls -1 ~/dev/projects/dotfiles/stow-packages/
 
 # Add more as needed
 ./scripts/stow/stow-package.sh install ssh
-./scripts/stow/stow-package.sh install cursor
+./scripts/stow/stow-package.sh install vscode
 ```
 
 ### Brewfile Customization

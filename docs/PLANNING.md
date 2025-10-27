@@ -29,7 +29,7 @@ Creare un sistema completo di dotfiles per macOS che permetta di:
 - **Symlink Manager**: GNU Stow
 - **Version Control**: Git con GPG (1Password)
 - **Development**: HTML/SCSS, JS/TS, React.js/Next.js, Python, SwiftUI, PostgreSQL
-- **Editor**: Cursor (VS Code based) + Xcode
+- **Editor**: VS Code + Xcode
 - **Infrastructure**: Docker, Tailscale, MCP servers
 
 ### Struttura Directory Finale
@@ -40,7 +40,7 @@ dotfiles/
 │   ├── zsh/               # Shell configuration
 │   ├── git/               # Git settings + templates
 │   ├── ssh/               # SSH config per Tailscale
-│   ├── cursor/            # Cursor/VS Code settings
+│   ├── vscode/            # VS Code settings
 │   ├── claude/            # Claude Code configuration
 │   ├── python/            # Python/pyenv setup
 │   ├── node/              # Node.js/nvm setup
@@ -101,7 +101,7 @@ dotfiles/
 
 - [x] packages/zsh/ - Oh My Zsh + aliases + functions personalizzate
 - [x] packages/git/ - .gitconfig + .gitignore_global + templates PR/commit
-- [x] packages/cursor/ - Configurazioni Cursor/VS Code (settings.json, keybindings.json)
+- [x] stow-packages/vscode/ - Configurazioni VS Code (settings.json, keybindings.json, extensions.txt)
 - [x] packages/python/ - pyenv + pip configurations (.pyenvrc, .pythonrc, pip.conf)
 - [x] packages/node/ - nvm + npm configurations (.nvmrc, .npmrc, .nvmsh)
 - [x] packages/ssh/ - SSH config per rete Tailscale
@@ -183,7 +183,7 @@ dotfiles/
 - **Project Templates**: Integrazione boilerplate esistenti
 - **Git Workflow**: Templates PR/commit/issues
 - **Environment Management**: .env template per progetti
-- **IDE Integration**: Cursor + Xcode configurations
+- **IDE Integration**: VS Code + Xcode configurations
 
 ## Maintenance Strategy
 

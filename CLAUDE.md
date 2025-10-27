@@ -26,7 +26,7 @@ dotfiles/
 │   ├── zsh/           # ZSH + Oh My Zsh configuration
 │   ├── git/           # Git configuration + templates
 │   ├── ssh/           # SSH config for Tailscale network
-│   ├── cursor/        # Cursor/VS Code settings
+│   ├── vscode/        # VS Code settings
 │   ├── claude/        # Claude Code configurations
 │   ├── python/        # Python/pyenv setup
 │   ├── node/          # Node.js/nvm setup
@@ -53,7 +53,7 @@ Full technology stack documented in [docs/TECH-STACK.md](docs/TECH-STACK.md).
 - **Cloud Storage**: Rclone with Cloudflare R2
 - **Testing**: BATS (Bash Automated Testing System)
 - **Development**: HTML/SCSS, JS/TS, React/Next.js, Python, SwiftUI, PostgreSQL
-- **Editor**: Cursor (VS Code based) + Xcode
+- **Editor**: VS Code + Xcode
 - **Infrastructure**: Tailscale, MCP servers, Docker integration
 
 ## Development Commands

@@ -81,7 +81,7 @@ dotfiles/
 │   ├── ssh/
 │   ├── 1password/
 │   ├── llm-tools/
-│   ├── cursor/
+│   ├── vscode/
 │   ├── iterm2/
 │   ├── dev-env/
 │   └── bin/
@@ -96,7 +96,7 @@ dotfiles/
 ├── applications/            # ✨ Application management
 │   ├── brew-packages.txt
 │   ├── mas-apps.txt
-│   ├── cursor-extensions.txt
+│   ├── vscode-extensions.txt
 │   └── cleanup-list.txt
 ├── secrets/                 # ✨ Secret management (NEW)
 │   ├── template.env
@@ -240,7 +240,7 @@ dotfiles/
 packages/
 ├── bin/                    # Empty directory
 ├── claude/                 # CLAUDE.md only
-├── cursor/                 # VS Code/Cursor settings
+├── vscode/                 # VS Code settings
 ├── git/                    # Git configuration files (3 files)
 ├── homebrew/               # Brewfile
 ├── node/                   # Node.js configs (3 files)
@@ -268,10 +268,11 @@ packages/
    - `.ssh/config` - SSH configuration
    - **Status**: Needs expansion with Tailscale network and config.d/ structure
 
-4. **cursor/** (2 files):
-   - `Library/Application Support/Cursor/User/settings.json` - Editor settings
-   - `Library/Application Support/Cursor/User/keybindings.json` - Key bindings
-   - **Status**: Ready to migrate, path structure needs XDG consideration
+4. **vscode/** (3 files):
+   - `.config/Code/User/settings.json` - Editor settings
+   - `.config/Code/User/keybindings.json` - Key bindings
+   - `.config/Code/User/extensions.txt` - Extension list (92 extensions)
+   - **Status**: ✅ Migrated to stow-packages/vscode/ (completed 2025-10-27)
 
 5. **python/** (3 files + directory):
    - `.pyenvrc` - Pyenv configuration
@@ -441,8 +442,8 @@ templates/
    - Migrate `packages/node/` configs
 
 5. **Migrate Editor Configs**:
-   - Migrate `packages/cursor/` to `stow-packages/cursor/`
-   - Handle XDG compliance for path structure
+   - ✅ Migrated to `stow-packages/vscode/` (completed 2025-10-27)
+   - ✅ XDG compliance achieved with `.config/Code/` path structure
 
 6. **Migrate LLM Tools**:
    - Create `stow-packages/llm-tools/.config/claude/`
