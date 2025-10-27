@@ -1,0 +1,14 @@
+[Unit]
+Description=Auto-update dotfiles to GitHub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=YOUR_USERNAME
+ExecStart=/home/YOUR_USERNAME/dev/projects/dotfiles/scripts/sync/auto-update-dotfiles.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
