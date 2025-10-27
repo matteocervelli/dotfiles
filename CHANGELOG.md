@@ -9,6 +9,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **macOS Services Management System** (#50) - Automated backup and restore for Automator workflows
+  - **6 active workflows backed up** to `system/macos/services/`
+  - **2 obsolete workflows archived** to `system/macos/services/archived/`
+  - **Workflow categories**:
+    - Conversion (3): File to MD, File to TXT, MD to Rich Text
+    - Development (2): open-in-vscode, Open in Cursor
+    - CDN (1): Retrieve CDN url (project-specific)
+  - **Installation script** (`scripts/services/install-services.sh`, 450 lines):
+    - Installation modes: `--essential-only` (4 workflows), `--all` (6 workflows)
+    - Dry-run mode for preview, force reinstall, verbose output
+    - Automatic quarantine attribute removal (xattr)
+    - Permission management (755 for directories, 644 for files)
+    - Services menu cache refresh (lsregister)
+    - Statistics tracking (installed/skipped/failed)
+    - Performance: <5 seconds for all workflows
+  - **Bootstrap integration**: Essential workflows auto-install during `macos-bootstrap.sh`
+  - **Makefile targets**:
+    - `make services-install` - Install all 6 workflows
+    - `make services-install-essential` - Install essential workflows only (4)
+    - `make services-verify` - Verify installed workflows
+    - `make services-backup` - Backup workflows from ~/Library/Services/
+  - **Comprehensive documentation** (`system/macos/services/README.md`, 500 lines):
+    - Complete workflow inventory with descriptions and dependencies
+    - Installation instructions and modes
+    - Troubleshooting guide (Services menu, quarantine, cache refresh)
+    - Development guide for creating custom workflows
+    - Archived workflows documentation
+  - **Metadata configuration** (`system/macos/services/services.yml`, 100 lines):
+    - Workflow metadata (name, description, dependencies, file types)
+    - Installation modes configuration
+    - Archived workflows tracking
+    - Statistics and platform requirements
+  - **Test coverage**: 25+ BATS tests (100% pass) covering:
+    - Script validation and structure
+    - Configuration files (services.yml, README.md)
+    - Workflow files existence (6 active + 2 archived)
+    - Installation logic (permissions, quarantine, cache)
+    - Bootstrap and Makefile integration
+    - Documentation completeness
+  - **Follows Font Management System pattern** (#49) - proven architecture
+
 - **Font Management System** (#49) - Automated font installation and sync across devices
   - **179 fonts backed up** from system to `fonts/backup/`
   - **Font categorization** (`fonts/fonts.yml`):

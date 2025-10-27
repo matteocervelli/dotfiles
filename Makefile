@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify docker-install ubuntu-full
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full
 
 # Default target - show help
 help:
@@ -36,6 +36,12 @@ help:
 	@echo "  make fonts-install-coding       Install essential + coding fonts (Hack, Space Mono, etc.)"
 	@echo "  make fonts-install-powerline    Install essential + all Powerline fonts (130+ fonts)"
 	@echo "  make fonts-verify               Verify essential fonts are installed"
+	@echo ""
+	@echo "⚙️  macOS Services Management:"
+	@echo "  make services-install           Install all Services (6 workflows)"
+	@echo "  make services-install-essential Install essential Services only (4 workflows)"
+	@echo "  make services-verify            Verify installed Services"
+	@echo "  make services-backup            Backup Services from ~/Library/Services/"
 	@echo ""
 	@echo "🔌 VSCode Extensions:"
 	@echo "  make vscode-extensions-install  Install all VSCode extensions from list"
@@ -517,3 +523,50 @@ fonts-verify:
 		echo "Install with: make fonts-install-essential"; \
 		exit 1; \
 	fi
+
+# macOS Services Management
+services-install:
+	@echo "⚙️  Installing all macOS Services (6 workflows)..."
+	@echo ""
+	@if [ ! -f ./scripts/services/install-services.sh ]; then \
+		echo "❌ Services installation script not found"; \
+		echo "Expected: ./scripts/services/install-services.sh"; \
+		exit 1; \
+	fi
+	@./scripts/services/install-services.sh --all
+	@echo ""
+	@echo "✅ All services installed"
+	@echo "💡 Access via: Right-click → Services menu"
+
+services-install-essential:
+	@echo "⚙️  Installing essential macOS Services (4 workflows)..."
+	@echo ""
+	@if [ ! -f ./scripts/services/install-services.sh ]; then \
+		echo "❌ Services installation script not found"; \
+		echo "Expected: ./scripts/services/install-services.sh"; \
+		exit 1; \
+	fi
+	@./scripts/services/install-services.sh --essential-only
+	@echo ""
+	@echo "✅ Essential services installed"
+	@echo "💡 Access via: Right-click → Services menu"
+
+services-verify:
+	@echo "🔍 Verifying installed Services..."
+	@echo ""
+	@./scripts/services/install-services.sh --dry-run --verbose
+	@echo ""
+	@echo "💡 Services location: ~/Library/Services/"
+
+services-backup:
+	@echo "💾 Backing up Services from ~/Library/Services/..."
+	@echo ""
+	@if [ ! -d "$$HOME/Library/Services" ]; then \
+		echo "❌ Services directory not found: ~/Library/Services"; \
+		exit 1; \
+	fi
+	@rsync -av --exclude='.DS_Store' ~/Library/Services/*.workflow system/macos/services/ 2>/dev/null || \
+		echo "⚠️  No workflows to backup"
+	@echo ""
+	@echo "✅ Services backed up to: system/macos/services/"
+	@echo "💡 Commit changes: git add system/macos/services/"

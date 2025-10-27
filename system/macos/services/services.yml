@@ -1,0 +1,164 @@
+# macOS Services Configuration
+# Metadata for Automator workflows in ~/Library/Services/
+
+version: "1.0"
+last_updated: "2025-10-27"
+
+# Active Workflows
+categories:
+  conversion:
+    description: "File format conversion tools"
+    workflows:
+      - name: "File to MD"
+        bundle: "File to MD.workflow"
+        description: "Convert files to Markdown format"
+        essential: true
+        dependencies: []
+        file_types:
+          - "public.item"
+        context: "com.apple.finder"
+        size_kb: 6
+
+      - name: "File to TXT"
+        bundle: "File to TXT.workflow"
+        description: "Convert files to plain text format"
+        essential: true
+        dependencies: []
+        file_types:
+          - "public.item"
+        context: "com.apple.finder"
+        size_kb: 6
+
+      - name: "MD to Rich Text"
+        bundle: "MD to Rich Text.workflow"
+        description: "Convert Markdown to rich text for pasting"
+        essential: false
+        dependencies: []
+        file_types:
+          - "public.markdown"
+          - "public.plain-text"
+        context: "com.apple.finder"
+        size_kb: 13
+
+  development:
+    description: "Development tools and editor launchers"
+    workflows:
+      - name: "open-in-vscode"
+        bundle: "open-in-vscode.workflow"
+        description: "Open files or folders in Visual Studio Code"
+        essential: true
+        dependencies:
+          - app: "Visual Studio Code.app"
+            path: "/Applications/Visual Studio Code.app"
+            required: true
+        file_types:
+          - "public.item"
+        context: "com.apple.finder"
+        size_kb: 4
+
+      - name: "Open in Cursor"
+        bundle: "Open in Cursor.workflow"
+        description: "Open files or folders in Cursor AI editor"
+        essential: false
+        dependencies:
+          - app: "Cursor.app"
+            path: "/Applications/Cursor.app"
+            required: true
+        file_types:
+          - "public.item"
+        context: "com.apple.finder"
+        size_kb: 5
+
+  cdn:
+    description: "CDN and asset management tools"
+    workflows:
+      - name: "Retrieve CDN url"
+        bundle: "Retrieve CDN url.workflow"
+        description: "Get CDN URL from asset management system"
+        essential: false
+        project_specific: true
+        dependencies:
+          - system: "Asset management system"
+            required: true
+        file_types:
+          - "public.image"
+          - "public.item"
+        context: "com.apple.finder"
+        size_kb: 11
+        notes: "Custom workflow for Ad Limen S.r.l. infrastructure"
+
+# Installation Modes
+modes:
+  essential:
+    description: "Essential workflows for fresh Mac setup"
+    includes:
+      - "File to MD.workflow"
+      - "File to TXT.workflow"
+      - "MD to Rich Text.workflow"
+      - "open-in-vscode.workflow"
+    count: 4
+
+  all:
+    description: "All active workflows"
+    includes:
+      - "File to MD.workflow"
+      - "File to TXT.workflow"
+      - "MD to Rich Text.workflow"
+      - "open-in-vscode.workflow"
+      - "Open in Cursor.workflow"
+      - "Retrieve CDN url.workflow"
+    count: 6
+
+# Archived Workflows (deprecated, kept for reference)
+archived:
+  - name: "Send to Kindle"
+    bundle: "archived/Send to Kindle.workflow"
+    archived_date: "2025-10-27"
+    reason: "Kindle service discontinued"
+    original_purpose: "Send documents to Kindle device via email"
+
+  - name: "Servizio Things"
+    bundle: "archived/Servizio Things.workflow"
+    archived_date: "2025-10-27"
+    reason: "Things 3 integration deprecated"
+    original_purpose: "Create Things 3 tasks from selected text"
+
+# Installation Configuration
+installation:
+  target_dir: "~/Library/Services"
+  permissions:
+    directories: "755"  # drwxr-xr-x
+    files: "644"        # rw-r--r--
+
+  quarantine:
+    remove: true
+    attribute: "com.apple.quarantine"
+
+  cache_refresh:
+    command: "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+    args: "-kill -r -domain local -domain system -domain user"
+    required: true
+
+  backup:
+    source: "~/Library/Services"
+    destination: "system/macos/services"
+    exclude:
+      - ".DS_Store"
+      - "*.tmp"
+
+# Statistics
+statistics:
+  active_workflows: 6
+  archived_workflows: 2
+  total_size_kb: 45
+  categories: 3
+  essential_workflows: 4
+  optional_workflows: 2
+
+# Metadata
+metadata:
+  repository: "matteocervelli/dotfiles"
+  issue: "#50"
+  pattern: "Font Management System (#49)"
+  platform: "macOS"
+  min_macos_version: "10.14"  # Mojave (Automator Quick Actions)

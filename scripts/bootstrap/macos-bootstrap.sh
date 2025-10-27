@@ -106,6 +106,19 @@ else
     log_info "Expected: $SCRIPT_DIR/../fonts/install-fonts.sh"
 fi
 
+# Install macOS Services (Automator workflows)
+log_step "Installing macOS Services"
+if [ -f "$SCRIPT_DIR/../services/install-services.sh" ]; then
+    log_info "Installing essential Automator workflows..."
+    "$SCRIPT_DIR/../services/install-services.sh" --essential-only || {
+        log_warning "Services installation failed or skipped"
+        log_info "Run manually later: ./scripts/services/install-services.sh --essential-only"
+    }
+else
+    log_warning "Services installation script not found"
+    log_info "Expected: $SCRIPT_DIR/../services/install-services.sh"
+fi
+
 log_success "macOS dependencies installed successfully!"
 
 # Setup SSH keys

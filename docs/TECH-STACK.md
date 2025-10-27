@@ -120,6 +120,25 @@ This document outlines the complete technology stack used in the dotfiles projec
     - Performance: <5s essential, <15s all fonts
     - Bootstrap integration (auto-installs essential)
 
+### macOS Services
+
+- **Services Management** - Automated Automator workflow backup and restore
+  - **Active Workflows**: 6 workflows across 3 categories
+  - **Categories**:
+    - Conversion (3): File to MD, File to TXT, MD to Rich Text
+    - Development (2): open-in-vscode, Open in Cursor
+    - CDN (1): Retrieve CDN url (project-specific)
+  - **Location**: `~/Library/Services/` (macOS user-level)
+  - **Integration**: Services menu (right-click context menu)
+  - **Cache Management**: `lsregister -kill -r` (LaunchServices cache refresh)
+  - **Quarantine Removal**: `xattr -d com.apple.quarantine` (security attributes)
+  - **Configuration**: `system/macos/services/services.yml` (parsed with yq)
+  - **Installation**: `scripts/services/install-services.sh`
+    - Installation modes: essential (4 workflows), all (6 workflows)
+    - Performance: <5 seconds for all workflows
+    - Bootstrap integration (auto-installs essential)
+  - **Archived Workflows**: 2 deprecated workflows in `archived/`
+
 ## Platform Support
 
 ### Primary Platform: macOS
