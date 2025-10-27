@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Font Management System** (#49) - Automated font installation and sync across devices
+  - **179 fonts backed up** from system to `fonts/backup/`
+  - **Font categorization** (`fonts/fonts.yml`):
+    - Essential (10): MesloLGS NF + Lato + Raleway (terminal + professional)
+    - Coding (16): Hack, Space Mono, IBM 3270, CPMono
+    - Powerline (120+): Full collection of terminal fonts with glyphs
+    - Optional (33): Complete Lato family, UI fonts, design fonts
+  - **Installation script** (`scripts/fonts/install-fonts.sh`):
+    - Selective installation modes: `--essential-only`, `--with-coding`, `--with-powerline`, `--all`
+    - Dry-run mode, force reinstall, verbose output
+    - Font cache management (atsutil)
+    - Installation verification
+    - Performance: <5s essential, <15s all fonts
+  - **Bootstrap integration**: Essential fonts auto-install during `macos-bootstrap.sh`
+  - **Health check integration**: Font verification in `check-all.sh`
+  - **Makefile targets**:
+    - `make fonts-install` - Install all 179 fonts
+    - `make fonts-install-essential` - Install essential fonts only
+    - `make fonts-install-coding` - Install essential + coding fonts
+    - `make fonts-install-powerline` - Install essential + Powerline fonts
+    - `make fonts-verify` - Verify essential fonts installed
+  - **Comprehensive documentation** (`fonts/README.md`):
+    - Quick start guide
+    - Font categories explained
+    - Installation options
+    - Adding/removing fonts workflow
+    - Troubleshooting guide
+    - Cross-device sync via Git
+    - Integration with Powerlevel10k, VS Code, iTerm2
+  - **Test coverage**: 30 BATS tests (100% pass) covering:
+    - File structure validation
+    - Script functionality
+    - Configuration parsing (yq)
+    - Font backup verification
+    - Integration with health check, bootstrap, Makefile
+    - Documentation completeness
+
 - **macOS Setup Guide** - Complete guide for formatting and reinstalling MacBook
   - `docs/guides/macos-setup-guide.md` - Comprehensive 1,200+ line guide
   - **Pre-Format Preparation**:

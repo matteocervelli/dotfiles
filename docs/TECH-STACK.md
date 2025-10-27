@@ -100,6 +100,26 @@ This document outlines the complete technology stack used in the dotfiles projec
   - Environment setup scripts
   - Modular config loading
 
+## System Configuration
+
+### Fonts
+
+- **Font Management** - Automated installation and synchronization
+  - **Total Fonts**: 179 custom fonts
+  - **Categories**:
+    - Essential (10): MesloLGS NF (Powerlevel10k), Lato, Raleway
+    - Coding (16): Hack, Space Mono, IBM 3270, CPMono
+    - Powerline (120+): Terminal fonts with special glyphs
+    - Optional (33): Complete font families for design
+  - **Location**: `~/Library/Fonts/` (macOS user-level)
+  - **Cache Management**: `atsutil databases -remove` (macOS)
+  - **Verification**: Integrated into health checks
+  - **Configuration**: `fonts/fonts.yml` (parsed with yq)
+  - **Installation**: `scripts/fonts/install-fonts.sh`
+    - Selective modes: essential, coding, powerline, all
+    - Performance: <5s essential, <15s all fonts
+    - Bootstrap integration (auto-installs essential)
+
 ## Platform Support
 
 ### Primary Platform: macOS
@@ -111,6 +131,7 @@ This document outlines the complete technology stack used in the dotfiles projec
   - LaunchAgents for background tasks
   - Keychain integration
   - Spotlight integration
+  - Font management (`atsutil` for font cache)
 
 ### Secondary Platform: Ubuntu Linux
 

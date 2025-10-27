@@ -262,6 +262,60 @@ fi
 echo ""
 
 # ============================================================================
+# 5. Font Installation
+# ============================================================================
+log_step "5. Font Installation"
+
+if is_macos; then
+    FONTS_DIR="$HOME/Library/Fonts"
+
+    # Check essential fonts (terminal + professional)
+    essential_fonts=(
+        "MesloLGS NF Regular.ttf"
+        "MesloLGS NF Bold.ttf"
+        "MesloLGS NF Italic.ttf"
+        "MesloLGS NF Bold Italic.ttf"
+        "Lato-Regular.ttf"
+        "Lato-Bold.ttf"
+        "Raleway-VF.ttf"
+    )
+
+    missing_essential=()
+    for font in "${essential_fonts[@]}"; do
+        if [ ! -f "$FONTS_DIR/$font" ]; then
+            missing_essential+=("$font")
+        fi
+    done
+
+    if [ ${#missing_essential[@]} -eq 0 ]; then
+        log_success "All essential fonts installed"
+        if [ "$VERBOSE" = true ]; then
+            log_info "  Terminal: MesloLGS NF (4 variants)"
+            log_info "  Professional: Lato (2 variants) + Raleway"
+        fi
+        track_check "passed"
+    else
+        log_error "Missing ${#missing_essential[@]} essential fonts"
+        for font in "${missing_essential[@]}"; do
+            log_info "  ✗ $font"
+        done
+        log_info "  Install with: ./scripts/fonts/install-fonts.sh --essential-only"
+        track_check "failed"
+    fi
+
+    # Count total custom fonts
+    if [ "$VERBOSE" = true ]; then
+        total_fonts=$(find "$FONTS_DIR" -type f \( -name "*.ttf" -o -name "*.otf" -o -name "*.pcf.gz" \) 2>/dev/null | wc -l | tr -d ' ')
+        log_info "  Total custom fonts: $total_fonts"
+    fi
+else
+    log_info "Font checks are macOS-specific, skipping on this platform"
+    track_check "passed"
+fi
+
+echo ""
+
+# ============================================================================
 # Summary Report
 # ============================================================================
 log_step "Summary Report"
