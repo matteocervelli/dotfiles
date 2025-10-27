@@ -11,15 +11,16 @@
 ## Table of Contents
 
 1. [Prerequisites Check](#prerequisites-check)
-2. [Parallels Shared Folders Setup](#parallels-shared-folders-setup)
-3. [Docker Installation](#docker-installation)
-4. [Dotfiles Integration](#dotfiles-integration)
-5. [R2 Assets Workflow](#r2-assets-workflow)
-6. [Project Setup with Mac Studio Bindings](#project-setup-with-mac-studio-bindings)
-7. [Remote Docker Context](#remote-docker-context)
-8. [Performance Optimization](#performance-optimization)
-9. [Testing & Verification](#testing--verification)
-10. [Troubleshooting](#troubleshooting)
+2. [SSH Configuration](#ssh-configuration)
+3. [Parallels Shared Folders Setup](#parallels-shared-folders-setup)
+4. [Docker Installation](#docker-installation)
+5. [Dotfiles Integration](#dotfiles-integration)
+6. [R2 Assets Workflow](#r2-assets-workflow)
+7. [Project Setup with Mac Studio Bindings](#project-setup-with-mac-studio-bindings)
+8. [Remote Docker Context](#remote-docker-context)
+9. [Performance Optimization](#performance-optimization)
+10. [Testing & Verification](#testing--verification)
+11. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -33,16 +34,20 @@ Run these checks **inside the VM**:
 # 1. Ubuntu version
 lsb_release -a  # Should show Ubuntu 24.04 LTS
 
-# 2. Parallels Tools installed
-prltools -v  # Should show version number
+# 2. Parallels Tools version
+cat /usr/lib/parallels-tools/version  # Should show version (e.g., 26.1.1.57288)
 
 # 3. Parallels Tools service running
-systemctl status parallels-tools  # Should be active
+systemctl status prltoolsd  # Should be active (running)
 
-# 4. Network working
+# 4. Shared folders mounted (ARM64 FUSE-based)
+ls -la /media/psf/  # Should show shared folders
+mount | grep psf    # Should show type fuse.prl_fsd
+
+# 5. Network working
 ping -c 3 google.com  # Should succeed
 
-# 5. SSH service running
+# 6. SSH service running
 systemctl status ssh  # Should be active
 ```
 
@@ -50,13 +55,303 @@ systemctl status ssh  # Should be active
 
 ```bash
 # Test SSH from Mac Studio
-ssh matteo@ubuntu-vm
+ssh matteocervelli@ubuntu-dev4change
 
 # Or via IP (find with: hostname -I in VM)
-ssh matteo@10.211.55.XXX
+ssh matteocervelli@10.211.55.XXX
 ```
 
 **If all checks pass, proceed!** ✅
+
+---
+
+## SSH Configuration
+
+### Overview
+
+Configure SSH access to the Ubuntu VM for:
+- ✅ **Local access** from Mac Studio (via Parallels Shared Network)
+- ✅ **Remote access** from MacBook/other devices (via Tailscale)
+- ✅ **Connection multiplexing** for faster subsequent connections
+- ✅ **Automatic agent forwarding** for Git operations
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Mac Studio (Host)                            │
+│                                                                 │
+│  ~/.ssh/config.d/25-vms.conf                                   │
+│                                                                 │
+│  ┌─────────────────────┐      ┌─────────────────────┐         │
+│  │ Local Network       │      │ Tailscale Network   │         │
+│  │ ssh ubuntu-dev      │      │ ssh ubuntu-dev-ts   │         │
+│  │ 10.211.55.x:22     │      │ .ts.net:22          │         │
+│  └──────────┬──────────┘      └──────────┬──────────┘         │
+│             │                             │                     │
+└─────────────┼─────────────────────────────┼─────────────────────┘
+              │                             │
+              │  Parallels Shared Network   │  Tailscale VPN
+              ▼                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              Ubuntu VM (ubuntu-dev4change)                      │
+│                                                                 │
+│  SSH Server listening on port 22                               │
+│  User: matteocervelli                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Step 1: Configure SSH on Mac Studio
+
+The SSH configuration is managed via GNU Stow in the dotfiles repository.
+
+**File locations:**
+- Template: `stow-packages/ssh/.ssh/config.d/25-vms.conf.template`
+- Actual config: `stow-packages/ssh/.ssh/config.d/25-vms.conf`
+- Main config: `stow-packages/ssh/.ssh/config`
+
+**The configuration has already been created with:**
+
+```bash
+# Local network access (from Mac Studio)
+Host ubuntu-dev ubuntu-dev4change
+    HostName ubuntu-dev4change
+    User matteocervelli
+
+# Tailscale network access (from any device in tailnet)
+Host ubuntu-dev-tailscale ubuntu-dev-ts
+    HostName ubuntu-dev4change.siamese-dominant.ts.net
+    User matteocervelli
+
+# Quick shortcuts
+Host vm              # Local access shortcut
+Host vm-remote       # Tailscale access shortcut
+```
+
+### Step 2: Test Local SSH Connection
+
+**From Mac Studio terminal:**
+
+```bash
+# Test connection using hostname
+ssh ubuntu-dev
+
+# Or use full hostname
+ssh ubuntu-dev4change
+
+# Or use shortcut
+ssh vm
+
+# First connection will ask to accept host key
+# Type: yes
+```
+
+**Expected output:**
+```
+The authenticity of host 'ubuntu-dev4change (10.211.55.3)' can't be established.
+ED25519 key fingerprint is SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'ubuntu-dev4change' (ED25519) to the list of known hosts.
+Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-48-generic aarch64)
+
+matteocervelli@ubuntu-dev4change:~$
+```
+
+### Step 3: Setup SSH Keys and Copy to VM
+
+#### A. Ensure SSH Keys on Mac Studio
+
+**The dotfiles repository includes automatic SSH key management:**
+
+```bash
+# Run the SSH key setup script
+cd ~/dev/projects/dotfiles
+./scripts/setup-ssh-keys.sh
+```
+
+**What this script does:**
+1. Auto-detects your hostname (`studio4change`, `macbook4change`, etc.)
+2. Checks for device-specific key in 1Password (`studio4change-ssh-key-2025`)
+3. Retrieves and installs the key locally (`~/.ssh/id_ed25519`)
+4. Sets correct permissions automatically
+
+**If key doesn't exist in 1Password, it offers to generate one:**
+```
+Device: studio4change
+1Password key name: studio4change-ssh-key-2025
+
+Key not found in 1Password: studio4change-ssh-key-2025
+
+Would you like to generate a new key?
+Generate new SSH key? (yes/no): yes
+```
+
+**SSH Key Strategy:**
+- **One SSH key per device** (more secure, traceable)
+- Mac Studio: `studio4change-ssh-key-2025`
+- MacBook Pro: `macbook4change-ssh-key-2025`
+- Ubuntu VM: `ubuntu-dev4change-ssh-key-2025`
+- All keys stored in 1Password vault `dev`
+
+#### B. Copy SSH Public Key to VM
+
+**For passwordless authentication:**
+
+```bash
+# From Mac Studio - copy your SSH public key to VM
+ssh-copy-id ubuntu-dev
+
+# Or manually (if ssh-copy-id not available)
+cat ~/.ssh/id_ed25519.pub | ssh ubuntu-dev "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+
+# Set correct permissions on VM (if needed)
+ssh ubuntu-dev "chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys"
+```
+
+**Test passwordless login:**
+```bash
+# Should connect without password prompt
+ssh ubuntu-dev
+```
+
+### Step 4: Configure Tailscale Access (Optional)
+
+**For remote access from MacBook or other devices in your tailnet:**
+
+#### A. Install Tailscale on Ubuntu VM
+
+**From inside the VM:**
+
+```bash
+# Add Tailscale repository
+curl -fsSL https://tailscale.com/install.sh | sh
+
+# Start Tailscale (will generate authentication URL)
+sudo tailscale up
+
+# IMPORTANT: Headless authentication process:
+# 1. The command will output an authentication URL like:
+#    "To authenticate, visit: https://login.tailscale.com/a/xxxxxxxxxxxxxx"
+# 2. Copy this entire URL
+# 3. Open the URL in your Mac Studio browser
+# 4. Sign in with your darkalis@ account
+# 5. Approve the device connection
+# 6. Return to the VM terminal - connection will complete automatically
+
+# Verify connection (after authentication)
+tailscale status
+
+# Get Tailscale hostname
+tailscale status | grep ubuntu
+```
+
+**Expected hostname:** `ubuntu-dev4change.siamese-dominant.ts.net`
+
+#### B. Test Tailscale SSH Connection
+
+**From Mac Studio (or MacBook):**
+
+```bash
+# Test Tailscale connection
+ssh ubuntu-dev-ts
+
+# Or use full hostname
+ssh ubuntu-dev4change.siamese-dominant.ts.net
+
+# Or use remote shortcut
+ssh vm-remote
+```
+
+### Step 5: Configure SSH Server (VM)
+
+**Optimize SSH server settings on the VM:**
+
+```bash
+# Edit SSH server config
+sudo nano /etc/ssh/sshd_config
+
+# Recommended settings (add/modify):
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication yes  # Change to 'no' after key setup
+X11Forwarding no
+ClientAliveInterval 60
+ClientAliveCountMax 3
+
+# Save and restart SSH
+sudo systemctl restart ssh
+
+# Verify SSH is running
+systemctl status ssh
+```
+
+### Step 6: Verify SSH Configuration
+
+**From Mac Studio:**
+
+```bash
+# Test all connection methods
+ssh ubuntu-dev whoami              # Should print: matteocervelli
+ssh ubuntu-dev-ts whoami           # Should print: matteocervelli (via Tailscale)
+ssh vm whoami                      # Should print: matteocervelli
+ssh vm-remote whoami               # Should print: matteocervelli (via Tailscale)
+
+# Test connection multiplexing (second connection should be instant)
+time ssh ubuntu-dev whoami         # First connection (~1-2s)
+time ssh ubuntu-dev whoami         # Second connection (<0.1s - reuses connection)
+
+# Test agent forwarding (for Git operations)
+ssh ubuntu-dev "ssh -T git@github.com"
+# Should show: Hi matteocervelli! You've successfully authenticated...
+```
+
+### Connection Methods Summary
+
+| Method | Command | Network | Use Case |
+|--------|---------|---------|----------|
+| **Local (hostname)** | `ssh ubuntu-dev` | Parallels Shared Network | Mac Studio → VM |
+| **Local (shortcut)** | `ssh vm` | Parallels Shared Network | Quick access from Studio |
+| **Tailscale (hostname)** | `ssh ubuntu-dev-ts` | Tailscale VPN | MacBook → VM |
+| **Tailscale (shortcut)** | `ssh vm-remote` | Tailscale VPN | Quick remote access |
+
+### SSH Features Enabled
+
+- ✅ **Connection Multiplexing**: Subsequent connections are instant (~0.1s)
+- ✅ **Agent Forwarding**: Git operations work seamlessly
+- ✅ **Keep Alive**: Connections don't timeout
+- ✅ **Compression**: Faster data transfer on local network
+- ✅ **Optimized Ciphers**: ChaCha20 for Tailscale (already encrypted)
+
+### Troubleshooting SSH
+
+**Connection refused:**
+```bash
+# Check SSH service on VM
+ssh ubuntu-dev "sudo systemctl status ssh"
+
+# Restart SSH service
+ssh ubuntu-dev "sudo systemctl restart ssh"
+```
+
+**Permission denied:**
+```bash
+# Verify authorized_keys on VM
+ssh ubuntu-dev "ls -la ~/.ssh/authorized_keys"
+# Should be: -rw------- (600)
+
+# Fix permissions if needed
+ssh ubuntu-dev "chmod 600 ~/.ssh/authorized_keys"
+```
+
+**Tailscale connection fails:**
+```bash
+# Check Tailscale status on VM
+ssh ubuntu-dev "tailscale status"
+
+# Restart Tailscale
+ssh ubuntu-dev "sudo systemctl restart tailscaled"
+```
 
 ---
 
@@ -94,12 +389,12 @@ VM:         ~/dev                                VM:         ~/cdn
 Click **+** button and add:
 
 1. **Development Directory**:
-   - Folder: `/Users/matteo/dev`
+   - Folder: `/Users/matteocervelli/dev`
    - Name: `dev` (or keep default)
    - Access rights: **Read and Write**
 
 2. **CDN Assets Directory**:
-   - Folder: `/Users/matteo/media/cdn`
+   - Folder: `/Users/matteocervelli/media/cdn`
    - Name: `cdn` (or keep default)
    - Access rights: **Read and Write**
 
@@ -132,10 +427,10 @@ ls -la /media/psf/Home/media/cdn/
 
 ```bash
 # Create symlink to dev directory
-ln -s /media/psf/Home/dev ~/dev
+ln -s /media/psf/dev ~/dev
 
 # Create symlink to CDN assets
-ln -s /media/psf/Home/media/cdn ~/cdn
+ln -s /media/psf/media/cdn ~/cdn
 
 # Verify symlinks
 ls -la ~ | grep -E "dev|cdn"
@@ -143,8 +438,8 @@ ls -la ~ | grep -E "dev|cdn"
 
 **Expected output:**
 ```
-lrwxrwxrwx 1 matteo matteo   24 Oct 26 10:00 cdn -> /media/psf/Home/media/cdn
-lrwxrwxrwx 1 matteo matteo   20 Oct 26 10:00 dev -> /media/psf/Home/dev
+lrwxrwxrwx 1 matteo matteo   24 Oct 26 10:00 cdn -> /media/psf/media/cdn
+lrwxrwxrwx 1 matteo matteo   20 Oct 26 10:00 dev -> /media/psf/dev
 ```
 
 ### Step 4: Test Read/Write Access
@@ -179,15 +474,26 @@ The installation script installs:
 - **Docker Compose v2** (plugin)
 - **Docker BuildKit** (buildx plugin)
 
+### Prerequisites
+
+**IMPORTANT**: Dotfiles repository is already accessible via shared folder!
+
+```bash
+# Verify dotfiles are accessible from Mac Studio
+ls ~/dev/projects/dotfiles
+
+# Should show: CHANGELOG.md, Makefile, README.md, scripts/, etc.
+```
+
+**No need to clone** - the repository is shared from Mac Studio via Parallels.
+
 ### Installation Methods
 
 #### Method 1: Bootstrap Script (Recommended)
 
 ```bash
-# If not already cloned, clone dotfiles
-cd ~
-git clone https://github.com/matteocervelli/dotfiles.git
-cd dotfiles
+# Navigate to mounted dotfiles
+cd ~/dev/projects/dotfiles
 
 # Install Docker via script
 sudo ./scripts/bootstrap/install-docker.sh
@@ -199,7 +505,8 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
 #### Method 2: Makefile
 
 ```bash
-cd ~/dotfiles
+# Navigate to mounted dotfiles
+cd ~/dev/projects/dotfiles
 
 # Ubuntu packages + Docker
 make ubuntu-full
@@ -221,7 +528,7 @@ sudo usermod -aG docker $USER
 
 # Log out and back in
 exit
-# Then SSH back in: ssh matteo@ubuntu-vm
+# Then SSH back in: ssh matteocervelli@ubuntu-dev4change
 ```
 
 ### Verify Docker Installation
@@ -253,46 +560,106 @@ docker info
 
 ## Dotfiles Integration
 
-### Step 1: Clone Dotfiles Repository
+### Architecture: Shared vs Local
 
-**If not already cloned:**
+**Two approaches for dotfiles in VM:**
+
+#### Approach A: Use Shared Dotfiles (Recommended for Testing)
+
+- **Location**: `~/dev/projects/dotfiles` (shared from Mac Studio)
+- **Pros**: Single source of truth, instant sync with Mac
+- **Cons**: Stow creates symlinks pointing to shared folder
+- **Best for**: Testing, temporary VMs, development
+
+#### Approach B: Clone Locally (Recommended for Production)
+
+- **Location**: `~/.config/dotfiles` (XDG Base Directory compliant)
+- **Pros**: VM-specific config, independent from Mac
+- **Cons**: Need to sync changes manually
+- **Best for**: Long-term VMs, different config than Mac
+
+**We'll use Approach A for this guide** (shared dotfiles).
+
+### Step 1: Verify Dotfiles Access
+
+**Dotfiles are already accessible via shared folder:**
 
 ```bash
-cd ~
-git clone https://github.com/matteocervelli/dotfiles.git
-cd dotfiles
+# Check shared dotfiles
+ls ~/dev/projects/dotfiles
+
+# Should show: CHANGELOG.md, Makefile, README.md, scripts/, stow-packages/, etc.
+
+# Navigate to dotfiles
+cd ~/dev/projects/dotfiles
 ```
+
+**Note**: No cloning needed - repository is shared from Mac Studio!
 
 ### Step 2: Run Bootstrap Script
 
-**Install all dependencies:**
+**Choose installation level based on your needs:**
+
+#### Option A: VM Essentials (✅ Recommended for VM)
 
 ```bash
-# Make script executable
-chmod +x scripts/bootstrap/install-dependencies-ubuntu.sh
+# Navigate to shared dotfiles
+cd ~/dev/projects/dotfiles
 
-# Run bootstrap
+# Install VM essentials (CLI dev environment, no GUI apps)
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --vm-essentials
+```
+
+**VM Essentials includes (~50 packages):**
+- **Build tools**: gcc, make, cmake, autoconf, pkg-config
+- **Version control**: git, gh
+- **CLI editors**: vim, neovim, tmux
+- **System monitoring**: htop, btop, tree
+- **Modern CLI tools**: fzf, bat, ripgrep, fd-find
+- **JSON/YAML**: jq, yq
+- **Programming**: Python 3.12, Node.js, npm
+- **Database clients**: postgresql-client, sqlite3
+- **Cloud**: rclone
+- **Image processing**: imagemagick, ffmpeg
+- **Utilities**: stow, curl, wget, moreutils, pv, socat
+
+**Duration**: 3-5 minutes
+
+#### Option B: Full Installation (For complete Mac replication)
+
+```bash
+# Full installation (116 packages including GUI apps)
+cd ~/dev/projects/dotfiles
 sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh
 
 # Or via Makefile
 make ubuntu-base
 ```
 
-**This installs:**
-- Development tools (git, curl, wget, vim, tmux)
-- Build essentials (gcc, make, autoconf)
-- Python and pip
-- Node.js and npm (via nvm)
-- Rclone (for R2 asset sync)
-- yq (YAML processor)
-- GNU Stow (for dotfiles deployment)
+**Warning**: Installs ALL packages from `system/ubuntu/packages.txt` including:
+- GUI apps (browsers, IDE, office suite)
+- Multiple language versions
+- Packages that may not be available on ARM64
 
-**Duration**: 5-10 minutes
+**Duration**: 10-15 minutes (may have failures on unavailable packages)
+
+#### Option C: Minimal Essentials Only
+
+```bash
+# Only git, stow, build-essential (9 packages)
+cd ~/dev/projects/dotfiles
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --essential-only
+```
+
+**Minimal essentials includes**: build-essential, git, stow, curl, wget, ca-certificates, gnupg
+
+**Duration**: 1-2 minutes
 
 ### Step 3: Deploy Dotfiles with GNU Stow
 
 ```bash
-cd ~/dotfiles
+# Navigate to shared dotfiles
+cd ~/dev/projects/dotfiles
 
 # Install GNU Stow if not installed
 sudo apt install -y stow
@@ -303,33 +670,201 @@ stow --version
 # Deploy all packages
 make stow
 
-# Or deploy specific packages
-stow -t ~ zsh
+# Or deploy specific packages manually
+cd ~/dev/projects/dotfiles/stow-packages
+stow -t ~ shell
 stow -t ~ git
 stow -t ~ ssh
-stow -t ~ vim
 ```
 
-**This creates symlinks:**
-- `~/.zshrc` → `~/dotfiles/packages/zsh/.zshrc`
-- `~/.gitconfig` → `~/dotfiles/packages/git/.gitconfig`
-- `~/.ssh/config` → `~/dotfiles/packages/ssh/.ssh/config`
+**Expected behavior:**
 
-### Step 4: Configure ZSH
+- ✅ `.zshrc` and `.p10k.zsh` are symlinked
+- ✅ `.bashrc` is **NOT** overwritten (Ubuntu default preserved)
+- ✅ `.gitconfig` and `.ssh/config` are symlinked
+- ℹ️ If you want to use bash, manually source shared configs from `~/.config/shell/`
+
+**Symlinks created (shared dotfiles):**
+
+- `~/.zshrc` → `~/dev/projects/dotfiles/stow-packages/shell/.zshrc`
+- `~/.gitconfig` → `~/dev/projects/dotfiles/stow-packages/git/.gitconfig`
+- `~/.ssh/config` → `~/dev/projects/dotfiles/stow-packages/ssh/.ssh/config`
+
+**Benefits of shared dotfiles:**
+
+- ✅ Edit on Mac Studio, instantly available in VM
+- ✅ Single source of truth
+- ✅ Test dotfiles changes in VM before committing
+- ⚠️ VM-specific configs should use `~/.config/` overrides
+
+### Step 4: Install Oh My Zsh
+
+**Install Oh My Zsh framework before setting zsh as default:**
 
 ```bash
-# Change default shell to ZSH
-chsh -s $(which zsh)
-
-# Install Oh My Zsh (if included in dotfiles)
-# Or manually:
+# Install Oh My Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# Source new config
+# When prompted "Do you want to change your default shell to zsh?"
+# Answer: No (we'll do this properly in the next step)
+
+# Install Powerlevel10k theme
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \
+    ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+# Verify installation
+ls -la ~/.oh-my-zsh
+ls -la ~/.oh-my-zsh/custom/themes/powerlevel10k
+```
+
+**Expected result:**
+
+- ✅ Oh My Zsh installed at `~/.oh-my-zsh`
+- ✅ Powerlevel10k theme installed
+- ⚠️ Shell NOT changed yet (we'll do this properly next)
+
+### Step 5: Complete ZSH Setup (All-in-One)
+
+**Quick Setup with Consolidated Script:**
+
+```bash
+# Navigate to shared dotfiles
+cd ~/dev/projects/dotfiles
+
+# Run consolidated VM ZSH setup script
+./scripts/bootstrap/setup-vm-zsh.sh
+
+# This script installs:
+# - Oh My Zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting)
+# - CLI tools (eza)
+# - Sets ZSH as default shell
+```
+
+**Or follow manual steps below:**
+
+---
+
+### Step 5a: Set ZSH as Default Shell
+
+**Important**: Setting ZSH as default works for **all access methods**:
+- ✅ SSH connections
+- ✅ GUI terminal sessions
+- ✅ Local console login
+
+**Prerequisites:**
+
+- ✅ ZSH installed (from VM essentials package)
+- ✅ Oh My Zsh installed (previous step)
+- ✅ Dotfiles stowed (symlinks created)
+
+**Automated method (recommended):**
+
+```bash
+# Navigate to shared dotfiles
+cd ~/dev/projects/dotfiles
+
+# Run default shell setup script
+sudo ./scripts/bootstrap/set-default-shell.sh
+
+# Expected output:
+# ✅ Found shell: /usr/bin/zsh
+# ✅ Shell is in /etc/shells
+# ✅ Default shell changed successfully!
+```
+
+**Manual method:**
+
+```bash
+# Verify zsh is installed
+which zsh
+# Expected: /usr/bin/zsh
+
+# Check if zsh is in /etc/shells
+grep zsh /etc/shells
+# Expected: /usr/bin/zsh
+
+# If not listed, add it
+echo "/usr/bin/zsh" | sudo tee -a /etc/shells
+
+# Change default shell
+sudo chsh -s $(which zsh) $USER
+
+# Verify the change
+getent passwd $USER | cut -d: -f7
+# Expected: /usr/bin/zsh
+```
+
+**Testing the change:**
+
+```bash
+# Test 1: Check shell in /etc/passwd
+getent passwd $USER
+# Last field should be: /usr/bin/zsh
+
+# Test 2: New SSH session (from Mac Studio)
+ssh ubuntu-dev
+echo $SHELL
+# Expected: /usr/bin/zsh
+
+# Test 3: Start zsh manually (current session)
+zsh
+# Should load Oh My Zsh with Powerlevel10k theme
+```
+
+**Note**: The shell change takes effect:
+
+- **Immediately** for new SSH connections
+- **After logout/login** for GUI terminal sessions
+- **Current session** remains unchanged until you start a new shell or reboot
+
+**Test the shell:**
+
+```bash
+# Test 4: Reconnect via SSH to activate new shell
+exit
+ssh ubuntu-dev
+
+# Should automatically:
+# - Load Oh My Zsh
+# - Show Powerlevel10k prompt
+# - Run .zshrc configuration
+
+# Verify
+echo $SHELL
+# Expected: /usr/bin/zsh
+```
+
+### Step 5b: Install Oh My Zsh Plugins (Manual)
+
+**If you didn't use the consolidated script, install plugins manually:**
+
+```bash
+# Install zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions \
+    ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# Install zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+    ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+# Install eza (modern ls replacement)
+sudo apt install -y eza
+
+# Verify installations
+ls -la ~/.oh-my-zsh/custom/plugins/
+eza --version
+```
+
+**Note**: The `.zshrc` from dotfiles already enables these plugins. Just install them and reload:
+
+```bash
+# Reload ZSH config
 source ~/.zshrc
 ```
 
-### Step 5: Configure Git
+---
+
+### Step 6: Configure Git
 
 ```bash
 # Verify Git config
@@ -343,7 +878,7 @@ git config --global user.email "your-email@example.com"
 git status
 ```
 
-### Step 6: Set Up SSH Keys
+### Step 7: Set Up SSH Keys
 
 **Option A: Via 1Password CLI (Recommended)**
 
@@ -370,8 +905,8 @@ chmod 600 ~/.ssh/id_ed25519
 
 ```bash
 # From Mac Studio, copy SSH key to VM
-scp ~/.ssh/id_ed25519 matteo@ubuntu-vm:~/.ssh/
-scp ~/.ssh/id_ed25519.pub matteo@ubuntu-vm:~/.ssh/
+scp ~/.ssh/id_ed25519 matteocervelli@ubuntu-dev4change:~/.ssh/
+scp ~/.ssh/id_ed25519.pub matteocervelli@ubuntu-dev4change:~/.ssh/
 
 # In VM, set permissions
 chmod 700 ~/.ssh
@@ -436,7 +971,7 @@ rclone version
 rclone config
 
 # Or copy config from macOS
-scp ~/.config/rclone/rclone.conf matteo@ubuntu-vm:~/.config/rclone/
+scp ~/.config/rclone/rclone.conf matteocervelli@ubuntu-dev4change:~/.config/rclone/
 
 # Test connection
 rclone lsd r2:your-bucket-name
@@ -564,7 +1099,7 @@ docker compose down
 
 ```bash
 # Mac Studio: Edit code in Cursor
-# /Users/matteo/dev/projects/my-app/src/index.ts
+# /Users/matteocervelli/dev/projects/my-app/src/index.ts
 
 # VM: Changes are immediately visible
 cd ~/dev/projects/my-app/
@@ -577,7 +1112,7 @@ docker compose build
 docker compose up -d
 
 # Mac Studio: Access service
-curl http://ubuntu-vm:3000
+curl http://ubuntu-dev4change:3000
 ```
 
 ### Step 5: Git Workflow from VM
@@ -609,7 +1144,7 @@ git push
 sudo systemctl status ssh
 
 # Verify from macOS
-ssh matteo@ubuntu-vm docker ps
+ssh matteocervelli@ubuntu-dev4change docker ps
 ```
 
 ### Step 2: Create Docker Context (macOS)
@@ -618,19 +1153,19 @@ ssh matteo@ubuntu-vm docker ps
 
 ```bash
 # Create remote context
-docker context create ubuntu-vm \
-  --docker "host=ssh://matteo@ubuntu-vm"
+docker context create ubuntu-dev4change \
+  --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change"
 
 # Or with custom SSH key
-docker context create ubuntu-vm \
-  --docker "host=ssh://matteo@ubuntu-vm" \
+docker context create ubuntu-dev4change \
+  --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change" \
   --description "Ubuntu VM on Parallels"
 
 # List contexts
 docker context ls
 
 # Switch to VM context
-docker context use ubuntu-vm
+docker context use ubuntu-dev4change
 
 # Test - this now runs on VM!
 docker ps
@@ -641,7 +1176,7 @@ docker images
 
 ```bash
 # Use VM Docker
-docker context use ubuntu-vm
+docker context use ubuntu-dev4change
 docker ps  # Lists containers on VM
 
 # Use macOS Docker Desktop
@@ -649,14 +1184,14 @@ docker context use default
 docker ps  # Lists containers on Mac
 
 # One-off command on specific context
-docker --context ubuntu-vm ps
+docker --context ubuntu-dev4change ps
 ```
 
 ### Step 4: Test Remote Control
 
 ```bash
 # From Mac Studio, using VM Docker
-docker context use ubuntu-vm
+docker context use ubuntu-dev4change
 
 # Run container on VM
 docker run -d --name test-nginx -p 8080:80 nginx:alpine
@@ -665,7 +1200,7 @@ docker run -d --name test-nginx -p 8080:80 nginx:alpine
 docker ps
 
 # Access from Mac Studio browser
-open http://ubuntu-vm:8080
+open http://ubuntu-dev4change:8080
 
 # Cleanup
 docker stop test-nginx
@@ -679,7 +1214,7 @@ docker rm test-nginx
 cd ~/dev/projects/my-project/
 
 # Use VM Docker context
-docker context use ubuntu-vm
+docker context use ubuntu-dev4change
 
 # Run docker-compose (executes on VM)
 docker compose up -d
@@ -796,7 +1331,8 @@ curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.p
 **Run comprehensive integration tests:**
 
 ```bash
-cd ~/dotfiles
+# Navigate to shared dotfiles
+cd ~/dev/projects/dotfiles
 
 # Make script executable
 chmod +x scripts/test/test-vm-integration.sh
@@ -851,10 +1387,10 @@ Tests Failed: 0/11
 
 ```bash
 # View checklist
-cat ~/dotfiles/docs/checklists/vm-integration-checklist.md
+cat ~/dev/projects/dotfiles/docs/checklists/vm-integration-checklist.md
 
 # Or open in editor
-vim ~/dotfiles/docs/checklists/vm-integration-checklist.md
+vim ~/dev/projects/dotfiles/docs/checklists/vm-integration-checklist.md
 ```
 
 **Checklist covers 75+ verification points:**
@@ -881,16 +1417,16 @@ ls /media/psf/ && ls ~/dev && ls ~/cdn
 docker ps && docker compose version
 
 # 4. Dotfiles
-ls -la ~/.zshrc && ls ~/dotfiles
+ls -la ~/.zshrc && ls ~/dev/projects/dotfiles
 
 # 5. Git
 git config --list | grep user
 
 # 6. SSH from macOS (run on Mac Studio)
-ssh matteo@ubuntu-vm 'echo "SSH works!"'
+ssh matteocervelli@ubuntu-dev4change 'echo "SSH works!"'
 
 # 7. Remote Docker from macOS (run on Mac Studio)
-docker --context ubuntu-vm ps
+docker --context ubuntu-dev4change ps
 
 # 8. Project access
 ls ~/dev/projects/
@@ -901,6 +1437,50 @@ ls ~/dev/projects/
 ---
 
 ## Troubleshooting
+
+### Issue: SSH Connections Always Start Bash (Not ZSH)
+
+**Symptom**:
+- `/etc/passwd` shows `/usr/bin/zsh` correctly
+- `chsh` was successful
+- Manual `zsh` invocation works
+- But SSH connections still start bash
+
+**Root Cause**:
+This issue was caused by **1Password SSH stub key files** on the macOS client. The files `~/.ssh/id_ed25519` (66 bytes) were 1Password references, not actual keys. When SSH tried to auto-load these during connection, it interfered with the SSH session negotiation, causing the SSH daemon to fall back to bash.
+
+**Solution (macOS side)**:
+
+```bash
+# 1. Check if you have tiny key files (likely 1Password stubs)
+ls -lh ~/.ssh/id_ed25519*
+# If id_ed25519 is ~66 bytes, it's a stub reference
+
+# 2. Backup the stub files
+mkdir -p ~/.ssh/.1password-stubs
+mv ~/.ssh/id_ed25519* ~/.ssh/.1password-stubs/
+
+# 3. Update SSH config to prevent auto-loading
+# Edit: ~/.ssh/config.d/02-1password-macos.conf
+# Add: IdentitiesOnly yes
+
+# 4. Restow SSH config
+cd ~/dev/projects/dotfiles/stow-packages
+stow -R -t ~ ssh
+
+# 5. Test - should now start ZSH
+ssh ubuntu-dev
+echo $SHELL  # Should show: /usr/bin/zsh
+```
+
+**Why this fixed it**: The stub key files were causing SSH errors during connection negotiation. Removing them and adding `IdentitiesOnly yes` prevents SSH from auto-loading default key locations, letting the 1Password agent handle all SSH operations cleanly.
+
+**Additional symptoms this fixes**:
+- macOS: Powerlevel10k instant prompt warnings about console output
+- macOS: "not a public key file" errors during shell initialization
+- VM: SSH sessions starting bash instead of configured shell
+
+---
 
 ### Issue: Shared Folders Not Visible
 
@@ -971,24 +1551,24 @@ docker ps  # Should work without sudo
 
 ### Issue: Remote Docker Context Fails
 
-**Symptom**: `docker --context ubuntu-vm ps` fails with connection error
+**Symptom**: `docker --context ubuntu-dev4change ps` fails with connection error
 
 **Solution**:
 
 ```bash
 # 1. Test SSH from macOS
-ssh matteo@ubuntu-vm docker ps
+ssh matteocervelli@ubuntu-dev4change docker ps
 
 # 2. If SSH fails, check SSH key
 ssh-add -l  # On macOS
-ssh-copy-id matteo@ubuntu-vm
+ssh-copy-id matteocervelli@ubuntu-dev4change
 
 # 3. Recreate Docker context
-docker context rm ubuntu-vm
-docker context create ubuntu-vm --docker "host=ssh://matteo@ubuntu-vm"
+docker context rm ubuntu-dev4change
+docker context create ubuntu-dev4change --docker "host=ssh://matteocervellicervelli@ubuntu-dev4change"
 
 # 4. Test again
-docker context use ubuntu-vm
+docker context use ubuntu-dev4change
 docker ps
 ```
 
@@ -1101,10 +1681,9 @@ docker run -it --rm -v ~/dev:/dev:ro ubuntu:24.04 ls -la /dev
 cd ~/dev/projects/your-project/
 docker compose up -d
 
-# Deploy dotfiles changes
-cd ~/dotfiles
-git pull
-make stow
+# Deploy dotfiles changes (pull happens automatically on Mac Studio)
+cd ~/dev/projects/dotfiles
+make stow  # Redeploy if config changed
 
 # Update R2 assets (from macOS)
 rclone sync r2:bucket ~/media/cdn/ --progress
@@ -1129,4 +1708,4 @@ sudo apt update && sudo apt upgrade -y
 **Last Updated**: 2025-10-26
 **Status**: ✅ Complete
 **Part of**: FASE 4 - VM Ubuntu Setup
-**Issue**: [#23](https://github.com/matteocervelli/dotfiles/issues/23)
+**Issue**: [#23](https://github.com/matteocervellicervelli/dotfiles/issues/23)

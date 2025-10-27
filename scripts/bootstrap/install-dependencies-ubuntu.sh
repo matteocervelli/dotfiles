@@ -33,6 +33,7 @@ VERBOSE=0
 DRY_RUN=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
+VM_ESSENTIALS=0
 WITH_DOCKER=0
 PACKAGE_FILE="$PROJECT_ROOT/system/ubuntu/packages.txt"
 
@@ -49,6 +50,79 @@ ESSENTIAL_PACKAGES=(
     "software-properties-common"
 )
 
+# VM Essential packages (for --vm-essentials flag)
+# Lightweight set for development VMs
+VM_ESSENTIAL_PACKAGES=(
+    # Build tools
+    "build-essential"
+    "autoconf"
+    "cmake"
+    "gcc"
+    "pkg-config"
+
+    # Version control & DevOps
+    "git"
+    "curl"
+    "wget"
+    "stow"
+
+    # Shell
+    "zsh"
+    "bash-completion"
+
+    # CLI editors
+    "vim"
+    "neovim"
+    "tmux"
+
+    # System monitoring
+    "htop"
+    "btop"
+    "tree"
+
+    # Modern CLI tools
+    "fzf"
+    "bat"
+    "eza"
+    "ripgrep"
+    "fd-find"
+
+    # JSON/YAML processing
+    "jq"
+
+    # Python
+    "python3"
+    "python3-pip"
+    "pipx"
+
+    # Node.js
+    "nodejs"
+    "npm"
+
+    # Database clients
+    "postgresql-client"
+    "sqlite3"
+
+    # Cloud & sync
+    "rclone"
+
+    # Image processing
+    "imagemagick"
+    "ffmpeg"
+
+    # Security
+    "ca-certificates"
+    "gnupg"
+    "openssl"
+
+    # Utilities
+    "apt-transport-https"
+    "software-properties-common"
+    "moreutils"
+    "pv"
+    "socat"
+)
+
 # =============================================================================
 # Helper Functions
 # =============================================================================
@@ -63,17 +137,20 @@ USAGE:
     $0 [OPTIONS]
 
 OPTIONS:
-    -h, --help         Show this help message
-    -v, --verbose      Show detailed output
-    --dry-run          Preview installation without making changes
-    --skip-repos       Skip repository setup (use default repos only)
-    --essential-only   Install only essential packages (git, stow, build tools)
-    --with-docker      Install Docker Engine + Compose v2 after package installation
+    -h, --help          Show this help message
+    -v, --verbose       Show detailed output
+    --dry-run           Preview installation without making changes
+    --skip-repos        Skip repository setup (use default repos only)
+    --essential-only    Install only essential packages (git, stow, build tools)
+    --vm-essentials     Install VM essential packages (dev tools, CLI utils, no GUI)
+    --with-docker       Install Docker Engine + Compose v2 after package installation
 
 EXAMPLES:
     $0                      # Full installation
     $0 --dry-run            # Preview what would be installed
-    $0 --essential-only     # Quick install of essential tools
+    $0 --essential-only     # Quick install of essential tools (minimal)
+    $0 --vm-essentials      # Install VM essentials (CLI dev environment)
+    $0 --vm-essentials --with-docker  # VM setup with Docker
 
 PACKAGE SOURCES:
     - Native APT packages: From system/ubuntu/packages.txt
@@ -116,6 +193,10 @@ parse_args() {
                 ;;
             --essential-only)
                 ESSENTIAL_ONLY=1
+                shift
+                ;;
+            --vm-essentials)
+                VM_ESSENTIALS=1
                 shift
                 ;;
             --with-docker)
@@ -253,6 +334,45 @@ install_essential_packages() {
         sudo apt install -y "${packages_to_install[@]}"
 
         log_success "Essential packages installed"
+    fi
+}
+
+# Install VM essential packages (dev environment without GUI apps)
+install_vm_essentials() {
+    log_step "Installing VM essential packages..."
+
+    local packages_to_install=()
+
+    # Check which packages need installation
+    for pkg in "${VM_ESSENTIAL_PACKAGES[@]}"; do
+        # Skip if already installed
+        if ! dpkg -l | grep -q "^ii  $pkg " 2>/dev/null; then
+            packages_to_install+=("$pkg")
+        fi
+    done
+
+    if [[ ${#packages_to_install[@]} -eq 0 ]]; then
+        log_success "All VM essential packages already installed"
+        return 0
+    fi
+
+    log_info "Installing ${#packages_to_install[@]} VM essential packages..."
+    log_info "This includes: dev tools, CLI utilities, Python, Node.js, database clients"
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+        log_info "[DRY RUN] Would install: ${packages_to_install[*]}"
+    else
+        # Update first
+        sudo apt update
+
+        # Install VM essential packages
+        # Use --no-install-recommends to keep installation minimal
+        sudo apt install -y --no-install-recommends "${packages_to_install[@]}" || {
+            log_warning "Some packages failed to install, trying without --no-install-recommends"
+            sudo apt install -y "${packages_to_install[@]}"
+        }
+
+        log_success "VM essential packages installed"
     fi
 }
 
@@ -455,6 +575,14 @@ main() {
     if [[ $ESSENTIAL_ONLY -eq 1 ]]; then
         log_success "Essential packages installation complete!"
         log_info "To install all packages, run without --essential-only flag"
+        exit 0
+    fi
+
+    # Install VM essentials if requested
+    if [[ $VM_ESSENTIALS -eq 1 ]]; then
+        install_vm_essentials
+        log_success "VM essential packages installation complete!"
+        log_info "Installed ${#VM_ESSENTIAL_PACKAGES[@]} packages for VM development"
         exit 0
     fi
 

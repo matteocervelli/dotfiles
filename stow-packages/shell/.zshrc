@@ -17,11 +17,16 @@ if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$VSCODE_INJECTION" ]]; then
   unset SWITCHING_TO_ZSH 2>/dev/null || true
 fi
 
-# Brew initialization (might produce output)
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# OS Detection
+OS_TYPE="$(uname -s)"
 
-# Load environment variables early
-. "$HOME/.local/bin/env"
+# Brew initialization (might produce output) - macOS only
+if [[ "$OS_TYPE" == "Darwin" ]] && [[ -x "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Load environment variables early (if exists)
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 # Disable autocorrection
 unsetopt correct_all
@@ -179,8 +184,15 @@ source $ZSH/oh-my-zsh.sh
 # Powerlevel10k Theme
 # =============================================================================
 
-# Load Powerlevel10k theme
-source ~/.vim/plugins/powerlevel10k/powerlevel10k.zsh-theme
+# Load Powerlevel10k theme (check multiple locations)
+if [[ -f ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+    source ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
+elif [[ -f ~/.vim/plugins/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+    source ~/.vim/plugins/powerlevel10k/powerlevel10k.zsh-theme
+else
+    echo "[WARNING] Powerlevel10k theme not found. Install with:"
+    echo "  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git \${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k"
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -206,8 +218,10 @@ source ~/.vim/plugins/powerlevel10k/powerlevel10k.zsh-theme
 # Application Integrations
 # =============================================================================
 
-# Docker CLI completions
-fpath=(/Users/matteocervelli/.docker/completions $fpath)
+# Docker CLI completions (macOS specific path)
+if [[ "$OS_TYPE" == "Darwin" ]] && [[ -d "/Users/matteocervelli/.docker/completions" ]]; then
+    fpath=(/Users/matteocervelli/.docker/completions $fpath)
+fi
 autoload -Uz compinit
 compinit
 

@@ -71,6 +71,70 @@ make install
 source ~/.zshrc
 ```
 
+## 🔑 SSH Key Management
+
+**Automated device-specific SSH key management with 1Password integration.**
+
+### Quick Start
+
+```bash
+# Setup SSH keys for current device
+./scripts/setup-ssh-keys.sh
+
+# The script will:
+# 1. Auto-detect hostname (studio4change, macbook4change, etc.)
+# 2. Check for key in 1Password: {hostname}-ssh-key-2025
+# 3. Install key locally: ~/.ssh/id_ed25519
+# 4. Offer to generate new key if not found
+```
+
+### Strategy: One Key Per Device
+
+**Why?**
+- ✅ **More secure** - If one device is compromised, revoke only that key
+- ✅ **Traceable** - Know which device accessed which server
+- ✅ **Organized** - Clear naming convention in 1Password
+
+**Key naming convention:**
+```
+{hostname}-ssh-key-{year}
+```
+
+**Examples:**
+- Mac Studio: `studio4change-ssh-key-2025`
+- MacBook Pro: `macbook4change-ssh-key-2025`
+- Ubuntu VM: `ubuntu-dev4change-ssh-key-2025`
+
+**All keys stored in 1Password vault:** `dev`
+
+### Manual Operations
+
+```bash
+# Generate new key for current device
+./scripts/setup-ssh-keys.sh --generate
+
+# Specify hostname explicitly
+./scripts/setup-ssh-keys.sh --hostname studio4change
+
+# View key in 1Password
+op item get "studio4change-ssh-key-2025"
+
+# Copy key to server
+ssh-copy-id user@server
+
+# Test GitHub access
+ssh -T git@github.com
+```
+
+### Integration with Bootstrap
+
+SSH key setup is **automatically included** in bootstrap scripts:
+- `scripts/bootstrap/macos-bootstrap.sh` (macOS)
+- `scripts/bootstrap/ubuntu-bootstrap.sh` (Ubuntu)
+- `scripts/bootstrap/fedora-bootstrap.sh` (Fedora)
+
+If 1Password CLI is authenticated, keys are set up automatically during installation.
+
 ## 📦 Asset Management System
 
 Comprehensive asset management with central library, auto-update propagation, and environment-aware URL resolution.

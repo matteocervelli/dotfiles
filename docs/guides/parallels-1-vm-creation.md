@@ -117,7 +117,7 @@ Parallels should auto-detect: **"Ubuntu Linux 24.04"**
 
 ### Step 4: Name and Save VM
 
-1. **Name**: `ubuntu-vm` (or your preferred name)
+1. **Name**: `ubuntu-dev4change` (or your preferred name)
 2. **Location**: Default Parallels folder
 3. Click **"Create"**
 
@@ -279,13 +279,13 @@ Wait 5-15 minutes for:
 Ubuntu login prompt appears:
 
 ```
-ubuntu-vm login: matteocervelli
+ubuntu-dev4change login: matteocervelli
 Password: ********
 ```
 
 Expected prompt:
 ```
-matteocervelli@ubuntu-vm:~$
+matteocervelli@ubuntu-dev4change:~$
 ```
 
 **You're in!** 🎉
@@ -494,22 +494,32 @@ Run these commands to verify VM is ready:
 # 1. Check Ubuntu version
 lsb_release -a
 
-# 2. Check Parallels Tools
-prltoolsd -v
+# 2. Check Parallels Tools version
+cat /usr/lib/parallels-tools/version
+# Expected: 26.1.1.57288 (or newer)
 
-# 3. Check network
+# 3. Check Parallels Tools service
+systemctl status prltoolsd
+# Expected: active (running)
+
+# 4. Check shared folders (ARM64 FUSE-based)
+ls -la /media/psf/
+mount | grep psf
+# Expected: type fuse.prl_fsd
+
+# 5. Check network
 ping -c 3 google.com
 
-# 4. Check SSH service
+# 6. Check SSH service
 systemctl status ssh
 
-# 5. Check available disk space
+# 7. Check available disk space
 df -h
 
-# 6. Check memory
+# 8. Check memory
 free -h
 
-# 7. Check CPU
+# 9. Check CPU
 nproc
 ```
 
@@ -520,7 +530,7 @@ nproc
 hostname -I
 
 # From macOS terminal, test SSH
-ssh matteocervelli@ubuntu-vm
+ssh matteocervelli@ubuntu-dev4change
 
 # Or via IP
 ssh matteocervelli@10.211.55.XXX
@@ -576,7 +586,7 @@ sudo netplan apply
 
 ### Issue: SSH Connection Refused
 
-**Symptom**: `ssh: connect to host ubuntu-vm port 22: Connection refused`
+**Symptom**: `ssh: connect to host ubuntu-dev4change port 22: Connection refused`
 
 **Solution**:
 

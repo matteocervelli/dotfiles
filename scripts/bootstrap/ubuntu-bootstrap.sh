@@ -70,8 +70,24 @@ log_info "Installing build essentials..."
 sudo apt install -y build-essential curl git
 
 log_success "Ubuntu dependencies installed successfully!"
+
+# Setup SSH keys
+log_step "SSH Key Setup"
+log_info "Setting up device-specific SSH key from 1Password..."
+echo ""
+
+if eval $(op signin) 2>/dev/null; then
+    "$SCRIPT_DIR/../setup-ssh-keys.sh" || {
+        log_warning "SSH key setup skipped or failed"
+        log_info "Run manually later: ./scripts/setup-ssh-keys.sh"
+    }
+else
+    log_warning "Not signed in to 1Password - skipping SSH key setup"
+    log_info "Sign in and run: ./scripts/setup-ssh-keys.sh"
+fi
+
 echo ""
 log_info "Next steps:"
-echo "  1. Sign in to 1Password CLI: eval \$(op signin)"
+echo "  1. If SSH keys not set up: ./scripts/setup-ssh-keys.sh"
 echo "  2. Configure Rclone for R2: ./scripts/sync/setup-rclone.sh"
 echo "  3. Run full installation: make install"

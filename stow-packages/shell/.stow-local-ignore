@@ -7,6 +7,10 @@
 # README and documentation
 ^/README\.md$
 
+# Don't overwrite system .bashrc (Ubuntu/Debian provide good defaults)
+# User should manually source shared configs if using bash
+^/\.bashrc$
+
 # Backup files
 \.bak$
 \.backup$

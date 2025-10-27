@@ -1,0 +1,84 @@
+#
+# Ubuntu VM Package List (Minimal)
+#
+# Lightweight package list for Ubuntu development VM
+# Only essentials for development and testing
+#
+# Usage:
+#   cat system/ubuntu/packages-vm.txt | xargs sudo apt install -y
+#
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+build-essential
+git
+gh
+curl
+wget
+stow
+autoconf
+cmake
+gcc
+pkg-config
+
+# ============================================================================
+# CLI Tools
+# ============================================================================
+vim
+neovim
+tmux
+htop
+btop
+tree
+fzf
+bat
+eza
+ripgrep
+fd-find
+jq
+yq
+httpie
+pv
+pwgen
+
+# ============================================================================
+# Programming Languages & Runtimes
+# ============================================================================
+python3.12
+python3-pip
+pipx
+nodejs
+npm
+golang-go
+rustc
+ruby-full
+
+# ============================================================================
+# Database Tools
+# ============================================================================
+postgresql-client
+pgcli
+sqlite3
+
+# ============================================================================
+# DevOps & Cloud
+# ============================================================================
+rclone
+tailscale
+caddy
+
+# ============================================================================
+# Image Processing
+# ============================================================================
+imagemagick
+ffmpeg
+
+# ============================================================================
+# Utilities
+# ============================================================================
+ca-certificates
+gnupg
+openssl
+moreutils
+socat
