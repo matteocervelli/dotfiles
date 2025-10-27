@@ -22,7 +22,8 @@
       "Bash(bats:*)",
       "Read(//Users/matteocervelli/.local/**)",
       "Bash(mdfind:*)",
-      "Read(//Users/matteocervelli/Documents/Hookmark/**)"
+      "Read(//Users/matteocervelli/Documents/Hookmark/**)",
+      "Read(//Users/matteocervelli/**)"
     ],
     "deny": []
   }
