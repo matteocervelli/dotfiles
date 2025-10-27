@@ -1,0 +1,109 @@
+{
+  "name": "Python Development Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // Container configuration
+  "containerEnv": {
+    "TZ": "UTC",
+    "PYTHONUNBUFFERED": "1",
+    "PIPENV_VENV_IN_PROJECT": "1"
+  },
+
+  // Mount the workspace
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+  // Additional mounts
+  "mounts": [
+    "source=devcontainer-history,target=/home/developer/.history,type=volume",
+    "source=devcontainer-extensions,target=/home/developer/.vscode-server/extensions,type=volume",
+    // Persist pip cache
+    "source=devcontainer-pip,target=/home/developer/.cache/pip,type=volume",
+    // Persist pyenv
+    "source=devcontainer-pyenv,target=/home/developer/.pyenv/versions,type=volume"
+  ],
+
+  // Features
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11",
+      "installTools": true
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": false,
+      "username": "developer"
+    }
+  },
+
+  // Lifecycle scripts
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "git config --global --add safe.directory /workspace",
+
+  // VS Code customization
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "ms-python.isort",
+        "njpwerner.autodocstring",
+        "donjayamanne.python-environment-manager",
+        "kevinrose.vsc-python-indent"
+      ]
+    }
+  },
+
+  // Container user
+  "remoteUser": "developer",
+  "containerUser": "developer",
+
+  // Port forwarding
+  "forwardPorts": [8000, 5000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Application",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Flask",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Run arguments
+  "runArgs": [
+    "--name=devcontainer-${localWorkspaceFolderBasename}-python"
+  ],
+
+  // Shutdown action
+  "shutdownAction": "stopContainer",
+
+  // Claude Code specific
+  "remoteEnv": {
+    "CLAUDE_CODE_CONTAINER": "true",
+    "PROJECT_ROOT": "/workspace",
+    "PROJECT_TYPE": "python"
+  }
+}

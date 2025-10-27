@@ -1,0 +1,118 @@
+{
+  "name": "Node.js Development Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // Container configuration
+  "containerEnv": {
+    "TZ": "UTC",
+    "NODE_ENV": "development"
+  },
+
+  // Mount the workspace
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+  // Additional mounts
+  "mounts": [
+    "source=devcontainer-history,target=/home/developer/.history,type=volume",
+    "source=devcontainer-extensions,target=/home/developer/.vscode-server/extensions,type=volume",
+    // Persist npm cache
+    "source=devcontainer-npm,target=/home/developer/.npm,type=volume",
+    // Persist nvm
+    "source=devcontainer-nvm,target=/home/developer/.nvm/versions,type=volume"
+  ],
+
+  // Features
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "nodeGypDependencies": true,
+      "nvmVersion": "latest"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "username": "developer"
+    }
+  },
+
+  // Lifecycle scripts
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "git config --global --add safe.directory /workspace",
+
+  // VS Code customization
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ]
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "christian-kohler.npm-intellisense",
+        "eg2.vscode-npm-script",
+        "ms-vscode.vscode-typescript-next",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
+  },
+
+  // Container user
+  "remoteUser": "developer",
+  "containerUser": "developer",
+
+  // Port forwarding
+  "forwardPorts": [3000, 8080, 5173],
+  "portsAttributes": {
+    "3000": {
+      "label": "Application",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Dev Server",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Vite",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Run arguments
+  "runArgs": [
+    "--name=devcontainer-${localWorkspaceFolderBasename}-nodejs"
+  ],
+
+  // Shutdown action
+  "shutdownAction": "stopContainer",
+
+  // Claude Code specific
+  "remoteEnv": {
+    "CLAUDE_CODE_CONTAINER": "true",
+    "PROJECT_ROOT": "/workspace",
+    "PROJECT_TYPE": "nodejs"
+  }
+}

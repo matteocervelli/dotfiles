@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full docker-build-minimal docker-build-dev docker-build-production docker-build-all docker-run-minimal docker-run-dev docker-test docker-clean docker-size docker-verify
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full docker-build-minimal docker-build-dev docker-build-production docker-build-all docker-run-minimal docker-run-dev docker-test docker-clean docker-size docker-verify devcontainer-generate devcontainer-preview devcontainer-build devcontainer-up devcontainer-down devcontainer-shell devcontainer-rebuild devcontainer-clean devcontainer-test devcontainer-python devcontainer-nodejs devcontainer-templates
 
 # Default target - show help
 help:
@@ -64,6 +64,16 @@ help:
 	@echo "  make docker-size            Show Docker image sizes"
 	@echo "  make docker-verify          Verify Docker images meet requirements"
 	@echo "  make docker-clean           Remove Docker images and cleanup"
+	@echo ""
+	@echo "📦 Dev Containers (Project-specific):"
+	@echo "  make devcontainer-generate TEMPLATE=<type> PROJECT=<path>  Generate dev container"
+	@echo "  make devcontainer-python PROJECT=<path>                    Quick: Python dev container"
+	@echo "  make devcontainer-nodejs PROJECT=<path>                    Quick: Node.js dev container"
+	@echo "  make devcontainer-templates                                List available templates"
+	@echo "  make devcontainer-up PROJECT=<path>                        Start dev container"
+	@echo "  make devcontainer-down PROJECT=<path>                      Stop dev container"
+	@echo "  make devcontainer-shell PROJECT=<path>                     Shell into dev container"
+	@echo "  make devcontainer-test                                     Test dev container system"
 	@echo ""
 	@echo "🐳 Ubuntu/Docker (Linux only):"
 	@echo "  make docker-install         Install Docker Engine + Compose v2 (Ubuntu)"
@@ -761,4 +771,186 @@ docker-quick: docker-build-minimal docker-verify
 	@echo ""
 	@echo "✅ Quick Docker workflow complete"
 	@echo "Run with: make docker-run-minimal"
+
+
+# =============================================================================
+# Dev Container Management (Project-specific containers)
+# =============================================================================
+
+# Generate dev container for a project
+devcontainer-generate:
+	@if [ -z "$(TEMPLATE)" ] || [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: TEMPLATE and PROJECT are required"; \
+		echo ""; \
+		echo "Usage:"; \
+		echo "  make devcontainer-generate TEMPLATE=python PROJECT=~/my-app"; \
+		echo ""; \
+		echo "Available templates:"; \
+		echo "  - base         Base container (ZSH + Git + Docker CLI)"; \
+		echo "  - python       Python development (Python 3, pip, poetry)"; \
+		echo "  - nodejs       Node.js development (Node.js, npm, pnpm)"; \
+		echo "  - fullstack    Full-stack (Python + Node.js + PostgreSQL)"; \
+		echo "  - data-science Data science (Python + Jupyter + pandas)"; \
+		echo ""; \
+		exit 1; \
+	fi
+	@echo "🐳 Generating dev container..."
+	@echo ""
+	@./scripts/devcontainer/generate-devcontainer.sh \
+		--template $(TEMPLATE) \
+		--project $(PROJECT) \
+		$(if $(FORCE),--force,) \
+		$(if $(VERBOSE),--verbose,)
+	@echo ""
+	@echo "✅ Dev container generated!"
+
+# Generate with dry-run
+devcontainer-preview:
+	@if [ -z "$(TEMPLATE)" ] || [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: TEMPLATE and PROJECT are required"; \
+		exit 1; \
+	fi
+	@./scripts/devcontainer/generate-devcontainer.sh \
+		--template $(TEMPLATE) \
+		--project $(PROJECT) \
+		--dry-run
+
+# Build dev container for a project
+devcontainer-build:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		echo "Usage: make devcontainer-build PROJECT=~/my-app"; \
+		exit 1; \
+	fi
+	@if [ ! -d "$(PROJECT)/.devcontainer" ]; then \
+		echo "❌ Error: .devcontainer not found in $(PROJECT)"; \
+		echo "Generate with: make devcontainer-generate TEMPLATE=python PROJECT=$(PROJECT)"; \
+		exit 1; \
+	fi
+	@echo "🔨 Building dev container for $(PROJECT)..."
+	@cd $(PROJECT) && \
+		docker build -f .devcontainer/Dockerfile -t devcontainer-$$(basename $(PROJECT)):latest .
+	@echo "✅ Dev container built"
+
+# Start dev container (docker-compose)
+devcontainer-up:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(PROJECT)/.devcontainer/docker-compose.yml" ]; then \
+		echo "❌ Error: docker-compose.yml not found"; \
+		exit 1; \
+	fi
+	@echo "🚀 Starting dev container..."
+	@cd $(PROJECT) && \
+		PROJECT_NAME=$$(basename $(PROJECT)) \
+		docker-compose -f .devcontainer/docker-compose.yml up -d
+	@echo "✅ Dev container started"
+
+# Stop dev container
+devcontainer-down:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(PROJECT)/.devcontainer/docker-compose.yml" ]; then \
+		echo "❌ Error: docker-compose.yml not found"; \
+		exit 1; \
+	fi
+	@echo "🛑 Stopping dev container..."
+	@cd $(PROJECT) && \
+		PROJECT_NAME=$$(basename $(PROJECT)) \
+		docker-compose -f .devcontainer/docker-compose.yml down
+	@echo "✅ Dev container stopped"
+
+# Shell into dev container
+devcontainer-shell:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		exit 1; \
+	fi
+	@echo "🐚 Opening shell in dev container..."
+	@cd $(PROJECT) && \
+		PROJECT_NAME=$$(basename $(PROJECT)) \
+		docker-compose -f .devcontainer/docker-compose.yml exec devcontainer zsh
+
+# Rebuild dev container
+devcontainer-rebuild:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		exit 1; \
+	fi
+	@echo "🔄 Rebuilding dev container..."
+	@cd $(PROJECT) && \
+		PROJECT_NAME=$$(basename $(PROJECT)) \
+		docker-compose -f .devcontainer/docker-compose.yml build --no-cache
+	@echo "✅ Dev container rebuilt"
+
+# Clean dev container
+devcontainer-clean:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		exit 1; \
+	fi
+	@echo "🧹 Cleaning dev container..."
+	@cd $(PROJECT) && \
+		PROJECT_NAME=$$(basename $(PROJECT)) \
+		docker-compose -f .devcontainer/docker-compose.yml down -v
+	@echo "✅ Dev container cleaned (volumes removed)"
+
+# Test dev container system
+devcontainer-test:
+	@echo "🧪 Running dev container tests..."
+	@echo ""
+	@if ! command -v bats >/dev/null 2>&1; then \
+		echo "❌ BATS not found. Install with: brew install bats-core"; \
+		exit 1; \
+	fi
+	@bats tests/test-24-devcontainer.bats
+	@echo ""
+	@echo "✅ All dev container tests passed"
+
+# Quick workflow: Generate Python dev container
+devcontainer-python:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		echo "Usage: make devcontainer-python PROJECT=~/my-python-app"; \
+		exit 1; \
+	fi
+	@$(MAKE) devcontainer-generate TEMPLATE=python PROJECT=$(PROJECT) $(if $(FORCE),FORCE=1,)
+
+# Quick workflow: Generate Node.js dev container
+devcontainer-nodejs:
+	@if [ -z "$(PROJECT)" ]; then \
+		echo "❌ Error: PROJECT is required"; \
+		echo "Usage: make devcontainer-nodejs PROJECT=~/my-web-app"; \
+		exit 1; \
+	fi
+	@$(MAKE) devcontainer-generate TEMPLATE=nodejs PROJECT=$(PROJECT) $(if $(FORCE),FORCE=1,)
+
+# List available templates
+devcontainer-templates:
+	@echo "📋 Available Dev Container Templates:"
+	@echo ""
+	@echo "1. base          - Base container (ZSH + Git + Docker CLI)"
+	@echo "                   Use for: Generic projects, shell scripts"
+	@echo ""
+	@echo "2. python        - Python development (Python 3, pip, poetry, pytest)"
+	@echo "                   Use for: Python apps, APIs, data processing"
+	@echo "                   Ports: 8000, 5000"
+	@echo ""
+	@echo "3. nodejs        - Node.js development (Node.js, npm, pnpm, yarn)"
+	@echo "                   Use for: Web apps, React/Vue/Angular"
+	@echo "                   Ports: 3000, 8080, 5173"
+	@echo ""
+	@echo "4. fullstack     - Full-stack (Python + Node.js + PostgreSQL + Redis)"
+	@echo "                   Use for: Full-stack apps with database"
+	@echo "                   Services: app, postgres, redis, adminer"
+	@echo ""
+	@echo "5. data-science  - Data science (Python + Jupyter + pandas + NumPy)"
+	@echo "                   Use for: Data analysis, ML, notebooks"
+	@echo "                   Ports: 8888 (Jupyter)"
+	@echo ""
+	@echo "Generate with: make devcontainer-generate TEMPLATE=<name> PROJECT=<path>"
 

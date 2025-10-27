@@ -1,0 +1,90 @@
+{
+  "name": "Base Development Container",
+  "image": "dotfiles-ubuntu:dev",
+
+  // Container configuration
+  "containerEnv": {
+    "TZ": "UTC"
+  },
+
+  // Mount the workspace
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+  // Additional mounts for persistence and dotfiles
+  "mounts": [
+    // Persist bash/zsh history
+    "source=devcontainer-history,target=/home/developer/.history,type=volume",
+    // Persist extensions
+    "source=devcontainer-extensions,target=/home/developer/.vscode-server/extensions,type=volume",
+    // Optional: Mount SSH keys (read-only)
+    // "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/developer/.ssh-host,type=bind,readonly"
+  ],
+
+  // Features to install
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": false,
+      "username": "developer",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "ppa": false,
+      "version": "latest"
+    }
+  },
+
+  // Lifecycle scripts
+  "postCreateCommand": "echo 'Container created! Running post-create setup...' && cd /workspace",
+  "postStartCommand": "git config --global --add safe.directory /workspace",
+
+  // VS Code customization
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/.venv/**": true
+        }
+      },
+      "extensions": [
+        "ms-vscode.makefile-tools",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  },
+
+  // Container user
+  "remoteUser": "developer",
+  "containerUser": "developer",
+
+  // Port forwarding (none by default, override in project-specific configs)
+  "forwardPorts": [],
+
+  // Run arguments
+  "runArgs": [
+    "--name=devcontainer-${localWorkspaceFolderBasename}",
+    "--hostname=devcontainer"
+  ],
+
+  // Shutdown action
+  "shutdownAction": "stopContainer",
+
+  // Claude Code specific settings
+  "remoteEnv": {
+    "CLAUDE_CODE_CONTAINER": "true",
+    "PROJECT_ROOT": "/workspace"
+  }
+}
