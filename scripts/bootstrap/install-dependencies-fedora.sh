@@ -11,11 +11,13 @@
 #   --dry-run          Show what would be installed without installing
 #   --skip-repos       Skip repository setup (only install from default repos)
 #   --essential-only   Install only essential packages (dev tools, git, stow)
+#   --vm-essentials    Install VM-optimized package set (dev VM, no GUI apps)
 #
 # Example:
 #   ./scripts/bootstrap/install-dependencies-fedora.sh
 #   ./scripts/bootstrap/install-dependencies-fedora.sh --dry-run
 #   ./scripts/bootstrap/install-dependencies-fedora.sh --essential-only
+#   ./scripts/bootstrap/install-dependencies-fedora.sh --vm-essentials
 
 set -eo pipefail
 
@@ -32,6 +34,7 @@ VERBOSE=0
 DRY_RUN=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
+VM_ESSENTIALS=0
 PACKAGE_FILE="$PROJECT_ROOT/system/fedora/packages.txt"
 
 # Essential packages (always install these first)
@@ -46,6 +49,85 @@ ESSENTIAL_PACKAGES=(
     "stow"
     "ca-certificates"
     "gnupg2"
+)
+
+# VM Essential packages (for --vm-essentials flag)
+# Lightweight set for development VMs
+VM_ESSENTIAL_PACKAGES=(
+    # Build tools
+    "gcc"
+    "gcc-c++"
+    "make"
+    "cmake"
+    "autoconf"
+    "pkg-config"
+
+    # Version control & DevOps
+    "git"
+    "gh"
+    "curl"
+    "wget"
+    "stow"
+
+    # Shell
+    "zsh"
+    "bash-completion"
+
+    # CLI editors
+    "vim-enhanced"
+    "neovim"
+    "tmux"
+
+    # System monitoring
+    "htop"
+    "btop"
+    "tree"
+
+    # Modern CLI tools
+    "fzf"
+    "bat"
+    "eza"
+    "ripgrep"
+    "fd-find"
+
+    # JSON/YAML processing
+    "jq"
+
+    # Python
+    "python3"
+    "python3-pip"
+    "pipx"
+
+    # Node.js
+    "nodejs"
+    "npm"
+
+    # Other languages
+    "golang"
+    "rust"
+    "cargo"
+    "ruby"
+
+    # Database clients
+    "postgresql"
+    "pgcli"
+    "sqlite"
+
+    # DevOps & Cloud
+    "rclone"
+    "tailscale"
+    "caddy"
+
+    # Image processing
+    "ImageMagick"
+    "ffmpeg"
+
+    # Utilities
+    "ca-certificates"
+    "gnupg2"
+    "openssl"
+    "moreutils"
+    "socat"
 )
 
 # =============================================================================
@@ -67,11 +149,13 @@ OPTIONS:
     --dry-run          Preview installation without making changes
     --skip-repos       Skip repository setup (use default repos only)
     --essential-only   Install only essential packages (git, stow, build tools)
+    --vm-essentials    Install VM-optimized package set (development VM, no GUI apps)
 
 EXAMPLES:
     $0                      # Full installation
     $0 --dry-run            # Preview what would be installed
     $0 --essential-only     # Quick install of essential tools
+    $0 --vm-essentials      # Lightweight VM development setup
 
 PACKAGE SOURCES:
     - Native DNF packages: From system/fedora/packages.txt
@@ -114,6 +198,10 @@ parse_args() {
                 ;;
             --essential-only)
                 ESSENTIAL_ONLY=1
+                shift
+                ;;
+            --vm-essentials)
+                VM_ESSENTIALS=1
                 shift
                 ;;
             *)
@@ -278,6 +366,34 @@ install_yq() {
         sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
         sudo chmod +x /usr/local/bin/yq
         log_success "yq installed successfully"
+    fi
+}
+
+# Install VM essential packages
+install_vm_essentials() {
+    log_step "Installing VM essential packages..."
+
+    local packages_to_install=()
+
+    # Check which packages need installation
+    for pkg in "${VM_ESSENTIAL_PACKAGES[@]}"; do
+        if ! rpm -q "$pkg" >/dev/null 2>&1; then
+            packages_to_install+=("$pkg")
+        fi
+    done
+
+    if [[ ${#packages_to_install[@]} -eq 0 ]]; then
+        log_success "All VM essential packages already installed"
+        return 0
+    fi
+
+    log_info "Installing ${#packages_to_install[@]} VM essential packages..."
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+        log_info "[DRY RUN] Would install: ${packages_to_install[*]}"
+    else
+        sudo dnf install -y "${packages_to_install[@]}"
+        log_success "VM essential packages installed"
     fi
 }
 
@@ -451,6 +567,31 @@ main() {
 
     # Setup repositories
     setup_repositories
+
+    # VM essentials mode (lightweight development VM)
+    if [[ $VM_ESSENTIALS -eq 1 ]]; then
+        log_info "Installing VM essentials (lightweight development environment)..."
+        install_vm_essentials
+
+        # Post-installation for VMs
+        post_install
+
+        log_success "VM essential packages installation complete!"
+        echo ""
+        log_info "VM-optimized installation complete. This includes:"
+        echo "  - Development tools (gcc, cmake, build-essential)"
+        echo "  - CLI editors (vim, neovim, tmux)"
+        echo "  - Modern CLI tools (bat, eza, fzf, ripgrep)"
+        echo "  - Programming languages (Python, Node.js, Go, Rust)"
+        echo "  - Database clients (PostgreSQL, SQLite)"
+        echo "  - DevOps tools (git, gh, tailscale, rclone)"
+        echo ""
+        log_info "Next steps:"
+        echo "  1. Sign in to 1Password CLI: eval \$(op signin)"
+        echo "  2. Configure Tailscale: sudo tailscale up"
+        echo "  3. Setup dotfiles: make install"
+        exit 0
+    fi
 
     # Install all packages from list
     install_packages_from_list

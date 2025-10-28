@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal dotfiles and development environment configuration for **macOS** and **Linux** (Ubuntu, Fedora, Arch).
+Personal dotfiles and development environment configuration for **macOS** and **Linux** (Ubuntu, Fedora, Arch). Includes a specialized **Educational Edition** for children ages 4-12.
 
 ## 🚀 Features
 
@@ -12,6 +12,7 @@ Personal dotfiles and development environment configuration for **macOS** and **
 - ✅ **Asset Management System** - Central library with auto-update propagation
 - ✅ **Environment-Aware Helpers** - TypeScript & Python asset URL resolution
 - ✅ R2 sync with Cloudflare integration
+- ✅ **Educational Version** - Safe learning environment for kids (Fedora)
 - 🚧 IDE configurations (in progress)
 
 ## 🛠️ Tech Stack
@@ -63,6 +64,33 @@ make install
 - [Linux Package Management](applications/linux/README.md)
 - [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
 - [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
+
+### Educational Version (Fedora)
+
+A **safe, supervised learning environment** for children ages 4-12.
+
+```bash
+# Interactive setup (recommended)
+./scripts/bootstrap/kids-fedora-bootstrap.sh
+
+# Or specify options directly
+./scripts/bootstrap/kids-fedora-bootstrap.sh \
+    --child-name "Sofia" \
+    --child-age 8 \
+    --install-all
+```
+
+**Features:**
+- 5-layer protection system (user restrictions, parental controls, DNS filtering, browser safety, supervision)
+- 40+ educational packages (GCompris, Tux Suite, Scratch, KDE Education Suite)
+- Age-appropriate content filtering (OARS)
+- Usage monitoring and parent dashboard
+- NO sudo access for kids (safety first)
+
+**Documentation:**
+- [Educational Setup Guide](docs/guides/parallels-4-fedora-kids-setup.md)
+- [Parent Usage Guide](docs/guides/kids-fedora-usage.md)
+- [Fedora VM Creation](docs/guides/parallels-3-fedora-vm-creation.md)
 
 ## 🧪 Usage
 

@@ -1,0 +1,106 @@
+#
+# Fedora VM Package List (Minimal)
+#
+# Lightweight package list for Fedora development VM
+# Only essentials for development and testing
+#
+# Usage:
+#   cat system/fedora/packages-vm.txt | xargs sudo dnf install -y
+#
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+# Note: "Development Tools" group includes gcc, make, etc.
+# Install with: sudo dnf groupinstall "Development Tools"
+git
+gh
+curl
+wget
+stow
+autoconf
+cmake
+gcc
+gcc-c++
+pkg-config
+
+# ============================================================================
+# CLI Tools
+# ============================================================================
+vim-enhanced
+neovim
+tmux
+htop
+btop
+tree
+fzf
+bat
+eza
+ripgrep
+fd-find
+jq
+yq
+httpie
+pv
+pwgen
+
+# ============================================================================
+# Programming Languages & Runtimes
+# ============================================================================
+# Note: Specific Python versions may vary, use python3.12 if available
+python3
+python3-pip
+pipx
+nodejs
+npm
+golang
+rust
+cargo
+ruby
+ruby-devel
+
+# ============================================================================
+# Database Tools
+# ============================================================================
+postgresql
+pgcli
+sqlite
+
+# ============================================================================
+# DevOps & Cloud
+# ============================================================================
+rclone
+tailscale
+caddy
+
+# ============================================================================
+# Image Processing
+# ============================================================================
+ImageMagick
+ffmpeg
+ffmpeg-free
+
+# ============================================================================
+# Utilities
+# ============================================================================
+ca-certificates
+gnupg2
+openssl
+moreutils
+socat
+
+# ============================================================================
+# Optional: Flatpak Applications
+# ============================================================================
+# Uncomment if you want Flatpak support in minimal VM
+# flatpak
+
+# ============================================================================
+# Post-Installation Notes
+# ============================================================================
+# After installing these packages, run:
+#   1. pyenv installation for Python version management
+#   2. nvm installation for Node.js version management
+#   3. rustup installation for Rust toolchain management
+#
+# These are handled by the bootstrap script's post-installation phase.
