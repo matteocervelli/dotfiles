@@ -244,12 +244,13 @@ setup_repositories() {
     log_step "Setting up third-party repositories..."
 
     # Enable RPM Fusion (for multimedia codecs and additional software)
-    if ! dnf repolist | grep -q rpmfusion 2>/dev/null; then
+    if ! dnf repolist 2>/dev/null | grep -q rpmfusion; then
         log_info "Setting up RPM Fusion repositories..."
         if [[ $DRY_RUN -eq 0 ]]; then
             sudo dnf install -y \
                 https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-                https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
+                || true
         else
             log_info "[DRY RUN] Would enable RPM Fusion repositories"
         fi
@@ -257,64 +258,88 @@ setup_repositories() {
 
     # 1Password CLI Repository
     if ! rpm -q 1password-cli >/dev/null 2>&1; then
-        log_info "Setting up 1Password repository..."
-        if [[ $DRY_RUN -eq 0 ]]; then
-            sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
-            sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://downloads.1password.com/linux/keys/1password.asc" > /etc/yum.repos.d/1password.repo'
-        else
-            log_info "[DRY RUN] Would setup 1Password repository"
+        if [[ ! -f /etc/yum.repos.d/1password.repo ]]; then
+            log_info "Setting up 1Password repository..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc || true
+                sudo sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://downloads.1password.com/linux/keys/1password.asc" > /etc/yum.repos.d/1password.repo'
+            else
+                log_info "[DRY RUN] Would setup 1Password repository"
+            fi
         fi
     fi
 
     # GitHub CLI Repository
-    if ! command -v gh >/dev/null 2>&1; then
+    if ! rpm -q gh >/dev/null 2>&1; then
         log_info "Setting up GitHub CLI repository..."
         if [[ $DRY_RUN -eq 0 ]]; then
             # Fedora 42+ uses 'addrepo' (Fedora ≤41 use --add-repo)
-            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
+            if [[ ! -f /etc/yum.repos.d/gh-cli.repo ]]; then
+                sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
+            fi
         else
             log_info "[DRY RUN] Would setup GitHub CLI repository"
         fi
     fi
 
     # Tailscale Repository
-    if ! command -v tailscale >/dev/null 2>&1; then
+    if ! rpm -q tailscale >/dev/null 2>&1; then
         log_info "Setting up Tailscale repository..."
         if [[ $DRY_RUN -eq 0 ]]; then
             # Fedora 42+ uses 'addrepo' (Fedora ≤41 use --add-repo)
-            sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+            if [[ ! -f /etc/yum.repos.d/tailscale.repo ]]; then
+                sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+            fi
         else
             log_info "[DRY RUN] Would setup Tailscale repository"
         fi
     fi
 
     # eza Repository (via COPR) - Modern ls replacement
-    if ! command -v eza >/dev/null 2>&1; then
-        log_info "Setting up eza COPR repository..."
-        if [[ $DRY_RUN -eq 0 ]]; then
-            sudo dnf install -y 'dnf-command(copr)'
-            sudo dnf copr enable -y atim/eza
-        else
-            log_info "[DRY RUN] Would setup eza COPR repository"
+    # Note: Fedora 42+ uses alternateved/eza instead of atim/eza
+    if ! rpm -q eza >/dev/null 2>&1; then
+        if ! dnf repolist 2>/dev/null | grep -q "copr.*eza"; then
+            log_info "Setting up eza COPR repository..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                sudo dnf install -y 'dnf-command(copr)' 2>&1 | grep -v "already installed" || true
+
+                # Detect Fedora version and use appropriate COPR
+                local fedora_version
+                fedora_version=$(rpm -E %fedora)
+
+                if [[ $fedora_version -ge 42 ]]; then
+                    # Fedora 42+: Use alternateved/eza (atim/eza doesn't support F42)
+                    log_info "Using alternateved/eza COPR for Fedora 42+"
+                    sudo dnf copr enable -y alternateved/eza
+                else
+                    # Fedora 41 and earlier: Use atim/eza
+                    sudo dnf copr enable -y atim/eza
+                fi
+            else
+                log_info "[DRY RUN] Would setup eza COPR repository"
+            fi
         fi
     fi
 
     # Caddy Repository (via COPR)
-    if ! command -v caddy >/dev/null 2>&1; then
-        log_info "Setting up Caddy COPR repository..."
-        if [[ $DRY_RUN -eq 0 ]]; then
-            sudo dnf install -y 'dnf-command(copr)'
-            sudo dnf copr enable -y @caddy/caddy
-        else
-            log_info "[DRY RUN] Would setup Caddy COPR repository"
+    if ! rpm -q caddy >/dev/null 2>&1; then
+        if ! dnf repolist 2>/dev/null | grep -q "copr.*caddy"; then
+            log_info "Setting up Caddy COPR repository..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                sudo dnf install -y 'dnf-command(copr)' 2>&1 | grep -v "already installed" || true
+                sudo dnf copr enable -y @caddy/caddy
+            else
+                log_info "[DRY RUN] Would setup Caddy COPR repository"
+            fi
         fi
     fi
 
     # Google Cloud CLI Repository
-    if ! command -v gcloud >/dev/null 2>&1; then
-        log_info "Setting up Google Cloud CLI repository..."
-        if [[ $DRY_RUN -eq 0 ]]; then
-            sudo tee /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+    if ! rpm -q google-cloud-cli >/dev/null 2>&1; then
+        if [[ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]]; then
+            log_info "Setting up Google Cloud CLI repository..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                sudo tee /etc/yum.repos.d/google-cloud-sdk.repo << EOM
 [google-cloud-cli]
 name=Google Cloud CLI
 baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64
@@ -323,8 +348,9 @@ gpgcheck=1
 repo_gpgcheck=0
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOM
-        else
-            log_info "[DRY RUN] Would setup Google Cloud CLI repository"
+            else
+                log_info "[DRY RUN] Would setup Google Cloud CLI repository"
+            fi
         fi
     fi
 
@@ -405,6 +431,7 @@ install_vm_essentials() {
     if [[ $DRY_RUN -eq 1 ]]; then
         log_info "[DRY RUN] Would install: ${packages_to_install[*]}"
     else
+        # Install packages (show progress)
         sudo dnf install -y "${packages_to_install[@]}"
         log_success "VM essential packages installed"
     fi
@@ -537,6 +564,8 @@ post_install() {
         else
             log_info "[DRY RUN] Would install rustup"
         fi
+    else
+        log_success "Rustup already installed"
     fi
 
     log_success "Post-installation complete"

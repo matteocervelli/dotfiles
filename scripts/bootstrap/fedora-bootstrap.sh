@@ -264,35 +264,43 @@ update_system() {
 install_essential_tools() {
     log_step "Phase 2: Essential Development Tools"
 
-    # Install Development Tools group (Fedora 42+: "development-tools")
-    if ! dnf group list installed 2>/dev/null | grep -qi "development-tools\|Development Tools"; then
-        log_info "Installing development-tools group..."
-        execute sudo dnf group install -y "development-tools"
-    else
-        log_success "Development Tools already installed"
-    fi
-
-    # Essential packages
-    local essential_packages=(
-        "stow"
+    # Install development tools directly (more reliable than group install)
+    # These are the core packages from @development-tools group
+    local dev_packages=(
+        "gcc"
+        "gcc-c++"
+        "make"
+        "cmake"
+        "autoconf"
+        "automake"
+        "libtool"
+        "pkgconfig"
+        "patch"
         "git"
+        "stow"
         "curl"
         "wget"
         "ca-certificates"
         "gnupg2"
     )
 
-    log_info "Installing essential packages..."
-    for package in "${essential_packages[@]}"; do
+    log_info "Installing development tools and essential packages..."
+
+    # Collect packages that need installation
+    local packages_to_install=()
+    for package in "${dev_packages[@]}"; do
         if ! rpm -q "$package" &> /dev/null; then
-            log_info "Installing $package..."
-            execute sudo dnf install -y "$package"
-        else
-            if [[ $VERBOSE -eq 1 ]]; then
-                log_success "$package already installed"
-            fi
+            packages_to_install+=("$package")
         fi
     done
+
+    # Install all missing packages in one command (faster and cleaner)
+    if [[ ${#packages_to_install[@]} -gt 0 ]]; then
+        log_info "Installing ${#packages_to_install[@]} packages..."
+        execute sudo dnf install -y "${packages_to_install[@]}"
+    else
+        log_success "All development tools already installed"
+    fi
 
     log_success "Essential tools installed"
 }
@@ -414,7 +422,7 @@ deploy_stow_packages() {
 
     # Core packages to deploy
     local stow_packages=(
-        "zsh"
+        "shell"  # ZSH and shell configuration
         "git"
         "ssh"
     )
@@ -448,17 +456,115 @@ deploy_stow_packages() {
 
         if [[ "$current_shell" != "zsh" ]]; then
             log_info "Setting ZSH as default shell..."
-            execute sudo chsh -s "$(command -v zsh)" "$(whoami)"
+
+            local zsh_path
+            zsh_path=$(command -v zsh)
+
+            # Ensure ZSH is in /etc/shells
+            if ! grep -q "^${zsh_path}$" /etc/shells 2>/dev/null; then
+                log_info "Adding ZSH to /etc/shells..."
+                execute sudo sh -c "echo '$zsh_path' >> /etc/shells"
+            fi
+
+            # Change shell
+            execute sudo chsh -s "$zsh_path" "$(whoami)"
+
+            # Verify shell change
+            if getent passwd "$(whoami)" | grep -q "$zsh_path"; then
+                log_success "ZSH set as default shell"
+            else
+                log_warning "Failed to set ZSH as default shell - you may need to run: chsh -s $zsh_path"
+            fi
         else
             log_success "ZSH already set as default shell"
         fi
     else
         log_info "Installing ZSH..."
         execute sudo dnf install -y zsh
-        execute sudo chsh -s "$(command -v zsh)" "$(whoami)"
+
+        local zsh_path
+        zsh_path=$(command -v zsh)
+
+        # Ensure ZSH is in /etc/shells
+        if ! grep -q "^${zsh_path}$" /etc/shells 2>/dev/null; then
+            execute sudo sh -c "echo '$zsh_path' >> /etc/shells"
+        fi
+
+        execute sudo chsh -s "$zsh_path" "$(whoami)"
     fi
 
     log_success "Stow packages deployed"
+
+    # Install Oh My Zsh if ZSH is installed and stow package was deployed
+    if command -v zsh &> /dev/null && [[ -f "$HOME/.zshrc" ]]; then
+        if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+            log_info "Installing Oh My Zsh..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                # Install Oh My Zsh (unattended)
+                sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+            else
+                log_info "[DRY-RUN] Would install Oh My Zsh"
+            fi
+        else
+            log_success "Oh My Zsh already installed"
+        fi
+
+        # Install Powerlevel10k theme
+        local p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+        if [[ ! -d "$p10k_dir" ]]; then
+            log_info "Installing Powerlevel10k theme..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+            else
+                log_info "[DRY-RUN] Would install Powerlevel10k"
+            fi
+        else
+            log_success "Powerlevel10k already installed"
+        fi
+
+        # Install Oh My Zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting)
+        local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+        # zsh-autosuggestions
+        if [[ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]]; then
+            log_info "Installing zsh-autosuggestions plugin..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+            else
+                log_info "[DRY-RUN] Would install zsh-autosuggestions"
+            fi
+        else
+            log_success "zsh-autosuggestions already installed"
+        fi
+
+        # zsh-syntax-highlighting
+        if [[ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]]; then
+            log_info "Installing zsh-syntax-highlighting plugin..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_custom/plugins/zsh-syntax-highlighting"
+            else
+                log_info "[DRY-RUN] Would install zsh-syntax-highlighting"
+            fi
+        else
+            log_success "zsh-syntax-highlighting already installed"
+        fi
+
+        # Install essential fonts (MesloLGS NF required for Powerlevel10k)
+        if [[ -f "$PROJECT_ROOT/scripts/fonts/install-fonts.sh" ]]; then
+            log_info "Installing essential fonts (MesloLGS NF for Powerlevel10k)..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                "$PROJECT_ROOT/scripts/fonts/install-fonts.sh" --essential-only || {
+                    log_warning "Font installation failed (non-critical)"
+                    log_info "Fonts can be installed manually later with: make fonts-install-essential"
+                }
+            else
+                log_info "[DRY-RUN] Would install essential fonts"
+            fi
+        else
+            log_warning "Font installation script not found - skipping fonts"
+            log_info "Install fonts manually: make fonts-install-essential"
+        fi
+    fi
 }
 
 # =============================================================================

@@ -116,7 +116,6 @@ dev_plugins=(
     npm
     python
     pip
-    pyenv
     bun
 )
 

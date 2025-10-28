@@ -161,9 +161,20 @@ check_docker_installed() {
         local docker_version
         docker_version=$(docker --version 2>/dev/null || echo "unknown")
 
-        log_warning "Docker is already installed: $docker_version"
+        log_success "Docker is already installed: $docker_version"
+
+        # Check if docker-compose plugin is installed
+        if docker compose version >/dev/null 2>&1; then
+            local compose_version
+            compose_version=$(docker compose version 2>/dev/null || echo "unknown")
+            log_success "Docker Compose is installed: $compose_version"
+        else
+            log_warning "Docker Compose plugin not found - consider installing it"
+        fi
+
+        log_info "Skipping Docker installation (already present)"
         log_info "To reinstall, remove Docker first: sudo dnf remove docker-ce docker-ce-cli containerd.io"
-        exit 3
+        exit 0
     fi
 }
 
@@ -234,8 +245,20 @@ setup_docker_repository() {
     sudo dnf install -y dnf-plugins-core
 
     # Add Docker repository
+    # Note: Fedora 42+ changed syntax from --add-repo to addrepo
     log_info "Adding Docker repository..."
-    sudo dnf config-manager --add-repo "$DOCKER_REPO_URL"
+
+    local fedora_version
+    fedora_version=$(rpm -E %fedora)
+
+    if [[ $fedora_version -ge 42 ]]; then
+        # Fedora 42+: Use new addrepo syntax
+        log_info "Using Fedora 42+ repository syntax..."
+        sudo dnf config-manager addrepo --from-repofile="$DOCKER_REPO_URL"
+    else
+        # Fedora 41 and earlier: Use old --add-repo syntax
+        sudo dnf config-manager --add-repo "$DOCKER_REPO_URL"
+    fi
 
     # Verify repository was added
     if [[ ! -f /etc/yum.repos.d/docker-ce.repo ]]; then
