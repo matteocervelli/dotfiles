@@ -54,7 +54,7 @@ alias _secrets='cd ~/.secrets'
 # Applications
 # =============================================================================
 
-alias claude="~/.claude/local/claude"
+
 alias claudeconfig="code '$HOME/Library/Application Support/Claude/claude_desktop_config.json'"
 
 # Python
