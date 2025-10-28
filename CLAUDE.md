@@ -133,9 +133,41 @@ make docker-install                     # Docker Engine + Compose v2
 ./scripts/bootstrap/fedora-bootstrap.sh --with-packages
 ./scripts/bootstrap/fedora-bootstrap.sh --essential-only
 
+# Full development environment + Docker
+./scripts/bootstrap/fedora-bootstrap.sh --with-packages --with-docker
+
+# Or use Makefile
+make fedora-full                           # Fedora packages + Docker
+make docker-install-fedora                 # Docker only
+
+# Docker standalone installation
+./scripts/bootstrap/install-docker-fedora.sh
+./scripts/bootstrap/install-docker-fedora.sh --dry-run  # Preview only
+
 # Educational setup (kids 4-12)
 ./scripts/bootstrap/kids-fedora-bootstrap.sh --install-all
 ./scripts/bootstrap/kids-fedora-bootstrap.sh --core-only
+```
+
+### Docker Remote Context (macOS → Fedora VM)
+
+```bash
+# On macOS: Create remote Docker context
+docker context create fedora-vm --docker 'host=ssh://fedora-vm'
+
+# Use Fedora VM for Docker commands
+docker context use fedora-vm
+
+# Run containers on Fedora VM from macOS
+docker ps
+docker run hello-world
+docker compose up
+
+# Switch back to local Docker
+docker context use default
+
+# List contexts
+docker context ls
 ```
 
 ### Application Management

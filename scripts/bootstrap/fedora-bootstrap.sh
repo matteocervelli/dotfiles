@@ -35,6 +35,7 @@ source "$PROJECT_ROOT/scripts/utils/detect-os.sh"
 VERBOSE=0
 DRY_RUN=0
 WITH_PACKAGES=0
+WITH_DOCKER=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
 PROFILE=""
@@ -55,6 +56,7 @@ OPTIONS:
     -v, --verbose        Show detailed output
     --dry-run            Preview actions without making changes
     --with-packages      Install all packages from system/fedora/packages.txt
+    --with-docker        Install Docker Engine + Compose v2
     --profile <name>     Use specific profile (future support)
     --skip-repos         Skip repository setup (use default repos only)
     --essential-only     Install only essential tools (quick setup)
@@ -62,6 +64,8 @@ OPTIONS:
 EXAMPLES:
     $0                          # Minimal setup (stow, git, 1password, rclone)
     $0 --with-packages          # Full development environment
+    $0 --with-docker            # Minimal setup + Docker
+    $0 --with-packages --with-docker  # Full environment + Docker
     $0 --dry-run                # Preview what would be installed
     $0 --essential-only         # Quick essential-only setup
 
@@ -113,6 +117,10 @@ parse_args() {
                 ;;
             --with-packages)
                 WITH_PACKAGES=1
+                shift
+                ;;
+            --with-docker)
+                WITH_DOCKER=1
                 shift
                 ;;
             --profile)
@@ -512,6 +520,7 @@ main() {
         log_info "Configuration:"
         log_info "  Dry run: $DRY_RUN"
         log_info "  With packages: $WITH_PACKAGES"
+        log_info "  With Docker: $WITH_DOCKER"
         log_info "  Essential only: $ESSENTIAL_ONLY"
         log_info "  Skip repos: $SKIP_REPOS"
         [[ -n "$PROFILE" ]] && log_info "  Profile: $PROFILE"
@@ -543,6 +552,37 @@ main() {
         log_info "Skipping full package installation"
         log_info "To install all packages, run:"
         log_info "  $0 --with-packages"
+    fi
+
+    # Docker installation (if requested)
+    if [[ $WITH_DOCKER -eq 1 ]]; then
+        log_step "Installing Docker Engine + Compose v2..."
+
+        local docker_script="$PROJECT_ROOT/scripts/bootstrap/install-docker-fedora.sh"
+
+        if [[ ! -f "$docker_script" ]]; then
+            log_error "Docker installation script not found: $docker_script"
+            exit 1
+        fi
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            log_info "[DRY RUN] Would execute: $docker_script --dry-run"
+        else
+            log_info "Executing Docker installation script..."
+            "$docker_script" || {
+                log_error "Docker installation failed"
+                log_info "See: docs/guides/docker-fedora-setup.md for manual installation"
+                exit 1
+            }
+        fi
+
+        log_success "Docker installation complete"
+    else
+        log_info ""
+        log_info "Skipping Docker installation"
+        log_info "To install Docker, run:"
+        log_info "  $0 --with-docker"
+        log_info "  OR: make docker-install-fedora"
     fi
 
     if [[ $ESSENTIAL_ONLY -eq 0 ]]; then

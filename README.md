@@ -51,9 +51,17 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
 sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
 sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
 
-# Install with Docker (Ubuntu only)
-sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
-# Or via Makefile: make ubuntu-full
+# Install with Docker
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker  # Ubuntu
+sudo ./scripts/bootstrap/fedora-bootstrap.sh --with-packages --with-docker  # Fedora
+
+# Or via Makefile
+make ubuntu-full    # Ubuntu packages + Docker
+make fedora-full    # Fedora packages + Docker
+
+# Docker standalone installation
+make docker-install          # Ubuntu
+make docker-install-fedora   # Fedora
 
 # Setup dotfiles
 make install
@@ -62,6 +70,8 @@ make install
 **See also:**
 - [Linux Setup Guide](docs/guides/linux-setup-guide.md) - Step-by-step Linux installation
 - [Linux Package Management](applications/linux/README.md)
+- [Docker Ubuntu Setup](docs/guides/docker-ubuntu-setup.md) - Docker on Ubuntu
+- [Docker Fedora Setup](docs/guides/docker-fedora-setup.md) - Docker on Fedora **NEW!** 🚀
 - [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
 - [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
 
