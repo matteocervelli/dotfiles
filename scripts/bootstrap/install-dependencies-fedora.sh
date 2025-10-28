@@ -86,7 +86,7 @@ VM_ESSENTIAL_PACKAGES=(
     # Modern CLI tools
     "fzf"
     "bat"
-    # "eza"  # Not available in Fedora 42 standard repos
+    "eza"
     "ripgrep"
     "fd-find"
 
@@ -287,6 +287,17 @@ setup_repositories() {
             sudo dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo
         else
             log_info "[DRY RUN] Would setup Tailscale repository"
+        fi
+    fi
+
+    # eza Repository (via COPR) - Modern ls replacement
+    if ! command -v eza >/dev/null 2>&1; then
+        log_info "Setting up eza COPR repository..."
+        if [[ $DRY_RUN -eq 0 ]]; then
+            sudo dnf install -y 'dnf-command(copr)'
+            sudo dnf copr enable -y atim/eza
+        else
+            log_info "[DRY RUN] Would setup eza COPR repository"
         fi
     fi
 
