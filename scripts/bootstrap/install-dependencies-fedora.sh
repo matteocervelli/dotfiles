@@ -270,9 +270,8 @@ setup_repositories() {
     if ! command -v gh >/dev/null 2>&1; then
         log_info "Setting up GitHub CLI repository..."
         if [[ $DRY_RUN -eq 0 ]]; then
-            # Fedora 42+ uses 'addrepo' instead of '--add-repo'
-            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo 2>/dev/null || \
-            sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+            # Fedora 42+ uses 'addrepo' (Fedora ≤41 use --add-repo)
+            sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
         else
             log_info "[DRY RUN] Would setup GitHub CLI repository"
         fi
@@ -282,9 +281,8 @@ setup_repositories() {
     if ! command -v tailscale >/dev/null 2>&1; then
         log_info "Setting up Tailscale repository..."
         if [[ $DRY_RUN -eq 0 ]]; then
-            # Fedora 42+ uses 'addrepo' instead of '--add-repo'
-            sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo 2>/dev/null || \
-            sudo dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+            # Fedora 42+ uses 'addrepo' (Fedora ≤41 use --add-repo)
+            sudo dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
         else
             log_info "[DRY RUN] Would setup Tailscale repository"
         fi

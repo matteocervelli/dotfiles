@@ -265,7 +265,7 @@ install_essential_tools() {
     log_step "Phase 2: Essential Development Tools"
 
     # Install Development Tools group (Fedora 42+: "development-tools")
-    if ! dnf group list installed 2>/dev/null | grep -qi "development"; then
+    if ! dnf group list installed 2>/dev/null | grep -qi "development-tools\|Development Tools"; then
         log_info "Installing development-tools group..."
         execute sudo dnf group install -y "development-tools"
     else
