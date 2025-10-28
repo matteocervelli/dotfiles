@@ -1,10 +1,10 @@
-# Guide 3: Creating Fedora VM in Parallels Desktop for Kids Learning
+# Guide 6: Creating Fedora Kids VM in Parallels Desktop
 
 **Purpose**: Create a clean Fedora Workstation virtual machine with Parallels Tools integration, optimized for a safe kids' learning environment.
 
 **Result**: Empty Fedora VM ready for educational software and safe browsing setup.
 
-**Next Step**: After completing this guide, proceed to [Guide 4: Fedora Kids Learning Setup](parallels-4-fedora-kids-setup.md) to configure educational software, parental controls, and simplified environment.
+**Next Step**: After completing this guide, proceed to [Guide 7: Fedora Kids Educational Setup](parallels-7-fedora-kids-educational-setup.md) to configure educational software, parental controls, and simplified environment.
 
 ---
 
@@ -648,9 +648,9 @@ cd ~/dotfiles
 
 Your Fedora VM is created with Parallels Tools installed. The VM is ready for educational software and kids' learning environment setup.
 
-**Proceed to**: [Guide 4: Fedora Kids Learning Setup](parallels-4-fedora-kids-setup.md)
+**Proceed to**: [Guide 7: Fedora Kids Educational Setup](parallels-7-fedora-kids-educational-setup.md)
 
-**Guide 4 will configure**:
+**Guide 7 will configure**:
 - ✅ Kids' restricted user account with parental controls
 - ✅ Educational software packages (educational games, learning apps)
 - ✅ Safe browsing with parental controls
@@ -659,7 +659,7 @@ Your Fedora VM is created with Parallels Tools installed. The VM is ready for ed
 - ✅ Time limits and usage restrictions
 - ✅ Content filtering and monitoring
 
-### Before Proceeding to Guide 4
+### Before Proceeding to Guide 7
 
 Ensure:
 - [ ] VM boots successfully to Fedora desktop
@@ -680,7 +680,7 @@ Before setting up for kids:
 - ✅ VM can be easily paused/suspended from Mac
 - ✅ Consider taking a VM snapshot before kids start using it
 
-**Ready?** → [Continue to Guide 4](parallels-4-fedora-kids-setup.md)
+**Ready?** → [Continue to Guide 7](parallels-7-fedora-kids-educational-setup.md)
 
 ---
 

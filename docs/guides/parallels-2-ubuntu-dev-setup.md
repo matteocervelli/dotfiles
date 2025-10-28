@@ -1,8 +1,8 @@
-# Guide 2: Development VM Setup
+# Guide 2: Ubuntu Development Environment Setup
 
 **Purpose**: Transform an empty Ubuntu VM into a complete development environment with Docker, dotfiles, and project bindings from Mac Studio.
 
-**Prerequisites**: Completed [Guide 1: VM Creation](parallels-1-vm-creation.md) - You have an Ubuntu VM with Parallels Tools installed.
+**Prerequisites**: Completed [Guide 1: Ubuntu VM Creation](parallels-1-ubuntu-vm-creation.md) - You have an Ubuntu VM with Parallels Tools installed.
 
 **Result**: Fully configured development VM with shared folders, Docker, dotfiles, R2 assets, and remote control from macOS.
 
