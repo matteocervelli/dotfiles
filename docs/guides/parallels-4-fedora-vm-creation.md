@@ -316,7 +316,28 @@ sudo reboot
 
 Log back in after reboot.
 
-### Step 3: Install Development Tools (Required for Parallels Tools)
+### Step 3: Install SSH Server (Required for Remote Access)
+
+**IMPORTANT: Enable SSH for remote access from Mac Studio**
+
+```bash
+# Install OpenSSH server
+sudo dnf install -y openssh-server
+
+# Enable and start SSH service
+sudo systemctl enable sshd
+sudo systemctl start sshd
+
+# Verify SSH is running
+sudo systemctl status sshd
+
+# Check SSH is listening on port 22
+sudo ss -tlnp | grep :22
+```
+
+**Expected**: SSH service should be active (running) and listening on port 22.
+
+### Step 4: Install Development Tools (Required for Parallels Tools)
 
 **Required for Parallels Tools compilation:**
 
