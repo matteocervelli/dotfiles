@@ -38,6 +38,7 @@ WITH_PACKAGES=0
 WITH_DOCKER=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
+VM_ESSENTIALS=0
 PROFILE=""
 
 # =============================================================================
@@ -60,11 +61,14 @@ OPTIONS:
     --profile <name>     Use specific profile (future support)
     --skip-repos         Skip repository setup (use default repos only)
     --essential-only     Install only essential tools (quick setup)
+    --vm-essentials      Install VM-optimized package set (60+ packages, no GUI apps)
 
 EXAMPLES:
     $0                          # Minimal setup (stow, git, 1password, rclone)
+    $0 --vm-essentials          # VM-optimized development environment (60+ packages)
     $0 --with-packages          # Full development environment
     $0 --with-docker            # Minimal setup + Docker
+    $0 --vm-essentials --with-docker  # VM essentials + Docker
     $0 --with-packages --with-docker  # Full environment + Docker
     $0 --dry-run                # Preview what would be installed
     $0 --essential-only         # Quick essential-only setup
@@ -133,6 +137,10 @@ parse_args() {
                 ;;
             --essential-only)
                 ESSENTIAL_ONLY=1
+                shift
+                ;;
+            --vm-essentials)
+                VM_ESSENTIALS=1
                 shift
                 ;;
             *)
@@ -457,6 +465,29 @@ deploy_stow_packages() {
 # Phase 5: Full Package Installation (Optional)
 # =============================================================================
 
+install_vm_essentials() {
+    log_step "Phase 5: VM Essential Packages"
+
+    local install_script="$PROJECT_ROOT/scripts/bootstrap/install-dependencies-fedora.sh"
+
+    if [[ ! -f "$install_script" ]]; then
+        log_error "install-dependencies-fedora.sh not found"
+        return 1
+    fi
+
+    log_info "Installing VM-optimized package set (~60 packages)..."
+    log_info "This includes: dev tools, CLI editors, modern CLI utils, languages, DB clients"
+    log_warning "This may take 10-15 minutes depending on your connection"
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+        execute "$install_script" --vm-essentials --dry-run
+    else
+        execute "$install_script" --vm-essentials
+    fi
+
+    log_success "VM essential packages installed"
+}
+
 install_full_packages() {
     log_step "Phase 5: Full Package Installation"
 
@@ -522,6 +553,7 @@ main() {
         log_info "  With packages: $WITH_PACKAGES"
         log_info "  With Docker: $WITH_DOCKER"
         log_info "  Essential only: $ESSENTIAL_ONLY"
+        log_info "  VM essentials: $VM_ESSENTIALS"
         log_info "  Skip repos: $SKIP_REPOS"
         [[ -n "$PROFILE" ]] && log_info "  Profile: $PROFILE"
     fi
@@ -547,11 +579,13 @@ main() {
 
     if [[ $WITH_PACKAGES -eq 1 ]]; then
         install_full_packages
+    elif [[ $VM_ESSENTIALS -eq 1 ]]; then
+        install_vm_essentials
     else
         log_info ""
-        log_info "Skipping full package installation"
-        log_info "To install all packages, run:"
-        log_info "  $0 --with-packages"
+        log_info "Skipping package installation"
+        log_info "To install VM essentials: $0 --vm-essentials"
+        log_info "To install all packages: $0 --with-packages"
     fi
 
     # Docker installation (if requested)

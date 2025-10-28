@@ -39,7 +39,7 @@ cat /usr/lib/parallels-tools/version
 # Expected: 19.x.x.xxxxx (or newer)
 
 # 3. Parallels Tools service running
-systemctl status prltools.service
+systemctl status prltoolsd.service
 # Expected: active (running)
 
 # 4. Shared folders mount point exists
@@ -260,31 +260,41 @@ ls -la
 **Inside the VM:**
 
 ```bash
+# Navigate to dotfiles
+cd ~/dotfiles
+
 # Start timer to track installation time
 time ./scripts/bootstrap/fedora-bootstrap.sh --vm-essentials
 
 # This will:
 # 1. Update system packages (dnf upgrade)
 # 2. Install @development-tools group
-# 3. Install essential utilities
-# 4. Install dotfiles dependencies
-# 5. Deploy GNU Stow packages
+# 3. Install VM-optimized package set (~60 packages)
+# 4. Install dotfiles dependencies (1Password CLI, rclone, yq, ImageMagick)
+# 5. Deploy GNU Stow packages (zsh, git, ssh)
 # 6. Setup ZSH as default shell
 ```
 
-**What `--vm-essentials` installs:**
+**What `--vm-essentials` installs (~60 packages):**
 - ✅ System updates (dnf upgrade)
-- ✅ Development tools (gcc, make, git, etc.)
-- ✅ Essential utilities (stow, curl, wget, vim, htop, tree)
-- ✅ 1Password CLI (for secrets management)
-- ✅ rclone (for R2 asset sync)
-- ✅ yq (YAML processor)
-- ✅ ImageMagick (image processing)
-- ✅ GNU Stow packages: zsh, git, ssh
-- ❌ NO full package list (fast install for VMs)
+- ✅ Development tools (@development-tools group)
+- ✅ Build tools (gcc, make, cmake, autoconf, pkg-config)
+- ✅ Version control (git, gh)
+- ✅ Shell tools (zsh, bash-completion)
+- ✅ CLI editors (vim-enhanced, neovim, tmux)
+- ✅ System monitoring (htop, btop, tree)
+- ✅ Modern CLI (fzf, bat, eza, ripgrep, fd-find)
+- ✅ Languages (Python 3, Node.js, Golang, Rust, Ruby)
+- ✅ Database clients (postgresql, pgcli, sqlite)
+- ✅ DevOps tools (rclone, tailscale, caddy)
+- ✅ Image processing (ImageMagick, ffmpeg)
+- ✅ Dotfiles core (1Password CLI, yq, moreutils, socat)
+- ✅ GNU Stow packages deployed (zsh, git, ssh)
+- ✅ ZSH set as default shell
+- ❌ NO GUI applications (lightweight for VMs)
 - ❌ NO Docker (separate step next)
 
-**Installation time:** ~10-15 minutes
+**Installation time:** ~15-20 minutes
 
 ### Step 3: Verify Bootstrap Results
 
@@ -648,8 +658,8 @@ cat /etc/fedora-release
 hostname
 
 # 3. Check Parallels Tools
-prltools -v
-systemctl status prltools.service
+prltoolsd -v
+systemctl status prltoolsd.service
 
 # 4. Check shared folders
 ls -la /media/psf/Home/dev/
@@ -778,13 +788,13 @@ journalctl -u docker -n 50
 
 ```bash
 # Check Parallels Tools service
-systemctl status prltools.service
+systemctl status prltoolsd.service
 
 # If not running:
-sudo systemctl start prltools.service
+sudo systemctl start prltoolsd.service
 
 # Restart Parallels Tools
-sudo systemctl restart prltools.service
+sudo systemctl restart prltoolsd.service
 
 # Check mount
 mount | grep psf
