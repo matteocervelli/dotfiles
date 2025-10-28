@@ -282,3 +282,10 @@ backups/
 
 ##### GNU Stow test files ############################################
 .stow-test/
+
+##### macOS metadata files ############################################
+.DS_Store
+**/.DS_Store
+._*
+.AppleDouble
+.LSOverride

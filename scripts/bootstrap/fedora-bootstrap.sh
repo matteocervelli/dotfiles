@@ -35,8 +35,10 @@ source "$PROJECT_ROOT/scripts/utils/detect-os.sh"
 VERBOSE=0
 DRY_RUN=0
 WITH_PACKAGES=0
+WITH_DOCKER=0
 SKIP_REPOS=0
 ESSENTIAL_ONLY=0
+VM_ESSENTIALS=0
 PROFILE=""
 
 # =============================================================================
@@ -55,13 +57,19 @@ OPTIONS:
     -v, --verbose        Show detailed output
     --dry-run            Preview actions without making changes
     --with-packages      Install all packages from system/fedora/packages.txt
+    --with-docker        Install Docker Engine + Compose v2
     --profile <name>     Use specific profile (future support)
     --skip-repos         Skip repository setup (use default repos only)
     --essential-only     Install only essential tools (quick setup)
+    --vm-essentials      Install VM-optimized package set (60+ packages, no GUI apps)
 
 EXAMPLES:
     $0                          # Minimal setup (stow, git, 1password, rclone)
+    $0 --vm-essentials          # VM-optimized development environment (60+ packages)
     $0 --with-packages          # Full development environment
+    $0 --with-docker            # Minimal setup + Docker
+    $0 --vm-essentials --with-docker  # VM essentials + Docker
+    $0 --with-packages --with-docker  # Full environment + Docker
     $0 --dry-run                # Preview what would be installed
     $0 --essential-only         # Quick essential-only setup
 
@@ -115,6 +123,10 @@ parse_args() {
                 WITH_PACKAGES=1
                 shift
                 ;;
+            --with-docker)
+                WITH_DOCKER=1
+                shift
+                ;;
             --profile)
                 PROFILE="$2"
                 shift 2
@@ -125,6 +137,10 @@ parse_args() {
                 ;;
             --essential-only)
                 ESSENTIAL_ONLY=1
+                shift
+                ;;
+            --vm-essentials)
+                VM_ESSENTIALS=1
                 shift
                 ;;
             *)
@@ -248,35 +264,43 @@ update_system() {
 install_essential_tools() {
     log_step "Phase 2: Essential Development Tools"
 
-    # Check if Development Tools group is installed
-    if ! dnf group list installed 2>/dev/null | grep -q "Development Tools"; then
-        log_info "Installing Development Tools group..."
-        execute sudo dnf group install -y "Development Tools"
-    else
-        log_success "Development Tools already installed"
-    fi
-
-    # Essential packages
-    local essential_packages=(
-        "stow"
+    # Install development tools directly (more reliable than group install)
+    # These are the core packages from @development-tools group
+    local dev_packages=(
+        "gcc"
+        "gcc-c++"
+        "make"
+        "cmake"
+        "autoconf"
+        "automake"
+        "libtool"
+        "pkgconfig"
+        "patch"
         "git"
+        "stow"
         "curl"
         "wget"
         "ca-certificates"
         "gnupg2"
     )
 
-    log_info "Installing essential packages..."
-    for package in "${essential_packages[@]}"; do
+    log_info "Installing development tools and essential packages..."
+
+    # Collect packages that need installation
+    local packages_to_install=()
+    for package in "${dev_packages[@]}"; do
         if ! rpm -q "$package" &> /dev/null; then
-            log_info "Installing $package..."
-            execute sudo dnf install -y "$package"
-        else
-            if [[ $VERBOSE -eq 1 ]]; then
-                log_success "$package already installed"
-            fi
+            packages_to_install+=("$package")
         fi
     done
+
+    # Install all missing packages in one command (faster and cleaner)
+    if [[ ${#packages_to_install[@]} -gt 0 ]]; then
+        log_info "Installing ${#packages_to_install[@]} packages..."
+        execute sudo dnf install -y "${packages_to_install[@]}"
+    else
+        log_success "All development tools already installed"
+    fi
 
     log_success "Essential tools installed"
 }
@@ -398,7 +422,7 @@ deploy_stow_packages() {
 
     # Core packages to deploy
     local stow_packages=(
-        "zsh"
+        "shell"  # ZSH and shell configuration
         "git"
         "ssh"
     )
@@ -406,13 +430,13 @@ deploy_stow_packages() {
     log_info "Deploying stow packages to home directory..."
 
     for package in "${stow_packages[@]}"; do
-        local package_path="$PROJECT_ROOT/packages/$package"
+        local package_path="$PROJECT_ROOT/stow-packages/$package"
 
         if [[ -d "$package_path" ]]; then
             log_info "Deploying package: $package"
 
             if [[ $DRY_RUN -eq 0 ]]; then
-                cd "$PROJECT_ROOT/packages" || exit 1
+                cd "$PROJECT_ROOT/stow-packages" || exit 1
                 stow -t "$HOME" "$package" 2>&1 || {
                     log_warning "Stow conflict for $package (may already be deployed)"
                 }
@@ -432,22 +456,143 @@ deploy_stow_packages() {
 
         if [[ "$current_shell" != "zsh" ]]; then
             log_info "Setting ZSH as default shell..."
-            execute sudo chsh -s "$(command -v zsh)" "$(whoami)"
+
+            local zsh_path
+            zsh_path=$(command -v zsh)
+
+            # Ensure ZSH is in /etc/shells
+            if ! grep -q "^${zsh_path}$" /etc/shells 2>/dev/null; then
+                log_info "Adding ZSH to /etc/shells..."
+                execute sudo sh -c "echo '$zsh_path' >> /etc/shells"
+            fi
+
+            # Change shell
+            execute sudo chsh -s "$zsh_path" "$(whoami)"
+
+            # Verify shell change
+            if getent passwd "$(whoami)" | grep -q "$zsh_path"; then
+                log_success "ZSH set as default shell"
+            else
+                log_warning "Failed to set ZSH as default shell - you may need to run: chsh -s $zsh_path"
+            fi
         else
             log_success "ZSH already set as default shell"
         fi
     else
         log_info "Installing ZSH..."
         execute sudo dnf install -y zsh
-        execute sudo chsh -s "$(command -v zsh)" "$(whoami)"
+
+        local zsh_path
+        zsh_path=$(command -v zsh)
+
+        # Ensure ZSH is in /etc/shells
+        if ! grep -q "^${zsh_path}$" /etc/shells 2>/dev/null; then
+            execute sudo sh -c "echo '$zsh_path' >> /etc/shells"
+        fi
+
+        execute sudo chsh -s "$zsh_path" "$(whoami)"
     fi
 
     log_success "Stow packages deployed"
+
+    # Install Oh My Zsh if ZSH is installed and stow package was deployed
+    if command -v zsh &> /dev/null && [[ -f "$HOME/.zshrc" ]]; then
+        if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+            log_info "Installing Oh My Zsh..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                # Install Oh My Zsh (unattended)
+                sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+            else
+                log_info "[DRY-RUN] Would install Oh My Zsh"
+            fi
+        else
+            log_success "Oh My Zsh already installed"
+        fi
+
+        # Install Powerlevel10k theme
+        local p10k_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+        if [[ ! -d "$p10k_dir" ]]; then
+            log_info "Installing Powerlevel10k theme..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+            else
+                log_info "[DRY-RUN] Would install Powerlevel10k"
+            fi
+        else
+            log_success "Powerlevel10k already installed"
+        fi
+
+        # Install Oh My Zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting)
+        local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+        # zsh-autosuggestions
+        if [[ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]]; then
+            log_info "Installing zsh-autosuggestions plugin..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions"
+            else
+                log_info "[DRY-RUN] Would install zsh-autosuggestions"
+            fi
+        else
+            log_success "zsh-autosuggestions already installed"
+        fi
+
+        # zsh-syntax-highlighting
+        if [[ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]]; then
+            log_info "Installing zsh-syntax-highlighting plugin..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_custom/plugins/zsh-syntax-highlighting"
+            else
+                log_info "[DRY-RUN] Would install zsh-syntax-highlighting"
+            fi
+        else
+            log_success "zsh-syntax-highlighting already installed"
+        fi
+
+        # Install essential fonts (MesloLGS NF required for Powerlevel10k)
+        if [[ -f "$PROJECT_ROOT/scripts/fonts/install-fonts.sh" ]]; then
+            log_info "Installing essential fonts (MesloLGS NF for Powerlevel10k)..."
+            if [[ $DRY_RUN -eq 0 ]]; then
+                "$PROJECT_ROOT/scripts/fonts/install-fonts.sh" --essential-only || {
+                    log_warning "Font installation failed (non-critical)"
+                    log_info "Fonts can be installed manually later with: make fonts-install-essential"
+                }
+            else
+                log_info "[DRY-RUN] Would install essential fonts"
+            fi
+        else
+            log_warning "Font installation script not found - skipping fonts"
+            log_info "Install fonts manually: make fonts-install-essential"
+        fi
+    fi
 }
 
 # =============================================================================
 # Phase 5: Full Package Installation (Optional)
 # =============================================================================
+
+install_vm_essentials() {
+    log_step "Phase 5: VM Essential Packages"
+
+    local install_script="$PROJECT_ROOT/scripts/bootstrap/install-dependencies-fedora.sh"
+
+    if [[ ! -f "$install_script" ]]; then
+        log_error "install-dependencies-fedora.sh not found"
+        return 1
+    fi
+
+    log_info "Installing VM-optimized package set (~60 packages)..."
+    log_info "This includes: dev tools, CLI editors, modern CLI utils, languages, DB clients"
+    log_warning "This may take 10-15 minutes depending on your connection"
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+        execute "$install_script" --vm-essentials --dry-run
+    else
+        execute "$install_script" --vm-essentials
+    fi
+
+    log_success "VM essential packages installed"
+}
 
 install_full_packages() {
     log_step "Phase 5: Full Package Installation"
@@ -512,7 +657,9 @@ main() {
         log_info "Configuration:"
         log_info "  Dry run: $DRY_RUN"
         log_info "  With packages: $WITH_PACKAGES"
+        log_info "  With Docker: $WITH_DOCKER"
         log_info "  Essential only: $ESSENTIAL_ONLY"
+        log_info "  VM essentials: $VM_ESSENTIALS"
         log_info "  Skip repos: $SKIP_REPOS"
         [[ -n "$PROFILE" ]] && log_info "  Profile: $PROFILE"
     fi
@@ -538,11 +685,44 @@ main() {
 
     if [[ $WITH_PACKAGES -eq 1 ]]; then
         install_full_packages
+    elif [[ $VM_ESSENTIALS -eq 1 ]]; then
+        install_vm_essentials
     else
         log_info ""
-        log_info "Skipping full package installation"
-        log_info "To install all packages, run:"
-        log_info "  $0 --with-packages"
+        log_info "Skipping package installation"
+        log_info "To install VM essentials: $0 --vm-essentials"
+        log_info "To install all packages: $0 --with-packages"
+    fi
+
+    # Docker installation (if requested)
+    if [[ $WITH_DOCKER -eq 1 ]]; then
+        log_step "Installing Docker Engine + Compose v2..."
+
+        local docker_script="$PROJECT_ROOT/scripts/bootstrap/install-docker-fedora.sh"
+
+        if [[ ! -f "$docker_script" ]]; then
+            log_error "Docker installation script not found: $docker_script"
+            exit 1
+        fi
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            log_info "[DRY RUN] Would execute: $docker_script --dry-run"
+        else
+            log_info "Executing Docker installation script..."
+            "$docker_script" || {
+                log_error "Docker installation failed"
+                log_info "See: docs/guides/docker-fedora-setup.md for manual installation"
+                exit 1
+            }
+        fi
+
+        log_success "Docker installation complete"
+    else
+        log_info ""
+        log_info "Skipping Docker installation"
+        log_info "To install Docker, run:"
+        log_info "  $0 --with-docker"
+        log_info "  OR: make docker-install-fedora"
     fi
 
     if [[ $ESSENTIAL_ONLY -eq 0 ]]; then

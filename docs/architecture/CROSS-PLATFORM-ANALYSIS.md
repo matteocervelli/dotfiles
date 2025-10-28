@@ -80,7 +80,7 @@ This document provides a comprehensive analysis of the dotfiles repository's cro
 | Feature Category | Ubuntu | Fedora (Dev) | Educational (Fedora) |
 |-----------------|--------|--------------|---------------------|
 | **Package Manager** | APT + Snap + Flatpak | DNF + Flatpak | DNF + Flatpak |
-| **Docker Support** | ✅ Full (Engine + Compose) | ❌ Missing | ❌ N/A |
+| **Docker Support** | ✅ Full (Engine + Compose) | ✅ Full (Engine + Compose) | ❌ N/A |
 | **VM Profiles** | ✅ packages-vm.txt | ❌ Missing | ✅ Core/Full modes |
 | **systemd Services** | ✅ Auto-update timer | ❌ Missing | ❌ N/A |
 | **Desktop Environment** | GNOME (optional) | GNOME (optional) | ✅ GNOME (simplified) |
@@ -105,7 +105,7 @@ This document provides a comprehensive analysis of the dotfiles repository's cro
 
 ### 3.1 Ubuntu Features Missing from Fedora
 
-#### A. Docker Integration (Critical Gap)
+#### A. Docker Integration (**✅ RESOLVED** - Issue #57)
 
 **Ubuntu Implementation**:
 - `scripts/bootstrap/install-docker.sh` (422 lines)
@@ -115,21 +115,27 @@ This document provides a comprehensive analysis of the dotfiles repository's cro
 - Comprehensive testing (test-22-ubuntu-docker.bats)
 - ADR-005 architectural documentation
 
-**Fedora Status**: ❌ **Not implemented**
+**Fedora Implementation**: ✅ **COMPLETED**
 
 **Impact**: High - Docker is critical for modern development workflows
 
-**Recommendation**:
-```bash
-# Create equivalent Fedora Docker script
-scripts/bootstrap/install-docker-fedora.sh
-```
+**Solution Implemented** (Issue #57):
+- `scripts/bootstrap/install-docker-fedora.sh` (~450 lines)
+- Docker Engine + Compose v2 plugin
+- SELinux configuration (remains enforcing)
+- firewalld configuration (masquerade + port 2376)
+- Podman removal with user warnings
+- Remote Docker context support
+- Comprehensive testing (test-57-fedora-docker.bats)
+- ADR-006 architectural documentation
+- Complete setup guide (docs/guides/docker-fedora-setup.md)
 
-**Differences to consider**:
-- Use `dnf` instead of `apt`
-- Docker official repository for Fedora
-- SELinux context considerations for volumes
-- Firewalld rules for Docker networking
+**Fedora-Specific Features**:
+- DNF package manager integration
+- SELinux enforcement maintained (security-first)
+- firewalld configured (not disabled)
+- Volume mounts require `:Z` or `:z` labels
+- Podman safely removed to avoid conflicts
 
 ---
 

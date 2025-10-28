@@ -9,6 +9,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Docker Engine + Compose v2 for Fedora Linux** (#57) - Complete Docker installation support for Fedora
+  - **Installation script** ([scripts/bootstrap/install-docker-fedora.sh](scripts/bootstrap/install-docker-fedora.sh), ~450 lines):
+    - Docker Engine + Compose v2 plugin installation from official Docker repository
+    - Fedora-specific package manager (DNF) integration
+    - SELinux configuration (remains enforcing, security-by-design)
+    - firewalld configuration (masquerade + port 2376 for remote access)
+    - Podman + Buildah conflict removal with user warnings
+    - GPG key verification for Docker repository
+    - Docker group user permissions configuration
+    - Installation verification with hello-world test
+    - Dry-run mode, skip-user mode, no-start mode
+    - Performance: 3-5 minutes for complete installation
+  - **Comprehensive setup guide** ([docs/guides/docker-fedora-setup.md](docs/guides/docker-fedora-setup.md), ~600 lines):
+    - Quick start with one-command installation
+    - Detailed prerequisites and OS compatibility (Fedora 38+, ARM64/x86_64)
+    - Installation methods (script, Makefile, manual, bootstrap integration)
+    - Fedora-specific considerations:
+      - SELinux volume labels (`:Z` exclusive, `:z` shared)
+      - firewalld configuration without disabling security
+      - Podman conflict resolution strategy
+    - Remote Docker context setup (macOS → Fedora VM workflow)
+    - Parallels VM integration for Apple Silicon development
+    - Comprehensive troubleshooting guide (permission denied, SELinux denials, port conflicts)
+    - Security best practices and performance optimization tips
+  - **Architecture decision record** ([docs/architecture/ADR/ADR-006-docker-fedora-installation.md](docs/architecture/ADR/ADR-006-docker-fedora-installation.md)):
+    - Rationale for Docker CE over Podman (Ubuntu parity, industry standard)
+    - Security-by-design: SELinux enforcement maintained
+    - Fedora-specific implementation decisions (DNF, firewalld, Podman removal)
+    - Remote Docker context architecture for multi-machine workflows
+    - Performance optimization decisions
+  - **Bootstrap integration**:
+    - `--with-docker` flag added to [scripts/bootstrap/fedora-bootstrap.sh](scripts/bootstrap/fedora-bootstrap.sh)
+    - Automatic installation with error handling and fallback instructions
+  - **Makefile targets**:
+    - `make docker-install-fedora` - Install Docker on Fedora only
+    - `make fedora-full` - Full Fedora environment + Docker
+  - **Test coverage**: 71 BATS tests (100% pass) in [tests/test-57-fedora-docker.bats](tests/test-57-fedora-docker.bats):
+    - Script existence, permissions, and structure
+    - Help system and command-line options
+    - Function presence and documentation
+    - Fedora-specific configuration (DNF, SELinux, firewalld, Podman)
+    - Docker package installation verification
+    - Security validation (HTTPS, no security disabling)
+    - Documentation completeness
+    - Makefile and cross-platform integration
+  - **Documentation updates**:
+    - [CLAUDE.md](CLAUDE.md): Docker commands, remote context setup
+    - [README.md](README.md): Fedora Docker installation instructions
+    - [docs/architecture/CROSS-PLATFORM-ANALYSIS.md](docs/architecture/CROSS-PLATFORM-ANALYSIS.md): Ubuntu/Fedora Docker parity achieved
+  - **Cross-platform achievement**: Docker now fully supported on Ubuntu and Fedora with feature parity
+
 - **macOS Services Management System** (#50) - Automated backup and restore for Automator workflows
   - **6 active workflows backed up** to `system/macos/services/`
   - **2 obsolete workflows archived** to `system/macos/services/archived/`
