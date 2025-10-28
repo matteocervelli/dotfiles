@@ -179,3 +179,5 @@ coverage/
 #
 # Always commit .gitignore to your project repository!
 # ====================================================================
+
+**/.claude/settings.local.json
