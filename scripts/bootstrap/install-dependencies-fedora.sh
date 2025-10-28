@@ -86,7 +86,7 @@ VM_ESSENTIAL_PACKAGES=(
     # Modern CLI tools
     "fzf"
     "bat"
-    "eza"
+    # "eza"  # Not available in Fedora 42 standard repos
     "ripgrep"
     "fd-find"
 

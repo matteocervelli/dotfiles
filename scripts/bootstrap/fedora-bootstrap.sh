@@ -422,13 +422,13 @@ deploy_stow_packages() {
     log_info "Deploying stow packages to home directory..."
 
     for package in "${stow_packages[@]}"; do
-        local package_path="$PROJECT_ROOT/packages/$package"
+        local package_path="$PROJECT_ROOT/stow-packages/$package"
 
         if [[ -d "$package_path" ]]; then
             log_info "Deploying package: $package"
 
             if [[ $DRY_RUN -eq 0 ]]; then
-                cd "$PROJECT_ROOT/packages" || exit 1
+                cd "$PROJECT_ROOT/stow-packages" || exit 1
                 stow -t "$HOME" "$package" 2>&1 || {
                     log_warning "Stow conflict for $package (may already be deployed)"
                 }
