@@ -264,19 +264,10 @@ update_system() {
 install_essential_tools() {
     log_step "Phase 2: Essential Development Tools"
 
-    # Determine correct group name based on Fedora version
-    # Fedora 42+: "development-tools" (lowercase)
-    # Fedora ≤41: "Development Tools" (capitalized)
-    local dev_tools_group="development-tools"
-    if ! dnf group list available 2>/dev/null | grep -q "development-tools"; then
-        # Fallback to old naming for Fedora ≤41
-        dev_tools_group="Development Tools"
-    fi
-
-    # Check if Development Tools group is installed
+    # Install Development Tools group (Fedora 42+: "development-tools")
     if ! dnf group list installed 2>/dev/null | grep -qi "development"; then
-        log_info "Installing $dev_tools_group group..."
-        execute sudo dnf group install -y "$dev_tools_group"
+        log_info "Installing development-tools group..."
+        execute sudo dnf group install -y "development-tools"
     else
         log_success "Development Tools already installed"
     fi

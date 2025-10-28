@@ -395,6 +395,7 @@ Installation successful!
 ```bash
 # 1. Check Parallels Tools version
 cat /usr/lib/parallels-tools/version
+prltoolsd -V
 # Expected: 26.1.1.57288 (or newer)
 
 # 2. Check service status

@@ -424,12 +424,12 @@ cat /usr/lib/parallels-tools/version
 # Expected: 19.x.x.xxxxx (or newer)
 
 # 2. Check service status
-systemctl status prltools.service
+systemctl status prltoolsd.service
 # Expected: active (running)
 
 # 3. Verify binaries installed
 ls -la /usr/bin/prl*
-# Expected: prltools, prlsrvctl, etc.
+# Expected: prltoolsd, prlsrvctl, etc.
 
 # 4. Test shared folders mount point
 ls -la /media/psf/
@@ -438,7 +438,7 @@ ls -la /media/psf/
 
 **Expected service status**:
 ```
-● prltools.service - Parallels Tools Agent
+● prltoolsd.service - Parallels Tools Agent
      Loaded: loaded
      Active: active (running)
 ```
@@ -498,11 +498,11 @@ cat /etc/fedora-release
 # Expected: Fedora Linux 41 (Workstation Edition)
 
 # 2. Check Parallels Tools
-prltools -v
+prltoolsd -V
 # Expected: version number (e.g., 19.4.1.xxxx)
 
 # 3. Check Parallels Tools service
-systemctl status prltools.service
+systemctl status prltoolsd.service
 # Expected: active (running)
 
 # 4. Check network connectivity
@@ -651,10 +651,10 @@ sudo systemctl status firewalld
 
 ```bash
 # Restart Parallels Tools service
-sudo systemctl restart prltools.service
+sudo systemctl restart prltoolsd.service
 
 # Check if service is running
-systemctl status prltools.service
+systemctl status prltoolsd.service
 
 # Check if prl_fs module loaded (x86 only, not needed on ARM64)
 lsmod | grep prl
@@ -686,7 +686,7 @@ Your Fedora development VM is created with Parallels Tools installed. The VM is 
 
 Ensure:
 - [ ] VM boots successfully to Fedora desktop
-- [ ] Parallels Tools working (`prltools -v`)
+- [ ] Parallels Tools working (`prltoolsd -v`)
 - [ ] Clipboard synchronization works (copy/paste Mac ↔ VM)
 - [ ] Display resolution adjusts when resizing window
 - [ ] Network connectivity verified (`ping google.com`)
