@@ -11,6 +11,57 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TEMPLATES_DIR="$PROJECT_ROOT/templates/devcontainer"
 GENERATOR_SCRIPT="$PROJECT_ROOT/scripts/devcontainer/generate-devcontainer.sh"
 
+# Helper function to strip JSONC comments for jq parsing
+# devcontainer.json files use JSONC (JSON with Comments) which jq doesn't support
+strip_jsonc_comments() {
+    local file="$1"
+    # Use Python to strip comments and trailing commas from JSONC
+    # This handles single-line comments, multi-line comments, and trailing commas
+    python3 << 'PYTHON_SCRIPT'
+import re
+import json
+
+def strip_jsonc(text):
+    # Remove single-line comments (//...) but not inside strings
+    # Strategy: remove // comments only at line start or after whitespace
+    lines = []
+    for line in text.split('\n'):
+        # Find // outside of strings (simple heuristic)
+        comment_pos = -1
+        in_string = False
+        escape_next = False
+
+        for i, char in enumerate(line):
+            if escape_next:
+                escape_next = False
+                continue
+            if char == '\\':
+                escape_next = True
+                continue
+            if char == '"' and not escape_next:
+                in_string = not in_string
+            if not in_string and i < len(line) - 1 and line[i:i+2] == '//':
+                comment_pos = i
+                break
+
+        if comment_pos >= 0:
+            lines.append(line[:comment_pos].rstrip())
+        else:
+            lines.append(line)
+
+    text = '\n'.join(lines)
+
+    # Remove trailing commas before ] or }
+    text = re.sub(r',(\s*[}\]])', r'\1', text)
+
+    return text
+
+with open("'"$file"'", 'r') as f:
+    content = f.read()
+    print(strip_jsonc(content))
+PYTHON_SCRIPT
+}
+
 # Setup and teardown
 setup() {
     # Create temporary test directory
@@ -55,16 +106,58 @@ teardown() {
 }
 
 @test "base: devcontainer.json is valid JSON" {
-    run jq empty "$TEMPLATES_DIR/base/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/base/.devcontainer/devcontainer.json' | jq empty"
     [ "$status" -eq 0 ]
 }
 
 @test "base: devcontainer.json has required fields" {
-    run jq -r '.name' "$TEMPLATES_DIR/base/.devcontainer/devcontainer.json"
+    # Test name field
+    run python3 -c "$(cat << 'PYCODE'
+import json, re
+def strip_jsonc(text):
+    lines = []
+    for line in text.split('\n'):
+        comment_pos = -1
+        in_string = False
+        for i, char in enumerate(line):
+            if char == '"': in_string = not in_string
+            if not in_string and i < len(line) - 1 and line[i:i+2] == '//':
+                comment_pos = i
+                break
+        lines.append(line[:comment_pos].rstrip() if comment_pos >= 0 else line)
+    text = '\n'.join(lines)
+    text = re.sub(r',(\s*[}\]])', r'\1', text)
+    return text
+with open('$TEMPLATES_DIR/base/.devcontainer/devcontainer.json') as f:
+    data = json.loads(strip_jsonc(f.read()))
+    print(data['name'])
+PYCODE
+)"
     [ "$status" -eq 0 ]
     [[ "$output" != "null" ]]
 
-    run jq -r '.image' "$TEMPLATES_DIR/base/.devcontainer/devcontainer.json"
+    # Test image field
+    run python3 -c "$(cat << 'PYCODE'
+import json, re
+def strip_jsonc(text):
+    lines = []
+    for line in text.split('\n'):
+        comment_pos = -1
+        in_string = False
+        for i, char in enumerate(line):
+            if char == '"': in_string = not in_string
+            if not in_string and i < len(line) - 1 and line[i:i+2] == '//':
+                comment_pos = i
+                break
+        lines.append(line[:comment_pos].rstrip() if comment_pos >= 0 else line)
+    text = '\n'.join(lines)
+    text = re.sub(r',(\s*[}\]])', r'\1', text)
+    return text
+with open('$TEMPLATES_DIR/base/.devcontainer/devcontainer.json') as f:
+    data = json.loads(strip_jsonc(f.read()))
+    print(data['image'])
+PYCODE
+)"
     [ "$status" -eq 0 ]
     [[ "$output" == "dotfiles-ubuntu:dev" ]]
 }
@@ -90,13 +183,13 @@ teardown() {
 }
 
 @test "python: devcontainer.json has Python extensions" {
-    run jq -r '.customizations.vscode.extensions[]' "$TEMPLATES_DIR/python/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/python/.devcontainer/devcontainer.json' | jq -r '.customizations.vscode.extensions[]'"
     [ "$status" -eq 0 ]
     [[ "$output" == *"ms-python.python"* ]]
 }
 
 @test "python: devcontainer.json forwards Python ports" {
-    run jq -r '.forwardPorts[]' "$TEMPLATES_DIR/python/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/python/.devcontainer/devcontainer.json' | jq -r '.forwardPorts[]'"
     [ "$status" -eq 0 ]
     [[ "$output" == *"8000"* ]] || [[ "$output" == *"5000"* ]]
 }
@@ -127,13 +220,13 @@ teardown() {
 }
 
 @test "nodejs: devcontainer.json has Node.js extensions" {
-    run jq -r '.customizations.vscode.extensions[]' "$TEMPLATES_DIR/nodejs/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/nodejs/.devcontainer/devcontainer.json' | jq -r '.customizations.vscode.extensions[]'"
     [ "$status" -eq 0 ]
     [[ "$output" == *"dbaeumer.vscode-eslint"* ]] || [[ "$output" == *"esbenp.prettier-vscode"* ]]
 }
 
 @test "nodejs: devcontainer.json forwards Node.js ports" {
-    run jq -r '.forwardPorts[]' "$TEMPLATES_DIR/nodejs/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/nodejs/.devcontainer/devcontainer.json' | jq -r '.forwardPorts[]'"
     [ "$status" -eq 0 ]
     [[ "$output" == *"3000"* ]] || [[ "$output" == *"8080"* ]]
 }
@@ -271,18 +364,18 @@ teardown() {
 @test "generated: devcontainer.json is valid JSON" {
     "$GENERATOR_SCRIPT" --template base --project "$TEST_PROJECT" >/dev/null 2>&1
 
-    run jq empty "$TEST_PROJECT/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEST_PROJECT/.devcontainer/devcontainer.json' | jq empty"
     [ "$status" -eq 0 ]
 }
 
 @test "generated: devcontainer.json has Claude Code env vars" {
     "$GENERATOR_SCRIPT" --template python --project "$TEST_PROJECT" >/dev/null 2>&1
 
-    run jq -r '.remoteEnv.CLAUDE_CODE_CONTAINER' "$TEST_PROJECT/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEST_PROJECT/.devcontainer/devcontainer.json' | jq -r '.remoteEnv.CLAUDE_CODE_CONTAINER'"
     [ "$status" -eq 0 ]
     [ "$output" == "true" ]
 
-    run jq -r '.remoteEnv.PROJECT_ROOT' "$TEST_PROJECT/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEST_PROJECT/.devcontainer/devcontainer.json' | jq -r '.remoteEnv.PROJECT_ROOT'"
     [ "$status" -eq 0 ]
     [ "$output" == "/workspace" ]
 }
@@ -313,7 +406,7 @@ teardown() {
 
 @test "all templates: devcontainer.json specifies remoteUser" {
     for template in base python nodejs; do
-        run jq -r '.remoteUser' "$TEMPLATES_DIR/$template/.devcontainer/devcontainer.json"
+        run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/$template/.devcontainer/devcontainer.json' | jq -r '.remoteUser'"
         [ "$status" -eq 0 ]
         [ "$output" == "developer" ]
     done
@@ -321,7 +414,7 @@ teardown() {
 
 @test "all templates: devcontainer.json specifies workspaceFolder" {
     for template in base python nodejs; do
-        run jq -r '.workspaceFolder' "$TEMPLATES_DIR/$template/.devcontainer/devcontainer.json"
+        run bash -c "strip_jsonc_comments '$TEMPLATES_DIR/$template/.devcontainer/devcontainer.json' | jq -r '.workspaceFolder'"
         [ "$status" -eq 0 ]
         [ "$output" == "/workspace" ]
     done
@@ -394,7 +487,7 @@ teardown() {
     [ -f "$TEST_PROJECT/.devcontainer/devcontainer.json" ]
 
     # Validate ports are configured
-    run jq -r '.forwardPorts[]' "$TEST_PROJECT/.devcontainer/devcontainer.json"
+    run bash -c "strip_jsonc_comments '$TEST_PROJECT/.devcontainer/devcontainer.json' | jq -r '.forwardPorts[]'"
     [ "$status" -eq 0 ]
 }
 

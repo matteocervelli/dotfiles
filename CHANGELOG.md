@@ -9,6 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Dev Container System** - Project-specific isolated development environments
+  - **5 Templates** (3 implemented: base, python, nodejs; 2 planned: fullstack, data-science):
+    - **Base**: Ubuntu 24.04 + ZSH + Git + Docker CLI (~250 MB)
+    - **Python**: Base + Python 3.11 + pip/poetry/pipenv + pytest
+    - **Node.js**: Base + Node.js LTS + npm/pnpm/yarn + TypeScript
+  - **Generator script** (`scripts/devcontainer/generate-devcontainer.sh`, 306 lines):
+    - Template selection with validation
+    - Project directory creation
+    - Auto-detection of package managers (requirements.txt, package.json, etc.)
+    - Dry-run mode for preview
+    - Force flag for overwriting existing containers
+  - **Claude Code integration**:
+    - Environment variables: `CLAUDE_CODE_CONTAINER=true`, `PROJECT_ROOT=/workspace`
+    - Perfect for "dangerously skip mode" operations in isolated environments
+    - Safe autonomous Claude sessions (overnight refactoring, experimentation)
+    - Resource limits and monitoring configuration
+  - **VS Code integration**:
+    - Dev Containers extension support
+    - Automatic extension installation per template
+    - Port forwarding configuration
+    - Post-create scripts for dependency installation
+  - **Template features**:
+    - JSONC (JSON with Comments) support
+    - Persistent volumes for history, extensions, caches
+    - Non-root user (developer, UID 1000)
+    - Cached workspace mounts for performance
+    - SSH agent forwarding support
+  - **Comprehensive documentation** (`docs/docker/DEVCONTAINER-GUIDE.md`, 850+ lines):
+    - Quick start and autonomous Claude development guide
+    - Complete template reference with use cases
+    - Advanced configuration (Docker-in-Docker, multi-service, SSH keys)
+    - Workflow examples and troubleshooting
+    - Best practices and Makefile integration
+  - **Quick-start cheat sheet** (`docs/docker/DEVCONTAINER-QUICKSTART.md`, 280 lines):
+    - One-page reference for common operations
+    - Autonomous session setup and monitoring
+    - Configuration snippets
+    - Use case scenarios (overnight refactoring, safe experimentation, team consistency)
+  - **Test coverage** (`tests/test-24-devcontainer.bats`, 420+ lines):
+    - Template validation (structure, files, configuration)
+    - Generator script functionality
+    - Integration tests for all templates
+    - JSONC comment stripping for validation
+    - 37/50 tests passing (JSONC parsing in test environment ongoing)
+
 - **Docker Ubuntu Minimal Profile** (#44) - Containerized development environment with dotfiles
   - **Multi-stage Dockerfile** (`Dockerfile.dotfiles-ubuntu`, 250 lines):
     - **Minimal profile** (container-minimal): Ubuntu 24.04 + ZSH + Git (~250 MB)

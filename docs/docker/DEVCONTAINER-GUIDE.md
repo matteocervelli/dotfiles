@@ -57,6 +57,142 @@ docker-compose -f .devcontainer/docker-compose.yml exec devcontainer zsh
 
 ---
 
+## Autonomous Claude Development (Leaving Computer)
+
+**Use Case**: Run Claude Code autonomously while away from your computer
+
+Dev containers provide the perfect isolation for unattended Claude Code sessions. All operations are contained, safe, and easy to monitor.
+
+### Quick Setup for Autonomous Sessions
+
+```bash
+# 1. Generate dev container for your project
+./scripts/devcontainer/generate-devcontainer.sh -t python -p ~/my-ai-project
+
+# 2. Open in VS Code and reopen in container
+code ~/my-ai-project
+# Then: Cmd+Shift+P → "Dev Containers: Reopen in Container"
+
+# 3. Start Claude Code session
+# Claude can now work autonomously with full isolation
+```
+
+### Safety Checklist
+
+Before leaving your computer with Claude working:
+
+- ✅ **Container Isolation**: All changes confined to `/workspace`
+- ✅ **Resource Limits**: Set CPU/memory limits (see Advanced Usage)
+- ✅ **Backup Data**: Container volumes persist, but backup important work
+- ✅ **Monitor Logs**: Check `.devcontainer/post-create.sh` logs on return
+- ✅ **Easy Reset**: Delete container to start fresh if needed
+
+### Recommended Container Configuration
+
+For autonomous sessions, add resource limits to `.devcontainer/docker-compose.yml`:
+
+```yaml
+services:
+  devcontainer:
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'      # Limit to 2 CPU cores
+          memory: 4G        # Limit to 4GB RAM
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+```
+
+### Monitoring Autonomous Work
+
+When you return, check what Claude accomplished:
+
+```bash
+# View container logs
+docker logs devcontainer-my-ai-project-python
+
+# Check git history
+cd ~/my-ai-project
+git log --oneline --since="8 hours ago"
+
+# Review changes
+git diff HEAD~5
+
+# Check resource usage
+docker stats devcontainer-my-ai-project-python
+```
+
+### Common Scenarios
+
+**Scenario 1: Overnight Refactoring**
+```bash
+# Before leaving:
+# - Give Claude clear instructions
+# - Ensure dev container is running
+# - Claude has access to all project files in /workspace
+# - All package installations contained in container
+
+# Upon return:
+# - Review git commits made by Claude
+# - Run tests in container
+# - Approve and merge changes
+```
+
+**Scenario 2: Multi-Hour Data Processing**
+```bash
+# Before leaving:
+# - Start dev container with data science template
+# - Set resource limits appropriate for task
+# - Claude can install analysis libraries
+# - All outputs saved to /workspace
+
+# Upon return:
+# - Check Jupyter notebooks created
+# - Review analysis results
+# - Export findings from container
+```
+
+### Why Dev Containers Are Perfect for This
+
+1. **No Host Impact**: Claude can't accidentally modify your system
+2. **Easy Rollback**: Delete container and regenerate if issues occur
+3. **Reproducible**: Same environment every time
+4. **Resource Controlled**: Set limits to prevent runaway processes
+5. **Isolated Network**: Container networking separate from host
+
+### Troubleshooting Autonomous Sessions
+
+**Container Stopped Unexpectedly**
+```bash
+# Check why container stopped
+docker ps -a | grep my-project
+docker logs devcontainer-my-project-python
+
+# Restart container
+docker start devcontainer-my-project-python
+```
+
+**Out of Resources**
+```bash
+# Check resource usage
+docker stats
+
+# Increase limits in .devcontainer/docker-compose.yml
+# Then rebuild: docker-compose up -d --force-recreate
+```
+
+**Work Not Saved**
+```bash
+# Verify /workspace mount
+docker inspect devcontainer-my-project-python | grep -A 10 Mounts
+
+# Ensure changes are in ~/my-project (host)
+ls -la ~/my-project
+```
+
+---
+
 ## Available Templates
 
 ### 1. Base Template

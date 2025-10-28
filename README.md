@@ -7,6 +7,8 @@ Personal dotfiles and development environment configuration for **macOS** and **
 - ✅ ZSH configuration with custom aliases and functions
 - ✅ Git configuration and aliases
 - ✅ Development tools setup
+- ✅ **Dev Container System** - Project-specific isolated environments (Python, Node.js, Base templates)
+- ✅ **Claude Code Integration** - Safe autonomous development sessions with container isolation
 - ✅ **Cross-Platform Package Management** - Linux package mappings for Ubuntu, Fedora, Arch
 - ✅ **Application Management** - Audit and cleanup macOS applications
 - ✅ **Asset Management System** - Central library with auto-update propagation
