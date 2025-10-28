@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal dotfiles and development environment configuration for **macOS** and **Linux** (Ubuntu, Fedora, Arch).
+Personal dotfiles and development environment configuration for **macOS** and **Linux** (Ubuntu, Fedora, Arch). Includes a specialized **Educational Edition** for children ages 4-12.
 
 ## 🚀 Features
 
@@ -12,6 +12,7 @@ Personal dotfiles and development environment configuration for **macOS** and **
 - ✅ **Asset Management System** - Central library with auto-update propagation
 - ✅ **Environment-Aware Helpers** - TypeScript & Python asset URL resolution
 - ✅ R2 sync with Cloudflare integration
+- ✅ **Educational Version** - Safe learning environment for kids (Fedora)
 - 🚧 IDE configurations (in progress)
 
 ## 🛠️ Tech Stack
@@ -50,9 +51,17 @@ sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh  # Ubuntu 24.04 LTS
 sudo ./scripts/bootstrap/install-dependencies-fedora.sh  # Fedora 40+
 sudo ./scripts/bootstrap/install-dependencies-arch.sh    # Arch Linux
 
-# Install with Docker (Ubuntu only)
-sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
-# Or via Makefile: make ubuntu-full
+# Install with Docker
+sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker  # Ubuntu
+sudo ./scripts/bootstrap/fedora-bootstrap.sh --with-packages --with-docker  # Fedora
+
+# Or via Makefile
+make ubuntu-full    # Ubuntu packages + Docker
+make fedora-full    # Fedora packages + Docker
+
+# Docker standalone installation
+make docker-install          # Ubuntu
+make docker-install-fedora   # Fedora
 
 # Setup dotfiles
 make install
@@ -61,8 +70,44 @@ make install
 **See also:**
 - [Linux Setup Guide](docs/guides/linux-setup-guide.md) - Step-by-step Linux installation
 - [Linux Package Management](applications/linux/README.md)
-- [Parallels VM Setup](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM
-- [Development Environment](docs/guides/parallels-2-dev-setup.md) - Full dev setup with Docker
+- [Docker Ubuntu Setup](docs/guides/docker-ubuntu-setup.md) - Docker on Ubuntu
+- [Docker Fedora Setup](docs/guides/docker-fedora-setup.md) - Docker on Fedora **NEW!** 🚀
+
+**Ubuntu Development VM:**
+- [Guide 1: Ubuntu VM Creation](docs/guides/parallels-1-ubuntu-vm-creation.md) - Create Ubuntu VM
+- [Guide 2: Ubuntu Dev Setup](docs/guides/parallels-2-ubuntu-dev-setup.md) - Full dev environment
+- [Guide 3: Ubuntu GUI Setup](docs/guides/parallels-3-ubuntu-gui-setup.md) - Optional desktop (GNOME)
+
+**Fedora Development VM:**
+- [Guide 4: Fedora VM Creation](docs/guides/parallels-4-fedora-vm-creation.md) - Create Fedora VM
+- [Guide 5: Fedora Dev Setup](docs/guides/parallels-5-fedora-dev-setup.md) - Docker, dotfiles, dev tools
+
+### Educational Version (Fedora)
+
+A **safe, supervised learning environment** for children ages 4-12.
+
+```bash
+# Interactive setup (recommended)
+./scripts/bootstrap/kids-fedora-bootstrap.sh
+
+# Or specify options directly
+./scripts/bootstrap/kids-fedora-bootstrap.sh \
+    --child-name "Sofia" \
+    --child-age 8 \
+    --install-all
+```
+
+**Features:**
+- 5-layer protection system (user restrictions, parental controls, DNS filtering, browser safety, supervision)
+- 40+ educational packages (GCompris, Tux Suite, Scratch, KDE Education Suite)
+- Age-appropriate content filtering (OARS)
+- Usage monitoring and parent dashboard
+- NO sudo access for kids (safety first)
+
+**Documentation:**
+- [Guide 6: Fedora Kids VM Creation](docs/guides/parallels-6-fedora-kids-vm-creation.md) - Create kids VM
+- [Guide 7: Fedora Kids Educational Setup](docs/guides/parallels-7-fedora-kids-educational-setup.md) - Educational software
+- [Parent Usage Guide](docs/guides/kids-fedora-usage.md) - Daily routines and troubleshooting
 
 ### VPS (Cloud Server)
 
@@ -335,8 +380,10 @@ docker context use default
 - ✅ Comprehensive troubleshooting guide
 
 **Complete Guides**:
-- [Guide 1: VM Creation](docs/guides/parallels-1-vm-creation.md) - Create Ubuntu VM from ISO
-- [Guide 2: Development Setup](docs/guides/parallels-2-dev-setup.md) - Docker, dotfiles, and full dev environment
+- [Guide 1: Ubuntu VM Creation](docs/guides/parallels-1-ubuntu-vm-creation.md) - Create Ubuntu VM from ISO
+- [Guide 2: Ubuntu Dev Setup](docs/guides/parallels-2-ubuntu-dev-setup.md) - Docker, dotfiles, and full dev environment
+- [Guide 4: Fedora VM Creation](docs/guides/parallels-4-fedora-vm-creation.md) - Create Fedora development VM
+- [Guide 5: Fedora Dev Setup](docs/guides/parallels-5-fedora-dev-setup.md) - Docker on Fedora with bootstrap
 
 ### Disable/Enable
 

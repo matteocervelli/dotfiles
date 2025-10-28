@@ -1,8 +1,8 @@
-# Guide 4: Fedora Kids Learning Environment Setup
+# Guide 7: Fedora Kids Educational Environment Setup
 
 **Purpose**: Transform a clean Fedora VM into a safe, educational learning environment for kids with parental controls, educational software, and simplified interface.
 
-**Prerequisites**: Completed [Guide 3: Fedora VM Creation](parallels-3-fedora-vm-creation.md) - You have a Fedora VM with Parallels Tools installed and parent account configured.
+**Prerequisites**: Completed [Guide 6: Fedora Kids VM Creation](parallels-6-fedora-kids-vm-creation.md) - You have a Fedora VM with Parallels Tools installed and parent account configured.
 
 **Result**: Fully configured kids' learning environment with educational software, parental controls, safe browsing, and supervised access.
 

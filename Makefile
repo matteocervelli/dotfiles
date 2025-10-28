@@ -1,4 +1,4 @@
-.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install ubuntu-full
+.PHONY: help install bootstrap stow stow-all stow-dry-run stow-all-dry-run unstow stow-package stow-package-dry-run health backup clean autoupdate-install autoupdate-status autoupdate-logs autoupdate-disable autoupdate-enable brewfile-generate brewfile-check brewfile-install brewfile-update vscode-extensions-export vscode-extensions-install fonts-install fonts-install-essential fonts-install-coding fonts-install-powerline fonts-verify services-install services-install-essential services-verify services-backup docker-install docker-install-fedora ubuntu-full fedora-full
 
 # Default target - show help
 help:
@@ -54,9 +54,11 @@ help:
 	@echo "  make autoupdate-disable    Disable auto-update service"
 	@echo "  make autoupdate-enable     Enable auto-update service"
 	@echo ""
-	@echo "🐳 Ubuntu/Docker (Linux only):"
+	@echo "🐳 Docker (Linux only):"
 	@echo "  make docker-install         Install Docker Engine + Compose v2 (Ubuntu)"
+	@echo "  make docker-install-fedora  Install Docker Engine + Compose v2 (Fedora)"
 	@echo "  make ubuntu-full            Install Ubuntu packages + Docker"
+	@echo "  make fedora-full            Install Fedora packages + Docker"
 	@echo ""
 	@echo "💡 Examples:"
 	@echo "  make install                      # Complete setup on fresh machine"
@@ -398,18 +400,30 @@ linux-install-arch-dry:
 	@sudo ./scripts/bootstrap/install-dependencies-arch.sh --dry-run
 
 # ============================================================================
-# Docker Installation (Ubuntu)
+# Docker Installation (Multi-Platform)
 # ============================================================================
 
 # Install Docker Engine + Compose v2 on Ubuntu
 docker-install:
-	@echo "🐳 Installing Docker Engine + Compose v2..."
+	@echo "🐳 Installing Docker Engine + Compose v2 (Ubuntu)..."
 	@if [ ! -f /etc/os-release ] || ! grep -q "ubuntu" /etc/os-release; then \
 		echo "❌ This command is for Ubuntu only"; \
-		echo "For other distributions, see docs/guides/docker-ubuntu-setup.md"; \
+		echo "For Fedora, use: make docker-install-fedora"; \
+		echo "For guides, see: docs/guides/docker-ubuntu-setup.md"; \
 		exit 1; \
 	fi
 	@sudo ./scripts/bootstrap/install-docker.sh
+
+# Install Docker Engine + Compose v2 on Fedora
+docker-install-fedora:
+	@echo "🐳 Installing Docker Engine + Compose v2 (Fedora)..."
+	@if [ ! -f /etc/os-release ] || ! grep -q "fedora" /etc/os-release; then \
+		echo "❌ This command is for Fedora only"; \
+		echo "For Ubuntu, use: make docker-install"; \
+		echo "For guides, see: docs/guides/docker-fedora-setup.md"; \
+		exit 1; \
+	fi
+	@sudo ./scripts/bootstrap/install-docker-fedora.sh
 
 # Full Ubuntu installation with Docker
 ubuntu-full:
@@ -419,6 +433,15 @@ ubuntu-full:
 		exit 1; \
 	fi
 	@sudo ./scripts/bootstrap/install-dependencies-ubuntu.sh --with-docker
+
+# Full Fedora installation with Docker
+fedora-full:
+	@echo "🎩 Installing Fedora packages + Docker..."
+	@if [ ! -f /etc/os-release ] || ! grep -q "fedora" /etc/os-release; then \
+		echo "❌ This command is for Fedora only"; \
+		exit 1; \
+	fi
+	@sudo ./scripts/bootstrap/fedora-bootstrap.sh --with-packages --with-docker
 
 # ============================================================================
 # Font Management

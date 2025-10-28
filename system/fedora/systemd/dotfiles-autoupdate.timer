@@ -1,0 +1,14 @@
+[Unit]
+Description=Timer for dotfiles auto-update service
+Requires=dotfiles-autoupdate.service
+
+[Timer]
+# Wait 5 minutes after boot
+OnBootSec=5min
+# Run every 30 minutes
+OnUnitActiveSec=30min
+# Persistent (catch up if system was off)
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -4,7 +4,7 @@
 
 **Result**: Empty Ubuntu VM ready for development environment setup.
 
-**Next Step**: After completing this guide, proceed to [Guide 2: Development VM Setup](parallels-2-dev-setup.md) to configure Docker, dotfiles, and project bindings.
+**Next Step**: After completing this guide, proceed to [Guide 2: Ubuntu Dev Setup](parallels-2-ubuntu-dev-setup.md) to configure Docker, dotfiles, and project bindings.
 
 ---
 
@@ -395,6 +395,7 @@ Installation successful!
 ```bash
 # 1. Check Parallels Tools version
 cat /usr/lib/parallels-tools/version
+prltoolsd -V
 # Expected: 26.1.1.57288 (or newer)
 
 # 2. Check service status
@@ -630,7 +631,7 @@ sudo ss -tlnp | grep :22
 
 Your Ubuntu VM is created with Parallels Tools installed. The VM is ready for development environment setup.
 
-**Proceed to**: [Guide 2: Development VM Setup](parallels-2-dev-setup.md)
+**Proceed to**: [Guide 2: Ubuntu Dev Setup](parallels-2-ubuntu-dev-setup.md)
 
 **Guide 2 will configure**:
 - ✅ Parallels shared folders (~/dev/, ~/media/cdn/)
@@ -651,7 +652,7 @@ Ensure:
 - [ ] Network connectivity verified
 - [ ] Sufficient disk space available
 
-**Ready?** → [Continue to Guide 2](parallels-2-dev-setup.md)
+**Ready?** → [Continue to Guide 2](parallels-2-ubuntu-dev-setup.md)
 
 ---
 
