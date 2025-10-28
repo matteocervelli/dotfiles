@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Vite + React SPA Stack
+# Production-ready static site serving
+
+networks:
+  infrastructure:
+    external: true
+
+services:
+  # =============================================================================
+  # Vite + React SPA
+  # =============================================================================
+  vite-app:
+    image: ${DOCKER_REGISTRY:-}your-vite-app:${APP_VERSION:-latest}
+    container_name: vite-app
+    restart: unless-stopped
+    # Use nginx to serve built static files
+    command: nginx -g 'daemon off;'
+    environment:
+      # Build-time environment variables (baked into build)
+      # These should be set during docker build:
+      # - VITE_API_URL
+      # - VITE_APP_NAME
+      # - VITE_ENVIRONMENT
+      - NGINX_PORT=${VITE_PORT:-5173}
+    ports:
+      - "${VITE_PORT:-5173}:80"
+    networks:
+      - infrastructure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "monitoring=true"
+
+# Note: For Vite apps, environment variables must be set at build time with VITE_ prefix
+# Example Dockerfile:
+# FROM node:18-alpine AS builder
+# WORKDIR /app
+# COPY package*.json ./
+# RUN npm ci
+# COPY . .
+# ARG VITE_API_URL
+# ARG VITE_APP_NAME
+# ENV VITE_API_URL=$VITE_API_URL
+# ENV VITE_APP_NAME=$VITE_APP_NAME
+# RUN npm run build
+#
+# FROM nginx:alpine
+# COPY --from=builder /app/dist /usr/share/nginx/html
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]

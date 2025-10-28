@@ -1,0 +1,16 @@
+# Grafana Dashboards Configuration
+# Automatically load dashboards from files
+
+apiVersion: 1
+
+providers:
+  # Main dashboards directory
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

@@ -9,6 +9,88 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **VPS Ubuntu Security Hardening & Headless Setup** (#45) - Production-ready VPS configuration
+  - **VPS-specific bootstrap script** (`scripts/bootstrap/vps-ubuntu-bootstrap.sh`, 700+ lines):
+    - Minimal headless installation optimized for cloud VPS (DigitalOcean, Hetzner, Linode)
+    - Profile: `vps-minimal` with role `security`
+    - Automatic security hardening integration
+    - Monitoring setup with Prometheus node_exporter
+    - Optional Docker Engine + Compose v2 installation
+    - Comprehensive prerequisite checks (SSH keys, disk space, sudo access)
+    - Dry-run mode for safe preview
+    - Resource usage: < 500MB RAM idle, 2-10% CPU
+  - **Security hardening script** (`scripts/security/harden-vps.sh`, 600+ lines):
+    - **SSH hardening**: Key-only authentication, no root login, no password auth
+    - **UFW firewall**: Default deny incoming, allow SSH (22), HTTP (80), HTTPS (443)
+    - **fail2ban**: Brute-force protection (5 attempts → 10min ban)
+    - **Automatic security updates**: unattended-upgrades configured
+    - Custom SSH port support (--ssh-port flag)
+    - Backup of original configurations before modification
+    - Configuration syntax validation before applying
+    - Comprehensive warnings about SSH access requirements
+  - **Monitoring integration** (`scripts/monitoring/setup-node-exporter.sh`, 500+ lines):
+    - Prometheus node_exporter installation (latest version from GitHub releases)
+    - System metrics collection: CPU, memory, disk I/O, network traffic
+    - Systemd service with security hardening (NoNewPrivileges, ProtectHome, etc.)
+    - Binds to localhost by default (secure), optional --bind-all for external access
+    - Architecture detection (AMD64, ARM64, ARMv7)
+    - Dedicated non-privileged user (node_exporter)
+    - Resource overhead: ~10MB RAM, <1% CPU
+    - Integration with Prometheus + Grafana (dashboard 1860)
+  - **Docker remote context setup** (`scripts/docker/setup-remote-context.sh`, 400+ lines):
+    - Configure Docker to connect to remote VPS via SSH
+    - No TCP port exposure required (SSH only)
+    - Tailscale VPN integration for secure access
+    - Multiple context management (local + multiple VPS)
+    - Connection testing and validation
+    - Context switching: `docker context use <name>`
+    - Works with docker and docker-compose commands
+  - **Comprehensive documentation** (`docs/guides/vps-ubuntu-setup.md`, 1000+ lines):
+    - Quick start guide (5 steps to production-ready VPS)
+    - Detailed setup instructions for each component
+    - Security best practices (SSH keys, firewall, passwords)
+    - VPS provider comparison (Hetzner, DigitalOcean, Linode, Vultr)
+    - Post-installation verification steps
+    - Troubleshooting guide (SSH, firewall, Docker, monitoring)
+    - Maintenance tasks (daily, weekly, monthly)
+    - Advanced configuration (custom SSH port, Tailscale, multiple VPS)
+    - Prometheus + Grafana integration examples
+  - **Test coverage**: 120+ BATS tests (test-45-vps-ubuntu-hardening.bats):
+    - Script existence and executability
+    - Help text and command-line options
+    - Script integration and dependencies
+    - Security configuration validation (SSH, UFW, fail2ban)
+    - Monitoring setup validation
+    - Docker context setup validation
+    - Documentation completeness
+  - **Bootstrap options**:
+    - `--dry-run` - Preview changes without applying
+    - `--with-docker` - Install Docker Engine + Compose v2
+    - `--skip-hardening` - Skip security hardening (not recommended)
+    - `--skip-monitoring` - Skip node_exporter setup
+    - `--no-ufw` - Don't configure UFW firewall
+  - **Security features**:
+    - SSH password authentication: DISABLED
+    - Root SSH login: DISABLED
+    - Empty passwords: DISABLED
+    - X11 forwarding: DISABLED
+    - Max auth attempts: 3
+    - Keep-alive timeout: 300s
+    - UFW default deny incoming, allow outgoing
+    - fail2ban jail for SSH with email notifications (optional)
+    - Automatic security updates via unattended-upgrades
+  - **Monitoring features**:
+    - 100+ system metrics exported
+    - Metrics endpoint: http://localhost:9100/metrics
+    - Remote access via SSH tunnel or Tailscale
+    - Grafana dashboard support (ID: 1860)
+    - Low resource overhead suitable for 2GB VPS
+  - **Documentation updates**:
+    - Updated `docs/os-configurations/OVERVIEW.md` with FASE 7.7
+    - Updated `docs/os-configurations/DEVICE-MATRIX.md` with VPS entry
+    - Updated `docs/TASK.md` with implementation details
+    - Created comprehensive VPS setup guide
+
 - **Docker Engine + Compose v2 for Fedora Linux** (#57) - Complete Docker installation support for Fedora
   - **Installation script** ([scripts/bootstrap/install-docker-fedora.sh](scripts/bootstrap/install-docker-fedora.sh), ~450 lines):
     - Docker Engine + Compose v2 plugin installation from official Docker repository

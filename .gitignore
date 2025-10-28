@@ -289,3 +289,6 @@ backups/
 ._*
 .AppleDouble
 .LSOverride
+
+##### Claude Code sandbox (environment-specific) ######################
+.devcontainer/

@@ -1,0 +1,151 @@
+version: '3.8'
+
+# FastAPI Application Stack
+# Production-ready FastAPI backend with Celery, PostgreSQL, and Redis
+
+networks:
+  infrastructure:
+    external: true
+  monitoring:
+    external: true
+
+services:
+  # =============================================================================
+  # FastAPI Application
+  # =============================================================================
+  fastapi-app:
+    image: ${DOCKER_REGISTRY:-}your-fastapi-app:${APP_VERSION:-latest}
+    container_name: fastapi-app
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    environment:
+      # Application
+      - APP_NAME=${APP_NAME:-FastAPI App}
+      - APP_ENV=${APP_ENV:-production}
+      - DEBUG=${DEBUG:-false}
+      - SECRET_KEY=${SECRET_KEY}
+
+      # Database
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - DATABASE_POOL_SIZE=${DATABASE_POOL_SIZE:-20}
+      - DATABASE_MAX_OVERFLOW=${DATABASE_MAX_OVERFLOW:-10}
+
+      # Redis
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/2
+
+      # CORS
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,https://example.com}
+
+      # JWT
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+
+      # File uploads
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-10485760}
+
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    networks:
+      - infrastructure
+      - monitoring
+    depends_on:
+      - postgres
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "monitoring=true"
+      - "prometheus.scrape=true"
+      - "prometheus.port=8000"
+      - "prometheus.path=/metrics"
+
+  # =============================================================================
+  # Celery Worker
+  # =============================================================================
+  celery-worker:
+    image: ${DOCKER_REGISTRY:-}your-fastapi-app:${APP_VERSION:-latest}
+    container_name: celery-worker
+    restart: unless-stopped
+    command: celery -A app.celery_app worker -l info -c ${CELERY_WORKERS:-4}
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/2
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - infrastructure
+      - monitoring
+    depends_on:
+      - postgres
+      - redis
+      - fastapi-app
+    labels:
+      - "monitoring=true"
+
+  # =============================================================================
+  # Celery Beat (Scheduler)
+  # =============================================================================
+  celery-beat:
+    image: ${DOCKER_REGISTRY:-}your-fastapi-app:${APP_VERSION:-latest}
+    container_name: celery-beat
+    restart: unless-stopped
+    command: celery -A app.celery_app beat -l info --scheduler celery.beat:PersistentScheduler
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/2
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - infrastructure
+    depends_on:
+      - redis
+      - celery-worker
+
+  # =============================================================================
+  # Celery Flower (Monitoring)
+  # =============================================================================
+  celery-flower:
+    image: mher/flower:latest
+    container_name: celery-flower
+    restart: unless-stopped
+    command: celery --broker=redis://:${REDIS_PASSWORD}@redis:6379/1 flower --port=5555 --basic_auth=${FLOWER_USER:-admin}:${FLOWER_PASSWORD:-admin}
+    environment:
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/2
+    ports:
+      - "5555:5555"
+    networks:
+      - infrastructure
+      - monitoring
+    depends_on:
+      - redis
+      - celery-worker
+
+  # =============================================================================
+  # Celery Exporter (Prometheus Metrics)
+  # =============================================================================
+  celery-exporter:
+    image: danihodovic/celery-exporter:latest
+    container_name: celery-exporter
+    restart: unless-stopped
+    environment:
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/2
+    ports:
+      - "9808:9808"
+    networks:
+      - monitoring
+    depends_on:
+      - redis
+      - celery-worker

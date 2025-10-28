@@ -1,0 +1,64 @@
+version: '3.8'
+
+# Next.js Application Stack
+# Production-ready Next.js SSR application
+
+networks:
+  infrastructure:
+    external: true
+  monitoring:
+    external: true
+
+services:
+  # =============================================================================
+  # Next.js Application
+  # =============================================================================
+  nextjs-app:
+    image: ${DOCKER_REGISTRY:-}your-nextjs-app:${APP_VERSION:-latest}
+    container_name: nextjs-app
+    restart: unless-stopped
+    command: node server.js
+    environment:
+      # Node.js
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${NEXTJS_PORT:-3000}
+
+      # Application
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://api.example.com}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://example.com}
+
+      # Database (if using Prisma or direct connection)
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+
+      # Redis (for session storage)
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/3
+
+      # Auth (NextAuth.js example)
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-https://example.com}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+
+      # API keys
+      - API_SECRET_KEY=${API_SECRET_KEY}
+
+      # Feature flags
+      - FEATURE_FLAG_ANALYTICS=${FEATURE_FLAG_ANALYTICS:-true}
+
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    ports:
+      - "${NEXTJS_PORT:-3000}:3000"
+    networks:
+      - infrastructure
+      - monitoring
+    depends_on:
+      - postgres
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "monitoring=true"
+      - "prometheus.scrape=false"  # Enable if you add metrics
