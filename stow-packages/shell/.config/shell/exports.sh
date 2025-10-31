@@ -43,6 +43,13 @@ export PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
 # LM Studio CLI
 export PATH="$PATH:$HOME/.lmstudio/bin"
 
