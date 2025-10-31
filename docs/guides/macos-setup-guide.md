@@ -1,6 +1,12 @@
 # macOS Setup Guide
 
-Complete guide for formatting and setting up a fresh MacBook with this dotfiles repository.
+**Complete guide for formatting and setting up a fresh MacBook with this dotfiles repository.**
+
+This guide covers:
+- 🔴 **First-time format** (clean macOS installation from Recovery)
+- ✅ **Fresh setup** (new Mac or after format)
+- 🔄 **Restore strategy** (what to restore vs. what to skip)
+- 🚀 **Automated setup** (using your dotfiles for clean environment)
 
 ## Table of Contents
 
@@ -174,12 +180,22 @@ sudo /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/createinstallme
 4. Reinstall macOS
 
 **Option C: Recovery Mode (Apple Silicon)**
-1. Shut down Mac
+1. Shut down Mac completely
 2. Hold power button until "Loading startup options" appears
-3. Select Options → Continue
-4. Disk Utility → Erase Macintosh HD
-5. Format: APFS
-6. Reinstall macOS
+3. Select **Options** → Click **Continue**
+4. Select admin user and enter password if prompted
+5. Open **Disk Utility**
+6. Menu bar: **View** → **Show All Devices** (IMPORTANT!)
+7. Select **top-level disk** (e.g., "Apple SSD" - not the volume under it)
+8. Click **Erase**:
+   - Name: `Macintosh HD`
+   - Format: `APFS`
+   - Scheme: `GUID Partition Map`
+9. Click **Erase** → Wait → Click **Done**
+10. Quit Disk Utility (⌘ Cmd + Q)
+11. Select **Reinstall macOS** → Follow prompts
+
+**⚠️ CRITICAL:** Erase the **top-level disk**, not just the volume, for a truly clean format.
 
 ### 3. macOS Setup Assistant
 
@@ -187,12 +203,12 @@ During first boot:
 - **Region**: Select your country
 - **Wi-Fi**: Connect to network
 - **Data & Privacy**: Review and continue
-- **Migration Assistant**: Choose "Not Now" (fresh install)
-- **Apple ID**: Sign in
+- **Migration Assistant**: **❌ SELECT "Not Now"** (DO NOT MIGRATE - avoids bringing old cruft)
+- **Apple ID**: **SKIP FOR NOW** (sign in later after dotfiles setup)
 - **Terms and Conditions**: Agree
 - **Create Account**: Set up your user account
   - Full Name: Your Name
-  - Account Name: `matteo` (or your username)
+  - Account Name: `matteocervelli` (⚠️ MUST match your dotfiles paths!)
   - Password: Use strong password
 - **Express Setup**: Customize settings
 - **Analytics**: Choose your preference
@@ -450,6 +466,72 @@ eval $(op signin)
 # Run health check
 make health
 ```
+
+---
+
+## Selective Data Restore Strategy
+
+### Philosophy: Cherry-Pick, Don't Dump
+
+**The key to avoiding "fluff" after a format: Restore only what you need, rebuild everything else from code.**
+
+### ✅ DO RESTORE (Essential Data)
+
+```bash
+# 1. Clone active projects (PREFERRED method - fresh from git)
+cd ~/dev/projects
+git clone git@github.com:matteocervelli/WEB-adlimen.git
+git clone git@github.com:matteocervelli/INFRA-DevEnvironment.git
+git clone git@github.com:matteocervelli/APP-Discreto.git
+# ... etc for each active project
+
+# 2. Selective Documents (business-critical only)
+rsync -av --progress /Volumes/HDD/MacBackup/Documents/Business ~/Documents/
+rsync -av --progress /Volumes/HDD/MacBackup/Documents/Projects ~/Documents/
+
+# 3. Custom fonts (if not in dotfiles)
+cp /Volumes/HDD/MacBackup/Fonts/* ~/Library/Fonts/
+
+# 4. Docker volumes (databases with data)
+cd ~/dev
+make restore  # If you have a restore script
+# OR manually:
+docker volume create postgres_data
+docker run --rm -v postgres_data:/data -v /Volumes/HDD/backups:/backup \
+  alpine sh -c "cd /data && tar xzf /backup/postgres_data.tar.gz --strip 1"
+
+# 5. Enable iCloud Drive (let it sync)
+# System Settings → Apple ID → iCloud → iCloud Drive → ON
+```
+
+### ❌ DON'T RESTORE (Let Regenerate Fresh)
+
+**These create bloat and are better rebuilt:**
+
+- ❌ `~/Library/Application Support/*` - App caches (rebuilt automatically)
+- ❌ `~/Library/Caches/*` - System caches
+- ❌ `~/Library/Preferences/*` - Most app preferences (except specific licenses)
+- ❌ Old system logs
+- ❌ Browser caches (use browser sync instead)
+- ❌ Downloads folder (clean slate!)
+- ❌ Old `node_modules`, `.venv`, build artifacts (regenerate)
+- ❌ Time Machine local snapshots
+
+### 🎯 Data Sources Priority
+
+1. **Git repositories** - Always clone fresh (preferred)
+2. **iCloud Drive** - Let sync naturally
+3. **1Password** - All secrets, SSH keys, licenses
+4. **External HDD** - Last resort for local-only files
+5. **Time Machine** - Emergency recovery only
+
+### Timeline Expectations
+
+- **Format + macOS Install**: 45-60 minutes
+- **Essential Tools**: 5 minutes
+- **Dotfiles Setup**: 90-120 minutes
+- **Selective Restore**: 30-60 minutes
+- **Total**: **~3-4 hours** for complete clean setup
 
 ---
 
