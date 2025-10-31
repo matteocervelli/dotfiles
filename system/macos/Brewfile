@@ -19,8 +19,8 @@
 # Taps - Third-party repositories
 # ============================================================================
 
-tap "homebrew/bundle"
-tap "homebrew/services"
+# Note: homebrew/bundle and homebrew/services are now part of Homebrew core
+# No external taps needed for this Brewfile
 
 # ============================================================================
 # Development Tools
@@ -114,7 +114,6 @@ brew "c-ares"
 brew "cairo"
 brew "capstone"
 brew "cjson"
-brew "claude-squad"
 brew "cling"
 brew "clippy"
 brew "clisp"
@@ -244,8 +243,6 @@ cask "microsoft-edge"
 cask "nook"
 cask "rstudio"
 cask "ungoogled-chromium"
-cask "voiceink"
-cask "zotero"
 
 # ============================================================================
 # Media & Creative Tools
